@@ -1,0 +1,110 @@
+{
+  "features": {
+    "edit_prediction_provider": "codestral",
+  },
+  "title_bar": {
+    "show_menus": true,
+    "show_branch_icon": true,
+  },
+  "agent": {
+    "default_profile": "write",
+    "default_model": {
+      "provider": "mistral",
+      "model": "codestral-latest",
+    },
+    "inline_assistant_model": {
+      "provider": "mistral",
+      "model": "codestral-latest",
+    },
+    "enabled": true,
+  },
+  "auto_install_extensions": {
+    "gruvbox-material": true,
+    "html": true,
+    "icons-modern-material": true,
+    "php": true,
+    "react-snippets": true,
+    "react-typescript-snippets": true,
+    "wakatime": true,
+    "modern-icons": true,
+  },
+  "autosave": "on_window_change",
+  "buffer_font_family": "BlexMono Nerd Font",
+  "buffer_font_features": {
+    "calt": true,
+  },
+  "buffer_font_size": 14,
+  "buffer_font_weight": 500,
+  "buffer_line_height": "comfortable",
+  "collaboration_panel": {
+    "dock": "right",
+  },
+  "file_finder": {
+    "file_icons": true,
+  },
+  "icon_theme": {
+    "dark": "Modern Icons (Dark)",
+    "light": "Modern Icons (Light)",
+    "mode": "system",
+  },
+  "indent_guides": {
+    "coloring": "indent_aware",
+    "enabled": true,
+  },
+  "inlay_hints": {
+    "enabled": true,
+  },
+  "languages": {
+    "HTML": {
+      "formatter": "auto",
+    },
+    "PHP": {
+      "language_servers": ["eslint", "phpactor", "vscode-html-language-server"],
+      "format_on_save": "off",
+    },
+  },
+  "lsp": {
+    "eslint": {
+      "settings": {
+        "codeActionOnSave": {
+          "rules": ["import/order"],
+        },
+      },
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classAttributes": ["class", "className", "ngClass", "styles"],
+      },
+    },
+    "vscode-html-language-server": {
+      "settings": {
+        "format": {
+          "contentUnformatted": ["svg", "script"],
+        },
+      },
+    },
+  },
+  "show_wrap_guides": true,
+  "soft_wrap": "editor_width",
+  "tab_bar": {
+    "show": true,
+  },
+  "tabs": {
+    "show_diagnostics": "errors",
+    "git_status": true,
+    "file_icons": true,
+    "show_close_button": "always",
+  },
+  "theme": {
+    "dark": "Gruvbox Dark",
+    "light": "Gruvbox Light",
+    "mode": "system",
+  },
+  "ui_font_family": ".SystemUIFont",
+  "ui_font_size": 16,
+  "ui_font_weight": 800,
+  "vim": {
+    "use_system_clipboard": "on_yank",
+  },
+  "vim_mode": true,
+}
