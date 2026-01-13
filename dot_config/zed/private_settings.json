@@ -1,4 +1,7 @@
 {
+  "session": {
+    "trust_all_worktrees": true
+  },
   "features": {
     "edit_prediction_provider": "codestral",
   },
