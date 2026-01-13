@@ -1,6 +1,9 @@
 {
+  "terminal": {
+    "default_height": 240.0,
+  },
   "session": {
-    "trust_all_worktrees": true
+    "trust_all_worktrees": true,
   },
   "features": {
     "edit_prediction_provider": "codestral",
