@@ -1,14 +1,22 @@
 # Dotfiles
-My dotfiles managed by [Chezmoi](https://github.com/twpayne/chezmoi)
 
-This repo contain userspace system configs look like shell, terminal, text editor, etc. This repo contain:
+My personal dotfiles managed with [chezmoi](https://github.com/twpayne/chezmoi).
+
+This repository contains user-space configuration files such as shell, terminal,
+and text editor settings, designed to be reproducible across multiple machines.
+
+## Included Configurations
 
 - Fastfetch
 - Helix
-- Fish
-- Zed Editor
+- Fish shell
+- Zed editor
 - Konsole
 - SSH client
 - Tmux
 
-![screenshot](img/screenshot.png)
+## Preview
+
+Konsole terminal appearance:
+
+![Konsole screenshot](img/screenshot.png)
