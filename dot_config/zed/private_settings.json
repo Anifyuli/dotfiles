@@ -1,4 +1,6 @@
 {
+  "auto_update": false,
+  "restore_on_startup": "last_workspace",
   "terminal": {
     "default_height": 240.0,
   },
@@ -34,7 +36,7 @@
     "wakatime": true,
     "modern-icons": true,
   },
-  "autosave": "on_window_change",
+  "autosave": "on_focus_change",
   "buffer_font_family": "BlexMono Nerd Font",
   "buffer_font_features": {
     "calt": true,

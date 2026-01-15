@@ -16,7 +16,10 @@ set -gx PATH $PATH \
     $ANDROID_HOME/emulator \
     $ANDROID_HOME/platform-tools
 
-# pnpm configuration
+# Add NPM bin to $PATH
+set -gx PATH $HOME/.npm/bin $PATH
+
+# $PNPM_HOME
 set -gx PNPM_HOME $HOME/.local/share/pnpm
 if not contains -- $PNPM_HOME $PATH
     set -gx PATH $PNPM_HOME $PATH
