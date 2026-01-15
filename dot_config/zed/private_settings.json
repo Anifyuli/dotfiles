@@ -1,4 +1,9 @@
 {
+  "edit_predictions": {
+    "codestral": {
+      "api_url": "https://codestral.mistral.ai/v1/fim/completions",
+    },
+  },
   "auto_update": false,
   "restore_on_startup": "last_workspace",
   "terminal": {
@@ -115,4 +120,8 @@
     "use_system_clipboard": "on_yank",
   },
   "vim_mode": true,
+  "which_key": {
+    "enabled": true,
+    "delay_ms": 0,
+  },
 }
