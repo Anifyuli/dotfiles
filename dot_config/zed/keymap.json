@@ -24,4 +24,10 @@
       "space": null, // Disable the default action vim::WrappingRight
     },
   },
+  {
+    "context": "(Editor && mode == full)",
+    "bindings": {
+      "shift-f": "buffer_search::Deploy"
+    }
+  }
 ]
