@@ -1,1 +1,4 @@
 .config/zed/development_credentials
+img/*
+LICENSE
+README.md
