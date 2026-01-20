@@ -34,7 +34,6 @@
   "auto_install_extensions": {
     "gruvbox-material": true,
     "html": true,
-    "icons-modern-material": true,
     "php": true,
     "react-snippets": true,
     "react-typescript-snippets": true,
@@ -124,4 +123,5 @@
     "enabled": true,
     "delay_ms": 0,
   },
+  "profiles": {},
 }
