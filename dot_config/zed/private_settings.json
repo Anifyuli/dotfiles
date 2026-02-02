@@ -1,6 +1,7 @@
 {
   "edit_predictions": {
     "codestral": {
+      "model": "codestral-latest",
       "api_url": "https://codestral.mistral.ai/v1/fim/completions",
     },
   },
@@ -23,11 +24,11 @@
     "default_profile": "write",
     "default_model": {
       "provider": "mistral",
-      "model": "codestral-latest",
+      "model": "devstral-medium-latest",
     },
     "inline_assistant_model": {
       "provider": "mistral",
-      "model": "codestral-latest",
+      "model": "devstral-medium-latest",
     },
     "enabled": true,
   },
@@ -71,7 +72,8 @@
       "formatter": "auto",
     },
     "PHP": {
-      "language_servers": ["eslint", "phpactor", "vscode-html-language-server"],
+      "language_servers": ["eslint", "phpactor", "vscode-html-languageservice"],
+      "formatter": "language_server",
       "format_on_save": "off",
     },
   },
