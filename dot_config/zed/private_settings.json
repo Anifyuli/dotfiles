@@ -33,6 +33,7 @@
     "enabled": true,
   },
   "auto_install_extensions": {
+    "editorconfig": true,
     "gruvbox-material": true,
     "html": true,
     "php": true,
