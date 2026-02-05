@@ -1,5 +1,14 @@
 {
+  "agent_servers": {
+    "mistral-vibe": {
+      "type": "registry",
+    },
+    "qwen-code": {
+      "type": "registry",
+    },
+  },
   "edit_predictions": {
+    "provider": "codestral",
     "codestral": {
       "model": "codestral-latest",
       "api_url": "https://codestral.mistral.ai/v1/fim/completions",
@@ -13,9 +22,6 @@
   "session": {
     "trust_all_worktrees": true,
   },
-  "features": {
-    "edit_prediction_provider": "codestral",
-  },
   "title_bar": {
     "show_menus": true,
     "show_branch_icon": true,
@@ -23,8 +29,8 @@
   "agent": {
     "default_profile": "write",
     "default_model": {
-      "provider": "mistral",
-      "model": "devstral-medium-latest",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-r1-0528:free",
     },
     "inline_assistant_model": {
       "provider": "mistral",
