@@ -10,12 +10,13 @@ and text editor settings, designed to be reproducible across multiple machines.
 ### User-level configs
 
 - Fastfetch
-- Helix
 - Fish shell
-- Zed editor
+- Glow
+- Helix
 - Konsole
 - SSH client
 - Tmux
+- Zed editor
 
 ## Preview
 
