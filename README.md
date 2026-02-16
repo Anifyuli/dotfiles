@@ -7,6 +7,8 @@ and text editor settings, designed to be reproducible across multiple machines.
 
 ## Included Configurations
 
+### User-level configs
+
 - Fastfetch
 - Helix
 - Fish shell
@@ -19,4 +21,4 @@ and text editor settings, designed to be reproducible across multiple machines.
 
 Konsole terminal appearance:
 
-![Konsole screenshot](img/screenshot.png)
+![Konsole screenshot](assets/screenshot.png)
