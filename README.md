@@ -5,7 +5,7 @@ My personal dotfiles managed with [chezmoi](https://github.com/twpayne/chezmoi).
 This repository contains user-space configuration files such as shell, terminal,
 and text editor settings, designed to be reproducible across multiple machines.
 
-*Updates:*
+**Updates:**
 My entired system configured on this dotfiles, such as package manager configs, repos, and provisioner configs.
 
 ## Included Configurations
