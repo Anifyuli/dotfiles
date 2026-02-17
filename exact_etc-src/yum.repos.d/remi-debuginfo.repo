@@ -1,0 +1,15 @@
+[remi-debuginfo]
+name=Remi's RPM repository for Fedora $releasever - $basearch - debuginfo
+baseurl=http://rpms.remirepo.net/fedora/$releasever/debug-remi/$basearch/
+enabled=0
+gpgcheck=1
+repo_gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi-$releasever
+
+[remi-test-debuginfo]
+name=Remi's test RPM repository for Fedora $releasever - $basearch - debuginfo
+baseurl=http://rpms.remirepo.net/fedora/$releasever/debug-test/$basearch/
+enabled=0
+gpgcheck=1
+repo_gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi-$releasever

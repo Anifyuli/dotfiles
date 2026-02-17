@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+{{ if eq .chezmoi.os "linux" -}}
+set -e
+
+COPR_STATE="$HOME/.cache/chezmoi/managed-copr-repos.txt"
+RPM_STATE="$HOME/.cache/chezmoi/managed-rpm-repos.txt"
+mkdir -p "$(dirname "$COPR_STATE")"
+
+# repos-hash: {{ .system.repos | toJson | sha256sum }}
+
+echo "==> Managing Copr repositories"
+
+# Parse repos from YAML
+enabled_repos=({{ range .system.repos.copr.enabled }}{{ . }} {{ end }})
+disabled_repos=({{ range .system.repos.copr.disabled }}{{ . }} {{ end }})
+desired_all=("${enabled_repos[@]}" "${disabled_repos[@]}")
+
+if [ -f "$COPR_STATE" ]; then
+    mapfile -t previous_copr < "$COPR_STATE"
+else
+    previous_copr=()
+fi
+
+current_repos=$(dnf copr list 2>/dev/null | sed 's|copr.fedorainfracloud.org/||g')
+
+# Enable repos
+for repo in "${enabled_repos[@]}"; do
+    if echo "$current_repos" | grep -qx "$repo"; then
+        echo "  [*] Already enabled: $repo"
+    else
+        echo "  [+] Enabling: $repo"
+        sudo dnf copr enable -y "$repo"
+    fi
+done
+
+# Disable repos (keep file)
+for repo in "${disabled_repos[@]}"; do
+    if echo "$current_repos" | grep -qx "$repo"; then
+        echo "  [-] Disabling: $repo (file kept)"
+        sudo dnf copr disable -y "$repo"
+    fi
+done
+
+# Remove repos (not in YAML at all)
+for repo in "${previous_copr[@]}"; do
+    if [[ ! " ${desired_all[@]} " =~ " ${repo} " ]]; then
+        if echo "$current_repos" | grep -qx "$repo"; then
+            echo "  [X] Removing: $repo"
+            sudo dnf copr remove -y "$repo"
+        fi
+    fi
+done
+
+printf '%s\n' "${desired_all[@]}" > "$COPR_STATE"
+
+{{- if .system.repos.rpm_packages }}
+echo ""
+echo "==> Managing RPM repository packages"
+
+declare -a desired_rpm_packages=()
+declare -a desired_rpm_names=()
+
+{{- range .system.repos.rpm_packages }}
+desired_rpm_packages+=("{{ . }}")
+desired_rpm_names+=("$(basename {{ . }} .rpm | sed 's/-[0-9].*//')")
+{{- end }}
+
+if [ -f "$RPM_STATE" ]; then
+    mapfile -t previous_rpm < "$RPM_STATE"
+else
+    previous_rpm=()
+fi
+
+for i in "${!desired_rpm_packages[@]}"; do
+    rpm_url="${desired_rpm_packages[$i]}"
+    rpm_name="${desired_rpm_names[$i]}"
+    
+    if rpm -q "$rpm_name" &>/dev/null; then
+        echo "  [*] Already installed: $rpm_name"
+    else
+        echo "  [+] Installing: $rpm_name"
+        sudo dnf install -y "$rpm_url"
+    fi
+done
+
+for rpm_name in "${previous_rpm[@]}"; do
+    if [[ ! " ${desired_rpm_names[@]} " =~ " ${rpm_name} " ]]; then
+        if rpm -q "$rpm_name" &>/dev/null; then
+            echo "  [-] Disabling repos from: $rpm_name"
+            for repo_file in $(rpm -ql "$rpm_name" 2>/dev/null | grep '\.repo$'); do
+                if [ -f "$repo_file" ]; then
+                    echo "      Disabling: $repo_file"
+                    sudo sed -i 's/^enabled=1/enabled=0/g' "$repo_file"
+                fi
+            done
+        fi
+    fi
+done
+
+printf '%s\n' "${desired_rpm_names[@]}" > "$RPM_STATE"
+{{- end }}
+
+echo ""
+echo "==> Refreshing DNF cache"
+sudo dnf makecache -q
+
+echo "==> Done"
+{{- end }}

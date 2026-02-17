@@ -1,0 +1,21 @@
+packages:
+  linux:
+    dnf:
+      - ab-download-manager
+      - android-studio
+      - dolphin-megasync
+      - elecwhat
+      - joplin
+      - fish
+      - helix
+      - fastfetch
+      - git
+      - megasync
+      - nodejs
+      - nodejs-npm
+      - scratch3-desktop
+      - uv
+      - vlc
+      - yakuake
+      - zed
+      - zed-cli

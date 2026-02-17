@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+{{ if eq .chezmoi.os "linux" -}}
+set -euo pipefail
+
+SRC="{{ .chezmoi.sourceDir }}/exact_etc-src"
+BACKUP="/etc/chezmoi-src/$(date +%Y%m%d-%H%M%S)"
+STATE_FILE="$HOME/.cache/chezmoi/etc-state.txt"
+MANAGED_FILE="$HOME/.cache/chezmoi/etc-managed-files.txt"
+
+[ ! -d "$SRC" ] && exit 0
+
+mkdir -p "$(dirname "$STATE_FILE")"
+mkdir -p "$(dirname "$MANAGED_FILE")"
+
+# Generate current state
+current_state=$(find "$SRC" -type f ! -name "*.meta" -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+
+# Read previous state
+if [ -f "$STATE_FILE" ]; then
+    previous_state=$(cat "$STATE_FILE")
+else
+    previous_state=""
+fi
+
+# Skip if unchanged
+if [ "$current_state" = "$previous_state" ]; then
+    echo "==> /etc configs unchanged, skipping"
+    exit 0
+fi
+
+echo "==> Syncing /etc configs"
+
+sudo mkdir -p "$BACKUP"
+
+# Build list of current files
+declare -a current_files=()
+
+# Sync files
+find "$SRC" -type f ! -name "*.meta" | while read -r src; do
+    rel="${src#$SRC/}"
+    dst="/etc/$rel"
+
+    echo "  Write to $dst"
+
+    # Backup
+    if sudo test -f "$dst"; then
+        sudo mkdir -p "$(dirname "$BACKUP/$rel")"
+        sudo cp "$dst" "$BACKUP/$rel"
+    fi
+
+    # Deploy
+    sudo mkdir -p "$(dirname "$dst")"
+    sudo cp "$src" "$dst"
+
+    # Meta
+    if [ -f "$src.meta" ]; then
+        mode=$(grep '^mode=' "$src.meta" | cut -d= -f2)
+        owner=$(grep '^owner=' "$src.meta" | cut -d= -f2)
+        group=$(grep '^group=' "$src.meta" | cut -d= -f2)
+        cmd=$(grep '^post_command=' "$src.meta" | cut -d= -f2)
+
+        [ -n "${mode:-}" ] && sudo chmod "$mode" "$dst"
+        [ -n "${owner:-}" ] && [ -n "${group:-}" ] && sudo chown "$owner:$group" "$dst"
+        [ -n "${cmd:-}" ] && sudo bash -c "$cmd"
+    else
+        sudo chmod 0644 "$dst"
+        sudo chown root:root "$dst"
+    fi
+    
+    # Track file
+    echo "$dst" >> "$MANAGED_FILE.new"
+done
+
+# Remove files that are no longer in source
+if [ -f "$MANAGED_FILE" ]; then
+    while read -r managed_dst; do
+        # Check if file still exists in source
+        rel="${managed_dst#/etc/}"
+        src_file="$SRC/$rel"
+        
+        if [ ! -f "$src_file" ]; then
+            if sudo test -f "$managed_dst"; then
+                echo "  Removing: $managed_dst"
+                # Backup before remove
+                sudo cp "$managed_dst" "$BACKUP/removed_$(basename $managed_dst)"
+                sudo rm "$managed_dst"
+            fi
+        fi
+    done < "$MANAGED_FILE"
+fi
+
+# Update managed files list
+[ -f "$MANAGED_FILE.new" ] && mv "$MANAGED_FILE.new" "$MANAGED_FILE"
+
+# Save state
+echo "$current_state" > "$STATE_FILE"
+
+# Reload configs
+echo "  Reloading system configs ..."
+sudo sysctl -p 2>/dev/null || true
+sudo systemctl daemon-reload
+
+echo "==> Done"
+{{ end -}}

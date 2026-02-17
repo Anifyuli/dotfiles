@@ -1,0 +1,27 @@
+# Repository: https://rpms.remirepo.net/
+# Blog:       https://blog.remirepo.net/
+# Forum:      https://forum.remirepo.net/
+
+
+[remi-modular]
+name=Remi's Modular repository - Fedora $releasever - $basearch
+#baseurl=http://rpms.remirepo.net/fedora/$releasever/modular/$basearch/
+#mirrorlist=https://rpms.remirepo.net/fedora/$releasever/modular/$basearch/httpsmirror
+mirrorlist=http://cdn.remirepo.net/fedora/$releasever/modular/$basearch/mirror
+enabled=1
+gpgcheck=1
+# can be enabled if not behind a proxy because of possible cache issue
+repo_gpgcheck=0
+fastestmirror=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi-$releasever
+
+[remi-modular-debuginfo]
+name=Remi's Modular repository - Fedora $releasever - $basearch - debuginfo
+#baseurl=http://rpms.remirepo.net/fedora/$releasever/debug-modular/$basearch/
+#mirrorlist=https://rpms.remirepo.net/fedora/$releasever/debug-modular/$basearch/httpsmirror
+mirrorlist=http://cdn.remirepo.net/fedora/$releasever/debug-modular/$basearch/mirror
+enabled=0
+gpgcheck=1
+repo_gpgcheck=0
+fastestmirror=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi-$releasever

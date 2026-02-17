@@ -1,0 +1,15 @@
+system:
+  repos:
+    copr:
+      enabled:
+        - anifyuliansyah/ab-download-manager
+        - anifyuliansyah/hoppscotch
+        - anifyuliansyah/scratch3
+        - bieszczaders/kernel-cachyos
+        - bieszczaders/kernel-cachyos-addons
+        - birkch/QDiskInfo
+        - sneexy/python-validity
+        - taw/joplin
+        - ycollet/audinux
+      disabled:
+    rpm_packages: []

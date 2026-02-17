@@ -1,4 +1,10 @@
+# Hidden
 .config/zed/development_credentials
+
+# Not deployed to $HOME
 assets/
-LICENSE
+exact_etc-src/
+
+# additionals for Git
 README.md
+LICENSE

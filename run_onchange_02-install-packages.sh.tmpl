@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+{{ if eq .chezmoi.os "linux" -}}
+set -e
+
+STATE_FILE="$HOME/.cache/chezmoi/managed-packages.txt"
+mkdir -p "$(dirname "$STATE_FILE")"
+
+# packages-hash: {{ .packages | toJson | sha256sum }}
+
+echo "==> Syncing DNF packages"
+
+# Desired packages
+desired=({{ range .packages.linux.dnf }}{{ . }} {{ end }})
+
+# Previously managed packages (from last run)
+if [ -f "$STATE_FILE" ]; then
+    mapfile -t previous < "$STATE_FILE"
+else
+    previous=()
+fi
+
+# Install new packages
+for pkg in "${desired[@]}"; do
+    if ! rpm -q "$pkg" &>/dev/null; then
+        echo " + Installing: $pkg"
+        sudo dnf install -y "$pkg"
+    fi
+done
+
+# Remove packages that were managed before but removed from list
+for pkg in "${previous[@]}"; do
+    if [[ ! " ${desired[@]} " =~ " ${pkg} " ]]; then
+        if rpm -q "$pkg" &>/dev/null; then
+            echo " - Removing: $pkg"
+            sudo dnf remove -y "$pkg"
+        fi
+    fi
+done
+
+# Save current state
+printf '%s\n' "${desired[@]}" > "$STATE_FILE"
+
+echo "==> Done"
+{{ end -}}
