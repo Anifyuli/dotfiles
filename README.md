@@ -14,6 +14,7 @@ and text editor settings, designed to be reproducible across multiple machines.
 - Glow
 - Helix
 - Konsole
+- Mise
 - SSH client
 - Tmux
 - Zed editor

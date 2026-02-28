@@ -29,8 +29,9 @@
   "agent": {
     "default_profile": "write",
     "default_model": {
-      "provider": "openrouter",
-      "model": "deepseek/deepseek-r1-0528:free",
+      "enable_thinking": false,
+      "provider": "ollama",
+      "model": "qwen3:1.7b",
     },
     "inline_assistant_model": {
       "provider": "mistral",
@@ -45,6 +46,7 @@
     "php": true,
     "react-snippets": true,
     "react-typescript-snippets": true,
+    "sql": true,
     "wakatime": true,
     "modern-icons": true,
   },
