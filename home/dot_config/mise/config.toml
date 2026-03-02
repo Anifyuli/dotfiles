@@ -5,8 +5,6 @@ yarn = "latest"
 uv   = "latest" 
 
 [settings]
-python.uv_venv_auto = "source"
 
 [env]
 _.path = ['{{config_root}}/node_modules/.bin']
-_.python.venv = { path = ".venv" }
