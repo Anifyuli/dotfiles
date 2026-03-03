@@ -1,2 +1,0 @@
-set -g clock-mode-style 24
-set -g mouse on
