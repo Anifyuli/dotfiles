@@ -1,8 +1,24 @@
 {
-  "language_models": {},
+  "confirm_quit": true,
+  "language_models": {
+    "ollama": {
+      "available_models": [
+        {
+          "name": "qwen3:1.7b",
+          "max_tokens": 16384,
+          "supports_tools": true,
+        },
+        {
+          "name": "qwen2.5-coder:3b",
+          "max_tokens": 16384,
+          "supports_tools": true,
+        },
+      ],
+    },
+  },
   "agent_servers": {
     "opencode": {
-      "type": "registry"
+      "type": "registry",
     },
     "mistral-vibe": {
       "type": "registry",
@@ -18,30 +34,31 @@
       "api_url": "https://codestral.mistral.ai/v1/fim/completions",
     },
   },
+  "agent": {
+    "enabled": true,
+    "default_profile": "write",
+    "default_model": {
+      "enable_thinking": true,
+      "provider": "mistral",
+      "model": "codestral-latest",
+    },
+    "inline_assistant_model": {
+      "provider": "mistral",
+      "model": "codestral-latest",
+    },
+  },
   "auto_update": false,
   "restore_on_startup": "last_workspace",
   "terminal": {
     "default_height": 240.0,
   },
+  "bottom_dock_layout": "full",
   "session": {
     "trust_all_worktrees": true,
   },
   "title_bar": {
     "show_menus": true,
     "show_branch_icon": true,
-  },
-  "agent": {
-    "default_profile": "write",
-    "default_model": {
-      "enable_thinking": false,
-      "provider": "ollama",
-      "model": "qwen2.5-coder:1.5b",
-    },
-    "inline_assistant_model": {
-      "provider": "mistral",
-      "model": "codestral-latest",
-    },
-    "enabled": true,
   },
   "auto_install_extensions": {
     "editorconfig": true,
