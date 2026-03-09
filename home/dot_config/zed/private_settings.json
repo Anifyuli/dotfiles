@@ -50,7 +50,7 @@
   "auto_update": false,
   "restore_on_startup": "last_workspace",
   "terminal": {
-    "default_height": 240.0,
+    "default_height": 270.0,
   },
   "bottom_dock_layout": "full",
   "session": {
