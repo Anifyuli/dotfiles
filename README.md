@@ -12,9 +12,9 @@ and text editor settings, designed to be reproducible across multiple machines.
 - Fastfetch
 - Fish shell
 - Glow
-- Helix
 - Konsole
 - Mise
+- Neovim
 - SSH client
 - Tmux
 - Zed editor
