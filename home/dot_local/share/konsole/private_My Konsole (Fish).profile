@@ -1,6 +1,6 @@
 [Appearance]
 ColorScheme=Gruvbox Material Hard Dark
-Font=IBM Plex Mono,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+Font=BlexMono Nerd Font Mono,12,-1,5,500,0,0,0,0,0,0,0,0,0,0,1,Medium
 
 [General]
 Command=/bin/fish
