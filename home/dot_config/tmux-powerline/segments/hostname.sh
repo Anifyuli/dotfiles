@@ -2,6 +2,6 @@
 # Prints hostname
 
 run_segment() {
-	hostname
+	echo "󰍹 $(hostname)"
 	return 0
 }

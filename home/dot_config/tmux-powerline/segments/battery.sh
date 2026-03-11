@@ -9,25 +9,14 @@ run_segment() {
 	fi
 	
 	if [ -z "$battery_status" ]; then
-		echo "AC"
+		echo " AC"
 		return
 	fi
 
 	perc=$(echo "$battery_status" | grep -o '[0-9]*' | head -1)
-	
+
 	if [ -n "$perc" ]; then
-		# Compact: just filled blocks based on percentage
-		local blocks=$((perc / 20))
-		local block=""
-		
-		for ((i=0; i<blocks; i++)); do block+="█"; done
-		
-		# Ensure at least 1 block
-		if [ -z "$block" ]; then
-			block="░"
-		fi
-		
-		echo "${block} ${perc}%"
+		echo " ${perc}%"
 	fi
 }
 
