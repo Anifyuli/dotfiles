@@ -30,20 +30,20 @@ TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
     " #I#{?window_flags,#F, }  #W "
 )
 
-# Left side: session (red), pwd (orange), branch (yellow), env (green) - Gruvbox rainbow
+# Left side: session (red), pwd (orange), branch (yellow), env (green) - Muted rainbow
 TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-    "session_info 124 255"
-    "pwd_fish 166 255"
-    "vcs_branch 172 255"
-    "project_env 106 255"
+    "session_info 88 255"
+    "pwd_fish 130 255"
+    "vcs_branch 142 255"
+    "project_env 100 255"
 )
 
-# Right side: battery (aqua), time (blue), date (purple), hostname (magenta) - Gruvbox rainbow
+# Right side: battery (aqua), time (blue), date (purple), hostname (magenta) - Muted rainbow
 TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
-    "battery 72 255"
-    "time 66 255"
-    "date 132 255"
-    "hostname 175 255"
+    "battery 65 255"
+    "time 60 255"
+    "date 96 255"
+    "hostname 95 255"
 )
 
 # Custom formats

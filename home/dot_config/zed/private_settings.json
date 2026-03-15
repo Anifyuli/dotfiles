@@ -73,6 +73,7 @@
     "modern-icons": true,
   },
   "autosave": "on_focus_change",
+  "ensure_final_newline_on_save": false,
   "buffer_font_family": "BlexMono Nerd Font",
   "buffer_font_features": {
     "calt": true,
@@ -156,7 +157,7 @@
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light Soft",
-    "dark": "Gruvbox Dark Soft"
+    "dark": "Gruvbox Dark",
   },
   "ui_font_family": ".SystemUIFont",
   "ui_font_size": 16,
