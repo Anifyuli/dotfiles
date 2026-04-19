@@ -1,0 +1,16 @@
+Host github.com
+  IdentityFile ~/.ssh/github
+  AddKeysToAgent yes
+
+Host gitlab.com
+  HostName gitlab.com
+  User git
+  IdentityFile ~/.ssh/gitlab_sirojulanam
+
+Host {{ .sirojulanam_server_ip }}
+  HostName {{ .sirojulanam_server_ip }}
+  Port {{ .sirojulanam_server_port }}
+  User sirojulanam
+  IdentityFile ~/.ssh/id_rsa
+  ServerAliveInterval 60
+  ServerAliveCountMax 3

@@ -1,6 +1,16 @@
 [Global plugin config]
 manageProfile=false
 
+[SSH Config][{{ .sirojulanam_server_ip }}]
+hostname={{ .sirojulanam_server_ip }}
+identifier={{ .sirojulanam_server_ip }}
+importedFromSshConfig=true
+port={{ .sirojulanam_server_port }}
+profileName=
+sshkey=~/.ssh/id_rsa
+useSshConfig=true
+username=sirojulanam
+
 [SSH Config][github.com]
 hostname=github.com
 identifier=github.com

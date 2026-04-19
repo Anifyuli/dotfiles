@@ -1,0 +1,20 @@
+[
+  {
+    "label": "Run HTTP Request (at cursor)",
+    "command": "httpyac-run send --line $ZED_ROW --output short --output-failed body --bail \"$ZED_FILE\"",
+    "tags": ["httpyac"],
+    "reveal": "always",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true,
+    "save": "current"
+  },
+  {
+    "label": "Run All HTTP Requests",
+    "command": "httpyac-run send --all --output response --output-failed body \"$ZED_FILE\"",
+    "tags": ["httpyac"],
+    "reveal": "always",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true,
+    "save": "current"
+  }
+]
