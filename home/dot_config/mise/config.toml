@@ -5,6 +5,5 @@ yarn = "latest"
 uv   = "latest" 
 
 [settings]
-
-[env]
-_.path = ['{{config_root}}/node_modules/.bin']
+experimental = true
+node.corepack = true

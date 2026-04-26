@@ -28,3 +28,4 @@ end
 # mise shims
 set -gx PATH $HOME/.local/share/mise/shims $PATH
 
+/home/anifyuli/.local/bin/mise activate fish | source
