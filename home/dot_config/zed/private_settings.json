@@ -1,4 +1,13 @@
 {
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "confirm_quit": true,
   "language_models": {
     "ollama": {
@@ -33,6 +42,7 @@
     },
   },
   "agent": {
+    "dock": "right",
     "enabled": true,
     "default_profile": "ask",
     "default_model": {
@@ -55,8 +65,8 @@
     "trust_all_worktrees": true,
   },
   "title_bar": {
+    "show_branch_status_icon": true,
     "show_menus": true,
-    "show_branch_icon": true,
   },
   "auto_install_extensions": {
     "editorconfig": true,

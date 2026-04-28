@@ -1,8 +1,18 @@
 [tools]
-node = "latest"
-pnpm = "latest"
-yarn = "latest"
-uv   = "latest" 
+node  = "latest"
+pnpm  = "latest"
+yarn  = "latest"
+usage = "latest"
+uv    = "latest" 
+
+# npm packages
+"npm:@google/gemini-cli" = "latest"
+"npm:@nestjs/cli"     = "latest"
+"npm:prettier"        = "latest"
+"npm:httpyac"         = "latest"
+"npm:eas-cli"         = "latest"
+"npm:opencode-ai"     = "latest"
+"npm:@qwen-code/qwen-code" = "latest"
 
 [settings]
 experimental = true
