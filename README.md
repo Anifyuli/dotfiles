@@ -9,6 +9,7 @@ and text editor settings, designed to be reproducible across multiple machines.
 
 ### User-level configs
 
+- Btop
 - Fastfetch
 - Fish shell
 - Glow
