@@ -6,6 +6,9 @@ DefaultProfile=My Konsole (Fish).profile
 [General]
 ConfigVersion=1
 
+[KonsoleWindow]
+ShowWindowTitleOnTitleBar=true
+
 [MainWindow]
 ToolBarsMovable=Enabled
 

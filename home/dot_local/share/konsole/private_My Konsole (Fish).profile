@@ -3,6 +3,7 @@ ColorScheme=Gruvbox Material Hard Dark
 Font=BlexMono Nerd Font,12,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 
 [General]
+AlternatingBars=1
 Command=/bin/fish
 Icon=utilities-terminal
 LocalTabTitleFormat=%d : %n@%h
