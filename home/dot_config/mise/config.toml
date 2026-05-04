@@ -1,9 +1,10 @@
 [tools]
+aube  = "latest"
 node  = "latest"
 pnpm  = "latest"
 yarn  = "latest"
 usage = "latest"
-uv    = "latest" 
+uv    = "latest"
 
 # npm packages
 "npm:@google/gemini-cli" = "latest"
@@ -17,3 +18,4 @@ uv    = "latest"
 [settings]
 experimental = true
 node.corepack = true
+npm.package_manager = "aube"
