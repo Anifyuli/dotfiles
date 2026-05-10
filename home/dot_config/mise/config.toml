@@ -1,5 +1,4 @@
 [tools]
-aube  = "latest"
 node  = "latest"
 pnpm  = "latest"
 yarn  = "latest"
@@ -8,14 +7,15 @@ uv    = "latest"
 
 # npm packages
 "npm:@google/gemini-cli" = "latest"
-"npm:@nestjs/cli"     = "latest"
-"npm:prettier"        = "latest"
-"npm:httpyac"         = "latest"
-"npm:eas-cli"         = "latest"
-"npm:opencode-ai"     = "latest"
+"npm:@kilocode/cli"      = "latest"
+"npm:@nestjs/cli"        = "latest"
 "npm:@qwen-code/qwen-code" = "latest"
+"npm:prettier"           = "latest"
+"npm:httpyac"            = "latest"
+"npm:eas-cli"            = "latest"
+"npm:opencode-ai"        = "latest"
 
 [settings]
 experimental = true
 node.corepack = true
-npm.package_manager = "aube"
+npm.package_manager = "npm"

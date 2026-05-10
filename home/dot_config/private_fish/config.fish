@@ -1,5 +1,5 @@
 if status is-interactive
-
+  set -x SSH_AUTH_SOCK /run/user/(id -u)/ssh-agent.socket
 end
 
 # Ensure $HOME/.local/bin is in PATH

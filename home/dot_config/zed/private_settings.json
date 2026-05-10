@@ -15,11 +15,8 @@
     },
   },
   "agent_servers": {
-    "cline": {
-      "type": "registry",
-    },
-    "pi-acp": {
-      "type": "registry",
+    "kilo": {
+      "type": "registry"
     },
     "gemini": {
       "type": "registry",
@@ -62,8 +59,7 @@
   },
   "bottom_dock_layout": "full",
   "session": {
-    "trust_all_worktrees": true,
-  },
+    },
   "title_bar": {
     "show_branch_status_icon": true,
     "show_menus": true,
