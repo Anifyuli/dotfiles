@@ -1,12 +1,12 @@
 {
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "outline_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "confirm_quit": true,
   "language_models": {
@@ -16,7 +16,7 @@
   },
   "agent_servers": {
     "kilo": {
-      "type": "registry"
+      "type": "registry",
     },
     "gemini": {
       "type": "registry",
@@ -44,8 +44,8 @@
     "default_profile": "ask",
     "default_model": {
       "enable_thinking": true,
-      "provider": "ollama",
-      "model": "lfm2.5-thinking:latest",
+      "provider": "mistral",
+      "model": "mistral-medium-3.5",
     },
     "inline_assistant_model": {
       "provider": "mistral",
@@ -58,8 +58,7 @@
     "default_height": 270.0,
   },
   "bottom_dock_layout": "full",
-  "session": {
-    },
+  "session": {},
   "title_bar": {
     "show_branch_status_icon": true,
     "show_menus": true,
@@ -69,7 +68,7 @@
     "emmet": true,
     "gruvbox-material": true,
     "html": true,
-    "http": true,
+    "kulala-http": true,
     "modern-icons": true,
     "php": true,
     "react-snippets": true,
@@ -78,6 +77,9 @@
     "wakatime": true,
   },
   "autosave": "on_focus_change",
+  "show_completions_on_input": true,
+  "show_completion_documentation": true,
+  "show_edit_predictions": true,
   "ensure_final_newline_on_save": false,
   "buffer_font_family": "BlexMono Nerd Font",
   "buffer_font_features": {
@@ -114,18 +116,29 @@
     "HTML": {
       "formatter": "auto",
     },
+    "JavaScript": {
+      "language_servers": ["vstls"],
+    },
+    "kulala-http": {
+      "language_servers": ["kulala-ls"],
+      "formatter": {
+        "external": {
+          "command": "kulala-fmt",
+          "arguments": ["format", "--stdin", "{buffer_path}"],
+        },
+      },
+      "format_on_save": "on",
+    },
     "PHP": {
       "language_servers": ["eslint", "phpactor", "vscode-html-languageservice"],
       "formatter": "language_server",
       "format_on_save": "off",
     },
     "TSX": {
-      "language_servers": ["eslint", "tailwind-intellisense-css"],
+      "language_servers": ["eslint", "tailwind-intellisense-css", "vstls"],
     },
-    "HTTP": {
-      "completions": {
-        "words_min_length": 1,
-      },
+    "TypeScript": {
+      "language_servers": ["vstls"],
     },
   },
   "lsp": {
@@ -136,12 +149,26 @@
         },
       },
     },
+    "kulala-http": {
+      "binary": {
+        "path": "kulala-ls",
+        "arguments": ["--stdio"],
+      },
+    },
     "tailwindcss-language-server": {
       "settings": {
-        "classAttributes": ["class", "className", "ngClass", "styles"],
-        "classFunctions": ["cva", "cx"],
         "experimental": {
-          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"],
+          "classRegex": [
+            "\\.className\\s*[+]?=\\s*['\"]([^'\"]*)['\"]",
+            "\\.setAttributeNS\\(.*,\\s*['\"]class['\"],\\s*['\"]([^'\"]*)['\"]",
+            "\\.setAttribute\\(['\"]class['\"],\\s*['\"]([^'\"]*)['\"]",
+            "\\.classList\\.add\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.remove\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.toggle\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.contains\\(['\"]([^'\"]*)['\"]",
+            "\\.classList\\.replace\\(\\s*['\"]([^'\"]*)['\"]",
+            "\\.classList\\.replace\\([^,)]+,\\s*['\"]([^'\"]*)['\"]",
+          ],
         },
       },
     },
@@ -152,7 +179,60 @@
         },
       },
     },
+    "vtsls": {
+      "settings": {
+        "javascript": {
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "all",
+              "suppressWhenArgumentMatchesName": false,
+            },
+            "parameterTypes": {
+              "enabled": true,
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true,
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true,
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true,
+            },
+            "enumMemberValues": {
+              "enabled": true,
+            },
+          },
+        },
+        "typescript": {
+          "inlayHints": {
+            "parameterNames": {
+              "enabled": "all",
+              "suppressWhenArgumentMatchesName": false,
+            },
+            "parameterTypes": {
+              "enabled": true,
+            },
+            "variableTypes": {
+              "enabled": true,
+              "suppressWhenTypeMatchesName": true,
+            },
+            "propertyDeclarationTypes": {
+              "enabled": true,
+            },
+            "functionLikeReturnTypes": {
+              "enabled": true,
+            },
+            "enumMemberValues": {
+              "enabled": true,
+            },
+          },
+        },
+      },
+    },
   },
+  "code_lens": "on",
   "show_wrap_guides": true,
   "soft_wrap": "editor_width",
   "tab_bar": {
@@ -174,6 +254,16 @@
   "ui_font_weight": 800,
   "vim": {
     "use_system_clipboard": "on_yank",
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": true,
+      "delay_ms": 500,
+    },
+  },
+  "gutter": {
+    "line_numbers": true,
+    "folds": true,
   },
   "vim_mode": true,
   "which_key": {
