@@ -1,3 +1,4 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export KWIN_IM_SHOW_ALWAYS:1
 SETUVAR __fish_initialized:4300

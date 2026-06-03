@@ -1,12 +1,12 @@
 [tools]
-node  = "latest"
-pnpm  = "latest"
-yarn  = "latest"
-usage = "latest"
-uv    = "latest"
+gradle = "latest"
+node   = "latest"
+pnpm   = "latest"
+yarn   = "latest"
+usage  = "latest"
+uv     = "latest"
 
 # npm packages
-"npm:@google/gemini-cli"        = "latest"
 "npm:@kilocode/cli"             = "latest"
 "npm:@mistweaverco/kulala-ls"   = "latest"
 "npm:@mistweaverco/kulala-fmt"  = "latest"

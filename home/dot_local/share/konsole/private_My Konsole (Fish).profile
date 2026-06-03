@@ -1,5 +1,6 @@
 [Appearance]
 ColorScheme=Gruvbox Material Hard Dark
+EmojiFont=Noto Color Emoji,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
 Font=BlexMono Nerd Font,12,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 
 [General]
