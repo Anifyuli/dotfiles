@@ -3,6 +3,7 @@ gradle = "latest"
 node   = "latest"
 pnpm   = "latest"
 yarn   = "latest"
+pi     = "latest"
 usage  = "latest"
 uv     = "latest"
 

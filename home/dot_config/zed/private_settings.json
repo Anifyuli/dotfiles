@@ -56,9 +56,17 @@
   "restore_on_startup": "last_workspace",
   "terminal": {
     "default_height": 270.0,
+    "shell": {
+      "with_arguments": {
+        "program": "/usr/bin/fish",
+        "args": ["-c", "tmux new-session -A -s \"$(basename \"$PWD\")\""]
+      }
+    }
   },
   "bottom_dock_layout": "full",
-  "session": {},
+  "session": {
+    "trust_all_worktrees": true
+  },
   "title_bar": {
     "show_branch_status_icon": true,
     "show_menus": true,
