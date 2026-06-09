@@ -68,6 +68,7 @@ git push
         ├── debugger.lua    # DAP + DAP UI
         └── lang/
             ├── typescript.lua  # TS/JS DAP configs
+            ├── http.lua        # Kulala .http client
             ├── markdown.lua    # Marksman, markdownlint, preview
             ├── json.lua        # SchemaStore, jsonls
             └── tailwind.lua    # Tailwind LSP + color preview
@@ -118,6 +119,7 @@ git push
 | Lua | `lua_ls` | Neovim runtime library |
 | CSS/HTML | `cssls`, `html` | Tailwind color preview |
 | JSON | `jsonls` | SchemaStore validation |
+| HTTP/REST | `kulala` (built-in) | .http file execution, scripting, auth |
 | Markdown | `marksman` | markdownlint, inline render |
 | Tailwind CSS | `tailwindcss` | Colorizer in completion menu |
 
@@ -148,7 +150,7 @@ See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 
 Managed by [lazy.nvim](https://github.com/folke/lazy.nvim). Press `Space+L` or run `:Lazy` to manage.
 
-Key plugins: gruvbox, which-key, dashboard, neo-tree, cokeline, lualine, toggleterm, telescope, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, render-markdown.
+Key plugins: gruvbox, which-key, dashboard, neo-tree, cokeline, lualine, toggleterm, telescope, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, render-markdown, kulala.
 
 ## Notes
 
