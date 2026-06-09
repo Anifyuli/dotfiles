@@ -139,13 +139,22 @@
 | `Alt+.` | Normal, Terminal | Tutup semua terminal |
 | `Alt+,` | Normal, Terminal | Tutup terminal aktif |
 
+## API Client (Kulala)
+
+| Tombol | Fungsi |
+|--------|--------|
+| `Space+R S` | Kirim request di bawah kursor |
+| `Space+R A` | Kirim semua request di file |
+| `Space+R D` | Kirim request (debug mode) |
+| `Space+R B` | Buka scratchpad |
+
 ## Other
 
 | Tombol | Fungsi |
 |--------|--------|
 | `Space+E` | Toggle Neo-tree explorer |
 | `gc` | Toggle comment (Normal/Visual) |
-| `Space+C P` | Toggle markdown preview |
+| `Space+C P` | Toggle markdown render |
 | `Space+Q S` / `Space+Q D` / `Space+Q L` | Session save/restore |
 
 ## Commands
