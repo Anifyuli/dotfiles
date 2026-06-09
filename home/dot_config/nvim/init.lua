@@ -1,37 +1,20 @@
-vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
+-- Set leader key for use which-key
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
--- bootstrap lazy and all plugins
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+-- Lazy.nvim bootstraping
+require("core/lazy")
 
-if not vim.uv.fs_stat(lazypath) then
-  local repo = "https://github.com/folke/lazy.nvim.git"
-  vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
-end
+-- Lazy.nvim starter plugins
+require("core/lazy-plugins")
 
-vim.opt.rtp:prepend(lazypath)
+-- Options
+require("core/options")
 
-local lazy_config = require "configs.lazy"
+-- Keymaps
+require("core/keymaps")
 
--- load plugins
-require("lazy").setup({
-  {
-    "NvChad/NvChad",
-    lazy = false,
-    branch = "v2.5",
-    import = "nvchad.plugins",
-  },
+-- Autocommands
+require("core/autocmds")
 
-  { import = "plugins" },
-}, lazy_config)
-
--- load theme
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
-
-require "options"
-require "autocmds"
-
-vim.schedule(function()
-  require "mappings"
-end)
+-- vim: ts=2 sts=2 sw=2 et

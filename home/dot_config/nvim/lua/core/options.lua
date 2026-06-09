@@ -1,0 +1,36 @@
+-- Options
+
+local g = vim.g
+local opt = vim.opt
+
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
+
+opt.hlsearch = false
+opt.number = true
+opt.mouse = "a"
+opt.clipboard = "unnamedplus"
+opt.breakindent = true
+opt.undofile = true
+opt.undolevels = 10000
+opt.ignorecase = true
+opt.smartcase = true
+opt.signcolumn = "yes"
+opt.updatetime = 200
+opt.timeoutlen = 300
+opt.completeopt = "menuone,noselect"
+opt.termguicolors = true
+opt.confirm = true
+opt.cursorline = true
+opt.expandtab = true
+opt.shiftwidth = 2
+opt.smartindent = true
+opt.tabstop = 2
+opt.wrap = true
+
+opt.fillchars:append({ eob = " " })
+
+-- Auto adjust window size
+opt.equalalways = true
+
+-- vim: ts=2 sts=2 sw=2 et
