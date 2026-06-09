@@ -17,6 +17,7 @@ return {
       })
       wk.add({
         { "<leader>T", group = "[T]oggleterm" },
+        { "<leader>R", group = "[R]est Client" },
         { "<leader>b", group = "[B]uffers" },
         { "<leader>c", group = "[C]ode" },
         { "<leader>d", group = "[D]ocument" },
