@@ -19,6 +19,7 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    local wk = require("which-key")
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -48,6 +49,18 @@ return {
     end, { desc = 'Debug: Set Breakpoint' })
     vim.keymap.set('n', '<F4>', dap.run_to_cursor, { desc = 'Debug: Run to Cursor' })
     vim.keymap.set('n', '<leader>dr', dap.restart, { desc = 'Debug: Restart' })
+    wk.add({
+      { "<F5>", desc = "Debug: Start/Continue" },
+      { "<F1>", desc = "Debug: Step Into" },
+      { "<F2>", desc = "Debug: Step Over" },
+      { "<F3>", desc = "Debug: Step Out" },
+      { "<leader>b", desc = "Debug: Toggle Breakpoint" },
+      { "<leader>B", desc = "Debug: Set Breakpoint" },
+      { "<F4>", desc = "Debug: Run to Cursor" },
+      { "<leader>dr", desc = "Debug: Restart" },
+      { "<leader>dd", desc = "Debug: pick and run" },
+      { "<F12>", desc = "Debug: Toggle UI" },
+    })
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|

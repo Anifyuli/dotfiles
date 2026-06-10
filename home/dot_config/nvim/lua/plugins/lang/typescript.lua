@@ -45,6 +45,8 @@ return {
       vim.keymap.set("n", "<leader>dd", function()
         require("pickers.task-picker").pick_and_run()
       end, { desc = "Debug: pick and run" })
+      local wk = require("which-key")
+      wk.add({ { "<leader>dd", desc = "Debug: pick and run" } })
     end,
   },
 }
