@@ -42,23 +42,29 @@
 | `Space+C D` | Line diagnostics (float) |
 | `[d` / `]d` | Diagnostic sebelumnya/selanjutnya |
 
-## Telescope (Search)
+## Picker (Snacks)
 
 | Tombol | Fungsi |
 |--------|--------|
-| `Space+S F` | Cari file |
-| `Space+S G` | Live grep |
-| `Space+S W` | Cari kata sekarang |
-| `Space+S H` | Cari help |
-| `Space+S K` | Cari keymap |
-| `Space+S D` | Cari diagnostic |
-| `Space+S S` | Pilih Telescope |
-| `Space+S R` | Resume |
-| `Space+S .` | File terbaru |
-| `Space+S N` | File config Neovim |
-| `Space+S /` | Cari di file terbuka |
-| `Space+Space` | Cari buffer |
-| `Space+/` | Fuzzily cari di buffer aktif |
+| `Space+ff` | Cari file |
+| `Space+fg` | Cari file git |
+| `Space+fr` | File terbaru |
+| `Space+fc` | File config Neovim |
+| `Space+sg` atau `Space+/` | Live grep |
+| `Space+sw` | Cari kata sekarang (N/X) |
+| `Space+sh` | Cari help |
+| `Space+sk` | Cari keymap |
+| `Space+ss` | LSP Symbols |
+| `Space+sd` | Cari diagnostic |
+| `Space+sr` | Resume |
+| `Space+s.` | File terbaru |
+| `Space+sn` | File config Neovim |
+| `Space+s/` | Cari di file terbuka |
+| `Space+sm` | Icons |
+| `Space+sM` | Man pages |
+| `Space+,` | Buffer |
+| `Space+<space>` | Smart find |
+| `Space+:` | Command history |
 
 ## Trouble (Error/Warning Dialog)
 
@@ -152,7 +158,8 @@
 
 | Tombol | Fungsi |
 |--------|--------|
-| `Space+E` | Toggle Neo-tree explorer |
+| `Space+e` | Toggle file explorer (Snacks) |
+| `Space+lg` | LazyGit (floating) |
 | `gc` | Toggle comment (Normal/Visual) |
 | `Space+C P` | Toggle markdown render |
 | `Space+Q S` / `Space+Q D` / `Space+Q L` | Session save/restore |
