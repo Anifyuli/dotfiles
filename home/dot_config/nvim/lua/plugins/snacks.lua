@@ -41,11 +41,11 @@ return {
           return {
             align = "center",
             text = {
-              { " 󱐋 ", hl = "header" },
+              { " 󱐋   ", hl = "header" },
               { total .. "ms total  |  ", hl = "footer" },
-              { " ", hl = "header" },
-              { init .. "ms nvim  |  ", hl = "footer" },
-              { "󱩾 ", hl = "header" },
+              { "   ", hl = "header" },
+              { init .. "ms  |  ", hl = "footer" },
+              { "󱩾   ", hl = "header" },
               { plugins .. "ms plugins (" .. stats.loaded .. "/" .. stats.count .. ")", hl = "footer" },
             },
           }
