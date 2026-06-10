@@ -54,15 +54,34 @@ return {
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          file_ignore_patterns = {
+            "node_modules",
+            ".git/",
+            "dist/",
+            "build/",
+            ".next/",
+            ".expo/",
+            "target/",
+            "__pycache__/",
+            "%.lock",
+          },
+          layout_config = {
+            width = 0.8,
+            height = 0.9,
+            preview_width = 0.6,
+          },
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
+            no_ignore = false,
+          },
+          live_grep = {
+            additional_args = function() return { "--no-ignore-vcs" } end,
+          },
+          buffers = {},
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -109,6 +128,11 @@ return {
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Browse media files with chafa block-symbol preview (Neovim terminal-safe)
+      vim.keymap.set('n', '<leader>sm', function()
+        require('media-picker').pick_images {}
+      end, { desc = '[S]earch [M]edia files' })
     end,
   },
 }
