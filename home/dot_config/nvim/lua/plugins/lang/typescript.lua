@@ -43,7 +43,7 @@ return {
       end
 
       vim.keymap.set("n", "<leader>dd", function()
-        require("task-picker").pick_and_run()
+        require("pickers.task-picker").pick_and_run()
       end, { desc = "Debug: pick and run" })
     end,
   },

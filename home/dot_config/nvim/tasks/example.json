@@ -1,0 +1,17 @@
+[
+  {
+    "label": "dev",
+    "command": "npm run dev",
+    "description": "Start dev server"
+  },
+  {
+    "label": "build",
+    "command": "npm run build",
+    "description": "Build project"
+  },
+  {
+    "label": "test",
+    "command": "npm run test",
+    "description": "Run tests"
+  }
+]
