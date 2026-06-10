@@ -4,8 +4,16 @@ return {
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   keys = {
-    "<F5>", "<F1>", "<F2>", "<F3>", "<F4>", "<F12>",
-    "<leader>b", "<leader>B", "<leader>dr", "<leader>dd",
+    { "<F5>", desc = "Debug: Start/Continue" },
+    { "<F1>", desc = "Debug: Step Into" },
+    { "<F2>", desc = "Debug: Step Over" },
+    { "<F3>", desc = "Debug: Step Out" },
+    { "<F4>", desc = "Debug: Run to Cursor" },
+    { "<F12>", desc = "Debug: Toggle UI" },
+    { "<leader>b", desc = "Debug: Toggle Breakpoint" },
+    { "<leader>B", desc = "Debug: Set Breakpoint" },
+    { "<leader>dr", desc = "Debug: Restart" },
+    { "<leader>dd", desc = "Debug: pick and run" },
   },
   dependencies = {
     -- Creates a beautiful debugger UI
