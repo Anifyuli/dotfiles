@@ -268,7 +268,19 @@ function M.pick_and_run()
     end,
     prompt = " ",
     title = "Debug",
-    preview = false,
+    preview = function(ctx)
+      local item = ctx.item
+      if not item then return end
+      local lines = {}
+      table.insert(lines, "Source: " .. (item.source or "?"))
+      table.insert(lines, "Task:   " .. (item.label or "?"))
+      if item.description and item.description ~= "" then
+        table.insert(lines, "")
+        table.insert(lines, item.description)
+      end
+      ctx.preview:reset()
+      ctx.preview:set_lines(lines)
+    end,
   })
 end
 
