@@ -131,7 +131,7 @@ return {
     vim.api.nvim_set_hl(0, "SnacksDashboardDesc", { link = "Normal" })
     vim.api.nvim_set_hl(0, "SnacksDashboardKey", { link = "Keyword" })
     vim.api.nvim_set_hl(0, "SnacksDashboardIcon", { link = "String" })
-    vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { link = "NonText" })
+    vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { link = "String" })
     vim.api.nvim_set_hl(0, "SnacksDashboardFooter", { link = "Normal" })
   end,
   keys = {
