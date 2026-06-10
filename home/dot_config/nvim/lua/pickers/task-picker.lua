@@ -268,6 +268,7 @@ function M.pick_and_run()
     end,
     prompt = " ",
     title = "Debug",
+    preview = false,
   })
 end
 
