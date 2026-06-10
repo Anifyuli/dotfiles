@@ -29,7 +29,6 @@ return {
         filetypes = {
           'help',
           'dashboard',
-          'neo-tree',
           'Trouble',
           'trouble',
           'lazy',

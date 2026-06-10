@@ -31,70 +31,7 @@ return {
     end,
   },
 
-  {
-    -- Neo-tree, File manager
-    "nvim-neo-tree/neo-tree.nvim",
-    cmd = "Neotree",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-      "MunifTanjim/nui.nvim",
-    },
-    opts = {
-      close_if_last_window = true,
-      sources = { "filesystem", "buffers", "git_status", "document_symbols" },
-      source_selector = {
-        winbar = true,
-        content_layout = "center",
-        tabs_layout = "equal",
-        sources = {
-          { source = "filesystem", display_name = " File" },
-          { source = "buffers", display_name = "󰈙 Bufs" },
-          { source = "git_status", display_name = " Git" },
-        },
-      },
-      event_handlers = {
-        {
-          event = "neo_tree_window_after_open",
-          handler = function()
-            vim.cmd("horizontal wincmd =")
-          end,
-        },
-        {
-          event = "neo_tree_window_after_close",
-          handler = function()
-            vim.cmd("horizontal wincmd =")
-          end,
-        },
-      },
-      default_component_configs = {
-        indent = { indent_size = 2, padding = 0 },
-        icon = { folder_closed = "▸", folder_open = "▾" },
-      },
-      window = {
-        width = 30,
-      },
-      filesystem = {
-        bind_to_cwd = true,
-        follow_current_file = { enabled = true },
-        use_libuv_file_watcher = true,
-        filtered_items = {
-          always_show = { ".config" },
-          visible = true,
-          hide_dotfiles = false,
-          hide_gitignored = false,
-          hide_by_name = {
-            -- '.DS_Store',
-            -- 'thumbs.db',
-            -- 'node_modules',
-          },
-          never_show = {},
-        },
-        hijack_netrw_behavior = "open_current",
-      },
-    },
-  },
+
   {
     -- Cokeline, buffer list
     "willothy/nvim-cokeline",
@@ -239,23 +176,6 @@ return {
             return buffer.is_focused and get_hex("ColorColumn", "fg")
           end,
         },
-        sidebar = {
-          filetype = { "neo-tree" },
-          components = {
-            {
-              text = " 󰙅 File Explorer ",
-              fg = function()
-                return get_hex("NeoTreeNormal", "fg")
-              end,
-              bg = function()
-                return get_hex("NeoTreeNormal", "bg")
-              end,
-              bold = text_bold,
-              delete_buffer_on_left_click = false,
-              on_click = nil,
-            },
-          },
-        },
         components = {
           components.separator,
           components.space,
@@ -372,7 +292,7 @@ return {
         inactive_sections = {
           lualine_x = { sexy_location },
         },
-        extensions = { "lazy", "mason", "nvim-tree", "neo-tree", "nvim-dap-ui", "toggleterm" },
+        extensions = { "lazy", "mason", "nvim-tree", "nvim-dap-ui", "toggleterm" },
       })
     end,
   },
