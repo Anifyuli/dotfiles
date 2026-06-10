@@ -13,6 +13,7 @@ and text editor settings, designed to be reproducible across multiple machines.
 - Fastfetch
 - Fish shell
 - Glow
+- Kitty
 - Konsole
 - Mise
 - Neovim
