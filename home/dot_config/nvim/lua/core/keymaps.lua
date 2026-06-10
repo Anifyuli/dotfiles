@@ -47,11 +47,6 @@ end, { noremap = true, desc = "Exit from (active) Toggleterm" })
 -- Adjust delete keymaps
 map("v", "<Del>", [["_d]], { desc = "Blackhole delete" })
 
--- Toggle Neotree
-map("n", "<leader>e", function()
-  require("neo-tree.command").execute({ toggle = true, dir = vim.fn.getcwd() })
-end, { desc = "Neotree [E]xplorer" })
-
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })

@@ -2,6 +2,7 @@ return {
   {
     -- Which-key
     "folke/which-key.nvim",
+    event = "VeryLazy",
     config = function()
       local wk = require("which-key")
       wk.setup({
@@ -33,6 +34,7 @@ return {
   {
     -- Neo-tree, File manager
     "nvim-neo-tree/neo-tree.nvim",
+    cmd = "Neotree",
     branch = "v3.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -342,6 +344,7 @@ return {
   {
     -- Statusline
     "nvim-lualine/lualine.nvim",
+    event = "UIEnter",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       local sexy_location = function()

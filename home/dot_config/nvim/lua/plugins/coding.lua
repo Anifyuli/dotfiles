@@ -3,17 +3,19 @@ return {
     -- Add Wakatime to tracking coding activities in Neovim
     'wakatime/vim-wakatime',
     enabled = true,
+    event = "VeryLazy",
   },
   -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  { 'tpope/vim-fugitive', cmd = "G" },
+  { 'tpope/vim-rhubarb', event = "VeryLazy" },
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  { 'tpope/vim-sleuth', event = { "BufReadPre", "BufNewFile" } },
 
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
+    event = "VeryLazy",
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
     main = 'ibl',
@@ -45,6 +47,7 @@ return {
   {
     -- Git signs
     'lewis6991/gitsigns.nvim',
+    event = { "BufReadPre", "BufNewFile" },
     opts = {
       signs = {
         add = { text = '+' },

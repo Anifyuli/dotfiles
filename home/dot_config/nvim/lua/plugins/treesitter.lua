@@ -4,6 +4,7 @@ return {
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
+  event = { "BufReadPre", "BufNewFile" },
   build = ':TSUpdate',
   init = function()
     local ok, parsers = pcall(require, 'nvim-treesitter.parsers')
