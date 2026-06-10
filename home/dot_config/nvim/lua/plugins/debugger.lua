@@ -5,7 +5,7 @@ return {
   -- NOTE: And you can specify dependencies as well
   keys = {
     "<F5>", "<F1>", "<F2>", "<F3>", "<F4>", "<F12>",
-    "<leader>b", "<leader>B", "<leader>dr",
+    "<leader>b", "<leader>B", "<leader>dr", "<leader>dd",
   },
   dependencies = {
     -- Creates a beautiful debugger UI
