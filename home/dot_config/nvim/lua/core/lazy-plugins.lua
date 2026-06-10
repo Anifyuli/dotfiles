@@ -4,9 +4,6 @@ require('lazy').setup({
       'ellisonleao/gruvbox.nvim',
       lazy = false,
       priority = 1000,
-      config = function()
-        vim.cmd([[colorscheme gruvbox]])
-      end,
       opts = {
         italic = {
           strings = true,
@@ -15,6 +12,28 @@ require('lazy').setup({
           operations = false,
         },
         contrast = 'soft',
+      },
+      config = function(_, opts)
+        local function detect_background()
+          local f = io.open(vim.fn.expand("~/.config/kdeglobals"), "r")
+          if not f then return end
+          local content = f:read("*a")
+          f:close()
+          local scheme = content:match("ColorScheme%s*=%s*([^\n]+)")
+          if scheme then
+            vim.o.background = scheme:lower():find("dark") and "dark" or "light"
+          end
+        end
+        detect_background()
+        require("gruvbox").setup(opts)
+        vim.cmd.colorscheme("gruvbox")
+      end,
+      -- stylua: ignore
+      keys = {
+        { "<leader>uT", function()
+          vim.o.background = vim.o.background == "dark" and "light" or "dark"
+          vim.cmd.colorscheme("gruvbox")
+        end, desc = "Toggle theme (dark/light)" },
       },
     },
     -- Import plugins configurations

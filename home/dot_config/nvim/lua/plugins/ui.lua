@@ -23,6 +23,7 @@ return {
         { "<leader>d", group = "󰈬 [D]ocument" },
         { "<leader>r", group = " [R]ename" },
         { "<leader>s", group = " [S]earch" },
+        { "<leader>u", group = "󰖔 [U]I" },
         { "<leader>w", group = "󰱶 [W]orkspace" },
         { "<leader>x", group = "󰒡 Dia[n]ostics" },
       })
