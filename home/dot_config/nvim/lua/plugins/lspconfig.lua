@@ -48,6 +48,10 @@ return {
       require('which-key').add({
         { "<leader>", group = "VISUAL <leader>", mode = "v" },
         { "<leader>h", group = "Git [H]unk", mode = "v" },
+        { "<leader>rn", desc = "LSP: Rename" },
+        { "<leader>ca", desc = "LSP: Code Action" },
+        { "K", desc = "LSP: Hover" },
+        { "gD", desc = "LSP: Declaration" },
       })
 
       -- LSP configs with custom settings

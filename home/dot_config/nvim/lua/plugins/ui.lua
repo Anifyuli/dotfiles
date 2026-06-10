@@ -22,6 +22,7 @@ return {
         { "<leader>b", group = "󰈙 [B]uffers" },
         { "<leader>c", group = " [C]ode" },
         { "<leader>d", group = "󰈬 [D]ocument" },
+        { "<leader>h", group = " [H]unk" },
         { "<leader>r", group = " [R]ename" },
         { "<leader>s", group = " [S]earch" },
         { "<leader>u", group = "󰖔 [U]I" },
