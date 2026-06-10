@@ -42,6 +42,7 @@ return {
   {
     -- 'gc' to comment visual regions/lines
     'numToStr/Comment.nvim',
+    event = { "BufReadPre", "BufNewFile" },
     opts = {}
   },
   {
@@ -152,7 +153,7 @@ return {
   {
     -- Highlight todo, notes, etc in comments
     'folke/todo-comments.nvim',
-    event = 'VimEnter',
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false }
   },
