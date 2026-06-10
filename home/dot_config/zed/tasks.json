@@ -6,7 +6,7 @@
     "reveal": "always",
     "use_new_terminal": false,
     "allow_concurrent_runs": true,
-    "save": "current"
+    "save": "current",
   },
   {
     "label": "Run All HTTP Requests",
@@ -15,6 +15,6 @@
     "reveal": "always",
     "use_new_terminal": false,
     "allow_concurrent_runs": true,
-    "save": "current"
-  }
+    "save": "current",
+  },
 ]
