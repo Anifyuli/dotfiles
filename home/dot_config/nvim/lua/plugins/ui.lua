@@ -224,6 +224,7 @@ return {
   },
   -- Library used by other plugins
   { "nvim-lua/plenary.nvim", lazy = true },
+  { "echasnovski/mini.icons", lazy = true, event = "VeryLazy", opts = {} },
   {
     -- Icons
     "nvim-tree/nvim-web-devicons",

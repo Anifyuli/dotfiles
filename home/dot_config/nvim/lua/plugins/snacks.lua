@@ -92,6 +92,9 @@ return {
         grep = { hidden = true },
         explorer = {
           hidden = true,
+          ignored = true,
+          git_status_open = true,
+          diagnostics_open = true,
           exclude = {
             "node_modules",
             "target",
@@ -112,6 +115,19 @@ return {
             "coverage",
             ".pytest_cache",
           },
+        },
+      },
+      icons = {
+        files = {
+          enabled = true,
+          dir = " ",
+          dir_open = " ",
+          file = " ",
+        },
+        tree = {
+          vertical = "┊ ",
+          middle   = "├──",
+          last     = "└──",
         },
       },
       layout = {
@@ -140,7 +156,14 @@ return {
     { "<leader>,",       function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>/",       function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>:",       function() Snacks.picker.command_history() end, desc = "Command History" },
-    { "<leader>e",       function() Snacks.explorer() end, desc = "File Explorer" },
+    { "<leader>e",       function()
+        local explorer = Snacks.picker.get({ source = "explorer" })[1]
+        if explorer then
+          explorer:close()
+        else
+          Snacks.explorer.reveal()
+        end
+      end, desc = "File Explorer (Toggle)" },
     { "<leader>ff",      function() Snacks.picker.files() end, desc = "Find Files" },
     { "<leader>fg",      function() Snacks.picker.git_files() end, desc = "Find Git Files" },
     { "<leader>fr",      function() Snacks.picker.recent() end, desc = "Recent" },
