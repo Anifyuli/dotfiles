@@ -2,17 +2,29 @@
 
 A modular Neovim configuration based on [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim), focused on TypeScript/JavaScript/React development with full IDE features.
 
-Managed by [Chezmoi](https://chezmoi.io).
+This config lives inside a [Chezmoi](https://chezmoi.io) dotfiles repo at [github.com/Anifyuli/dotfiles](https://github.com/Anifyuli/dotfiles).
 
 ## Requirements
 
 - Neovim **>= 0.12.x** (uses `vim.uv`, `vim.lsp.config`, and other recent APIs)
 - **Nerd Font** (for icons in which-key, statusline, bufferline, etc.)
 - `git`, `make`, `unzip`, C compiler (for Treesitter and native plugins)
-- **Optional:** `lazygit`, `ripgrep`, `fd`, `jq` (for enhanced telescope search and Hurl)
-- **Chezmoi** (for dotfile management)
+- **Optional:** `lazygit`, `ripgrep`, `fd`, `jq` (for enhanced search and Hurl)
 
-## Quick Start
+## Clone without Chezmoi
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse \
+  https://github.com/Anifyuli/dotfiles.git /tmp/dotfiles
+cd /tmp/dotfiles
+git sparse-checkout set home/dot_config/nvim
+mkdir -p ~/.config/
+cp -r home/dot_config/nvim ~/.config/nvim/
+rm -rf /tmp/dotfiles
+nvim
+```
+
+## Quick Start (with Chezmoi)
 
 ```bash
 # Install Chezmoi
@@ -61,7 +73,7 @@ git push
     │   └── autocmds.lua      # Autocommands
     └── plugins/
         ├── ui.lua          # Dashboard, which-key, neo-tree, lualine, toggleterm, bufferline
-        ├── telescope.lua   # Fuzzy finder
+        ├── snacks.lua      # Fuzzy finder, git (lazygit), image, explorer
         ├── treesitter.lua  # Treesitter + textobjects
         ├── lspconfig.lua   # LSP, Mason, formatters
         ├── coding.lua      # Git, comments, completion, indent, trouble
@@ -138,9 +150,10 @@ See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 
 | Key | Action |
 |-----|--------|
-| `Space+S F` | Find files |
-| `Space+S G` | Live grep |
-| `Space+E` | File explorer |
+| `Space+ff` | Find files |
+| `Space+/` or `Space+sg` | Live grep |
+| `Space+e` | File explorer |
+| `Space+lg` | LazyGit |
 | `Space+T H/V/F` | Terminal (horiz/vert/float) |
 | `F5` | Debug continue |
 | `gd` | Go to definition |
@@ -150,7 +163,7 @@ See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 
 Managed by [lazy.nvim](https://github.com/folke/lazy.nvim). Press `Space+L` or run `:Lazy` to manage.
 
-Key plugins: gruvbox, which-key, dashboard, neo-tree, cokeline, lualine, toggleterm, telescope, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, render-markdown, kulala.
+Key plugins: gruvbox, which-key, snacks.nvim, neo-tree, cokeline, lualine, toggleterm, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, render-markdown, kulala.
 
 ## Notes
 
