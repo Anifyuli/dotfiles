@@ -134,9 +134,9 @@ return {
           local name = vim.fn.fnamemodify(root, ":t")
           local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
           if branch == "" then
-            return name
+            return " " .. name
           end
-          return name .. " (" .. branch .. ")"
+          return " " .. name .. " (" .. branch .. ")"
         end)
         _git_info.text = ok and result or ""
         return _git_info.text
@@ -342,7 +342,7 @@ return {
         },
         left = {
           {
-            title = "File Explorer",
+            title = " File Explorer",
             ft = "neo-tree",
             filter = function(buf)
               return vim.b[buf].neo_tree_source == "filesystem"
