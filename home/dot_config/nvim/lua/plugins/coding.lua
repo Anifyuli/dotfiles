@@ -142,8 +142,8 @@ return {
   {
     -- Web server, like Live Server for VS Code
     "ray-x/web-tools.nvim",
-    enable = true,
-    lazy = false,
+    enabled = true,
+    ft = { "http", "hurl" },
     opts = {
       keymaps = {
         rename = nil,         -- by default use same setup of lspconfig
