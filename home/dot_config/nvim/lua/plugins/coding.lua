@@ -280,6 +280,10 @@ return {
     config = function(_, opts)
       require("nvim-autopairs").setup(opts)
 
+      -- Disable < > pair biar nggak konflik sama nvim-ts-autotag
+      local Rule = require("nvim-autopairs.rule")
+      require("nvim-autopairs").remove_rule("<")
+
       -- setup cmp for autopairs
       local cmp_autopairs = require "nvim-autopairs.completion.cmp"
       require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())

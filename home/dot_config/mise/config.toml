@@ -18,7 +18,6 @@ uv     = "latest"
 "npm:eas-cli"                   = "latest"
 "npm:pi-acp"                    = "latest"
 "npm:opencode-ai"               = "latest"
-"npm:tree-sitter-cli"           = "latest"
 
 [settings]
 experimental = true
