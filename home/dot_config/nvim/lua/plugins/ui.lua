@@ -221,6 +221,17 @@ return {
       local sexy_location = function()
         return "Ln %l Col %c"
       end
+      local lsp_status = function()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        if #clients == 0 then
+          return ""
+        end
+        local names = {}
+        for _, c in ipairs(clients) do
+          table.insert(names, c.name)
+        end
+        return " " .. table.concat(names, " ")
+      end
       require("lualine").setup({
         options = {
           icons_enabled = true,
@@ -239,6 +250,7 @@ return {
         },
         sections = {
           lualine_a = { { "mode", icon = "" } },
+          lualine_b = { lsp_status },
           lualine_c = { { "filename", icon = "󰈮" } },
           lualine_z = { sexy_location },
         },
