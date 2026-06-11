@@ -116,6 +116,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "UIEnter",
     config = function()
+      vim.api.nvim_set_hl(0, "TabLineFill", { bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg })
       require("bufferline").setup({
         options = {
           mode = "buffers",
@@ -125,6 +126,7 @@ return {
               text = "󰙅",
               text_align = "left",
               highlight = "Directory",
+              separator = false,
             },
           },
           buffer_close_icon = "",
@@ -132,7 +134,7 @@ return {
           close_icon = "",
           show_buffer_close_icons = true,
           show_close_icon = false,
-          separator_style = "thick",
+          separator_style = "thin",
           always_show_bufferline = true,
           diagnostics = "nvim_lsp",
           diagnostics_indicator = function(count, level, diagnostics_dict, context)
