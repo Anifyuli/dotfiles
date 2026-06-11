@@ -45,6 +45,7 @@ return {
           'markdown_inline',
           'php',
           'regex',
+          'rpm',
           'toml',
           'tsx',
           'typescript',
