@@ -298,6 +298,17 @@ return {
           enable_close_on_slash = true,
         },
       })
+      -- Auto attach ke buffer saat ini karena event Filetype
+      -- udah kepanggil duluan sebelum config plugin jalan
+      vim.schedule(function()
+        local ft = vim.bo.ft
+        if ft ~= "" then
+          local TagConfigs = require("nvim-ts-autotag.config.init")
+          if TagConfigs:get(ft) then
+            require("nvim-ts-autotag.internal").attach(0)
+          end
+        end
+      end)
     end,
   },
 }
