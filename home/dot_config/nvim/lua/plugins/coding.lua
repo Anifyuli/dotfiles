@@ -284,5 +284,11 @@ return {
       local cmp_autopairs = require "nvim-autopairs.completion.cmp"
       require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
-  }
+  },
+  {
+    -- Auto close HTML/JSX tags via treesitter
+    'windwp/nvim-ts-autotag',
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {},
+  },
 }
