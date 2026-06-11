@@ -8,6 +8,7 @@ g.loaded_netrwPlugin = 1
 
 opt.hlsearch = false
 opt.number = true
+opt.relativenumber = true
 opt.mouse = "a"
 opt.clipboard = "unnamedplus"
 opt.breakindent = true
