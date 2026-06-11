@@ -7,7 +7,7 @@ TMUX_POWERLINE_SEPARATOR_LEFT_THIN=" "
 TMUX_POWERLINE_SEPARATOR_RIGHT_BOLD=" "
 TMUX_POWERLINE_SEPARATOR_RIGHT_THIN=" "
 
-if grep -qi "ColorScheme.*Light" ~/.config/kdeglobals 2>/dev/null; then
+if grep -qi "LookAndFeelPackage.*light\|ColorScheme.*Light" ~/.config/kdeglobals 2>/dev/null; then
   # --- LIGHT MODE ---
   BG_SESSION=210  # light red
   BG_DIR=215      # light orange
