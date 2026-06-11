@@ -122,7 +122,7 @@ return {
           offsets = {
             {
               filetype = "neo-tree",
-              text = "󰙅 │",
+              text = "󰙅",
               text_align = "left",
               highlight = "Directory",
             },
@@ -132,7 +132,7 @@ return {
           close_icon = "",
           show_buffer_close_icons = true,
           show_close_icon = false,
-          separator_style = "thin",
+          separator_style = "thick",
           always_show_bufferline = true,
           diagnostics = "nvim_lsp",
           diagnostics_indicator = function(count, level, diagnostics_dict, context)
