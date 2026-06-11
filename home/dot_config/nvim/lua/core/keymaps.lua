@@ -22,23 +22,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- Set terminal keybinds using snacks.terminal
--- Bottom & right docked terminals run tmux (shared session)
--- Float terminal runs plain shell
+-- All terminals run tmux (shared session nvim-terminal)
 local tmx = { "tmux", "new-session", "-A", "-s", "nvim-terminal" }
 
 map("n", "<leader>Th", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
-end, { desc = "Terminal horizontal (tmux)" })
+end, { desc = "Terminal horizontal" })
 map("n", "<leader>Tv", function()
   require("snacks").terminal.toggle(tmx, { count = 2, win = { position = "right", width = 0.4 } })
-end, { desc = "Terminal vertical (tmux)" })
+end, { desc = "Terminal vertical" })
 map("n", "<leader>Tf", function()
-  require("snacks").terminal.toggle(nil, { count = 3, win = { position = "float" } })
+  require("snacks").terminal.toggle(tmx, { count = 3, win = { position = "float" } })
 end, { desc = "Terminal float" })
 map({ "n", "t" }, "<F7>", function()
-  require("snacks").terminal.toggle()
-end, { desc = "Show/hide Terminal" })
+  require("snacks").terminal.toggle(tmx)
+end, { desc = "Toggle terminal" })
 
 -- Remove terminal buffers
 map({ "n", "t" }, "<M-.>", function()

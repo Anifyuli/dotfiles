@@ -18,8 +18,9 @@ return {
       })
       wk.add({
         { "<leader>T", group = " [T]erminal" },
-        { "<leader>Th", desc = "Terminal horizontal (tmux)" },
-        { "<leader>Tv", desc = "Terminal vertical (tmux)" },
+        { "<leader>Th", desc = "Horizontal" },
+        { "<leader>Tv", desc = "Vertical" },
+        { "<leader>Tf", desc = "Float" },
         { "<leader>R", group = " [R]est Client" },
         { "<leader>b", group = "󰈙 [B]uffers" },
         { "<leader>c", group = " [C]ode" },
