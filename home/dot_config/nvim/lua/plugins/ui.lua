@@ -317,7 +317,6 @@ return {
         options = {
           icons_enabled = true,
           theme = "auto",
-          globalstatus = true,
           component_separators = "|",
           section_separators = "",
           disabled_filetypes = {
@@ -326,6 +325,7 @@ return {
               "snacks_picker_list",
               "snacks_picker_preview",
               "neo-tree",
+              "snacks_terminal",
             },
           },
         },

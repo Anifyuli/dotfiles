@@ -13,6 +13,6 @@ run_segment() {
 	local format="${TMUX_POWERLINE_SEG_TMUX_SESSION_INFO_FORMAT:-#S:#I:#P}"
 	local result
 	result=$(tmux display-message -p -F "$format")
-	echo " $result"
+	echo " $result"
 	return 0
 }
