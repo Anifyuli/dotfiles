@@ -125,7 +125,6 @@ return {
               text = "󰙅",
               text_align = "left",
               highlight = "Directory",
-              separator = false,
             },
           },
           buffer_close_icon = "",
