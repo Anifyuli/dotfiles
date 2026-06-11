@@ -182,6 +182,7 @@ return {
     { "<leader>D", function() Snacks.picker.lsp_type_definitions() end, desc = "Type Definition" },
     { "<leader>ds", function() Snacks.picker.lsp_symbols() end, desc = "Document Symbols" },
     { "<leader>ws", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Workspace Symbols" },
+    { "<leader>un", function() Snacks.notifier.show_history() end, desc = "Notification History" },
     { "<c-/>",      function() Snacks.terminal.toggle({ "tmux", "new-session", "-A", "-s", "nvim-terminal" }) end, desc = "Toggle Terminal" },
     { "<c-_>",      function() Snacks.terminal.toggle({ "tmux", "new-session", "-A", "-s", "nvim-terminal" }) end, desc = "which_key_ignore" },
   },
