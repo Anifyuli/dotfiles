@@ -56,6 +56,7 @@ return {
     indent = { enabled = true },
     input = { enabled = true },
     scope = { enabled = true },
+    terminal = { enabled = true },
     explorer = {
       enabled = true,
       replace_netrw = true,
@@ -192,5 +193,7 @@ return {
     { "<leader>D", function() Snacks.picker.lsp_type_definitions() end, desc = "Type Definition" },
     { "<leader>ds", function() Snacks.picker.lsp_symbols() end, desc = "Document Symbols" },
     { "<leader>ws", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Workspace Symbols" },
+    { "<c-/>",      function() Snacks.terminal.toggle() end, desc = "Toggle Terminal" },
+    { "<c-_>",      function() Snacks.terminal.toggle() end, desc = "which_key_ignore" },
   },
 }

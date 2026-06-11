@@ -22,27 +22,35 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- Set toggleterm keybind, adapted from AstroNvim config with small addition
-map("n", "<leader>Th", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", { desc = "ToggleTerm horizontal split" })
-map("n", "<leader>Tv", "<cmd>ToggleTerm size=40 direction=vertical<cr>", { desc = "ToggleTerm vertical split" })
-map("n", "<leader>Tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "ToggleTerm float" })
-map({ "n", "t" }, "<F7>", "<cmd>ToggleTerm<cr>", { desc = "Show/hide ToggleTerm" })
+-- Set terminal keybinds using snacks.terminal
+map("n", "<leader>Th", function()
+  require("snacks").terminal.toggle(nil, { count = 1, win = { position = "bottom" } })
+end, { desc = "Terminal horizontal split" })
+map("n", "<leader>Tv", function()
+  require("snacks").terminal.toggle(nil, { count = 2, win = { position = "right", width = 0.4 } })
+end, { desc = "Terminal vertical split" })
+map("n", "<leader>Tf", function()
+  require("snacks").terminal.toggle(nil, { count = 3, win = { position = "float" } })
+end, { desc = "Terminal float" })
+map({ "n", "t" }, "<F7>", function()
+  require("snacks").terminal.toggle()
+end, { desc = "Show/hide Terminal" })
 
--- Remove Toggleterm buffer
+-- Remove terminal buffers
 map({ "n", "t" }, "<M-.>", function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf].filetype == "toggleterm" then
+    if vim.bo[buf].buftype == "terminal" then
       vim.cmd.bdelete({ args = { buf }, bang = true })
     end
   end
-end, { desc = "Exit from (all) Toggleterm" })
+end, { desc = "Exit from (all) Terminals" })
 map({ "n", "t" }, "<M-,>", function()
   local current_buf = vim.api.nvim_get_current_buf()
-  local filetype = vim.bo[current_buf].filetype
-  if filetype == "toggleterm" then
+  local filetype = vim.bo[current_buf].buftype
+  if filetype == "terminal" then
     vim.cmd("bdelete! " .. current_buf)
   end
-end, { noremap = true, desc = "Exit from (active) Toggleterm" })
+end, { noremap = true, desc = "Exit from (active) Terminal" })
 
 -- Adjust delete keymaps
 map("v", "<Del>", [["_d]], { desc = "Blackhole delete" })

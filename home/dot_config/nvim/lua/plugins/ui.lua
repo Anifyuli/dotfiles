@@ -17,7 +17,7 @@ return {
         },
       })
       wk.add({
-        { "<leader>T", group = " [T]oggleterm" },
+        { "<leader>T", group = " [T]erminal" },
         { "<leader>R", group = " [R]est Client" },
         { "<leader>b", group = "󰈙 [B]uffers" },
         { "<leader>c", group = " [C]ode" },
@@ -294,56 +294,57 @@ return {
         inactive_sections = {
           lualine_x = { sexy_location },
         },
-        extensions = { "lazy", "mason", "nvim-tree", "nvim-dap-ui", "toggleterm" },
+        extensions = { "lazy", "mason", "nvim-tree", "nvim-dap-ui" },
       })
     end,
   },
   {
-    "akinsho/toggleterm.nvim",
-    cmd = { "ToggleTerm", "TermExec" },
-    version = "*",
-    config = function()
-      local map = vim.keymap.set
-
-      function _G.set_terminal_keymaps()
-        local opts = { buffer = 0 }
-        map("t", "<M-q>", [[<C-\><C-n>]], opts)
-        map("t", "jk", [[<C-\><C-n>]], opts)
-        map("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
-        map("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
-        map("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
-        map("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
-        map("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
+    -- Edgy: predictable window layout
+    "folke/edgy.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.opt.laststatus = 3
+      vim.opt.splitkeep = "screen"
+    end,
+    opts = function()
+      local function term_item(pos, size)
+        return {
+          ft = "snacks_terminal",
+          size = size,
+          title = "%{b:snacks_terminal.id}: %{b:term_title}",
+          filter = function(_buf, win)
+            return vim.w[win].snacks_win
+              and vim.w[win].snacks_win.position == pos
+              and vim.w[win].snacks_win.relative == "editor"
+              and not vim.w[win].trouble_preview
+          end,
+        }
       end
-
-      -- if you only want these mappings for toggle term use term://*toggleterm#* instead
-      vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
-
-      vim.api.nvim_set_hl(0, "TermWinBar", { bg = "#3c3836", fg = "#b8bb26" })
-      vim.api.nvim_set_hl(0, "TermWinBarNC", { bg = "#2e2a28", fg = "#665c54" })
-
-      require("toggleterm").setup({
-        size = 10,
-        highlights = {
-          Normal = { link = "Normal" },
-          NormalNC = { link = "NormalNC" },
-          NormalFloat = { link = "NormalFloat" },
-          FloatBorder = { link = "FloatBorder" },
-          StatusLine = { link = "StatusLine" },
-          StatusLineNC = { link = "StatusLineNC" },
-          WinBar = { link = "TermWinBar" },
-          WinBarNC = { link = "TermWinBarNC" },
+      return {
+        bottom = {
+          term_item("bottom", { height = 0.4 }),
+          "Trouble",
+          { ft = "qf", title = "QuickFix" },
         },
-        on_create = function()
-          vim.opt.foldcolumn = "0"
-          vim.opt.signcolumn = "no"
-          vim.wo.winbar = "   TERMINAL  "
-        end,
-        open_mapping = [[<F7>]],
-        float_opts = {
-          border = "curved",
+        right = {
+          term_item("right", { width = 0.4 }),
+          { ft = "dapui_breakpoints", title = "Breakpoints" },
+          { ft = "dapui_stacks", title = "Stacks" },
+          { ft = "dapui_watches", title = "Watches" },
+          { ft = "dapui_scopes", title = "Scopes" },
+          { ft = "dapui_console", title = "Console" },
         },
-      })
+        left = {
+          term_item("left", { width = 0.3 }),
+        },
+        top = {
+          term_item("top", { height = 0.3 }),
+        },
+        keys = {
+          ["]w"] = false, ["[w"] = false,
+          ["]W"] = false, ["[W"] = false,
+        },
+      }
     end,
   },
 }

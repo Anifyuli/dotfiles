@@ -34,6 +34,7 @@ return {
           'lazy',
           'mason',
           'toggleterm',
+          'snacks_terminal',
         },
       },
     },
