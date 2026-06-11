@@ -48,6 +48,7 @@ return {
         { "<leader>cf", desc = "Format" },
         { "<leader>cx", desc = "Toggle Quickfix" },
         { "<leader>cd", desc = "Line Diagnostics" },
+        { "<leader>cl", desc = "LSP Info" },
         -- [D]ebug
         { "<leader>d", group = "󰃤 [D]ebug" },
         { "<leader>dd", desc = "Pick & run" },

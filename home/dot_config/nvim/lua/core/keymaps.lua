@@ -146,6 +146,20 @@ end, { desc = 'Toggle Quickfix li[x]' })
 -- Show line diagnostics in floating window
 map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line [D]iagnostics' })
 
+-- LSP info
+map('n', '<leader>cl', function()
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients == 0 then
+    vim.notify('No LSP clients attached')
+    return
+  end
+  local info = {}
+  for _, c in ipairs(clients) do
+    table.insert(info, c.name)
+  end
+  vim.notify(table.concat(info, ', '), 'info', { title = 'LSP Info' })
+end, { desc = 'LSP [I]nfo' })
+
 -- User commands
 vim.api.nvim_create_user_command('Format', vim.lsp.buf.format, { desc = 'Format buffer using LSP' })
 vim.api.nvim_create_user_command('ToggleQuickfix', function()
