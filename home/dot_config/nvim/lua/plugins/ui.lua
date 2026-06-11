@@ -117,13 +117,44 @@ return {
     event = "UIEnter",
     config = function()
       vim.api.nvim_set_hl(0, "TabLineFill", { bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg })
+
+      local _git_info = { text = "", cwd = "" }
+      local function get_git_info()
+        local cwd = vim.fn.getcwd()
+        if _git_info.text ~= "" and _git_info.cwd == cwd then
+          return _git_info.text
+        end
+        _git_info.cwd = cwd
+        local ok, result = pcall(function()
+          local root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null")
+          if vim.v.shell_error ~= 0 then
+            return ""
+          end
+          root = root:gsub("\n", "")
+          local name = vim.fn.fnamemodify(root, ":t")
+          local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+          if branch == "" then
+            return name
+          end
+          return name .. " (" .. branch .. ")"
+        end)
+        _git_info.text = ok and result or ""
+        return _git_info.text
+      end
+
+      vim.api.nvim_create_autocmd("DirChanged", {
+        callback = function()
+          _git_info.text = ""
+        end,
+      })
+
       require("bufferline").setup({
         options = {
           mode = "buffers",
           offsets = {
             {
               filetype = "neo-tree",
-              text = "󰙅",
+              text = get_git_info,
               text_align = "left",
               highlight = "Directory",
               separator = false,
