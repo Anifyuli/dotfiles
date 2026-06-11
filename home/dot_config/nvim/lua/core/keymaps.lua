@@ -23,15 +23,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Set terminal keybinds using snacks.terminal
+-- Bottom & right docked terminals run tmux (shared session)
+-- Float terminal runs plain shell
+local tmx = { "tmux", "new-session", "-A", "-s", "nvim-terminal" }
+
 map("n", "<leader>Th", function()
-  require("snacks").terminal.toggle(
-    { "tmux", "new-session", "-A", "-s", "nvim-terminal" },
-    { count = 1, win = { position = "bottom" } }
-  )
+  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
 end, { desc = "Terminal horizontal (tmux)" })
 map("n", "<leader>Tv", function()
-  require("snacks").terminal.toggle(nil, { count = 2, win = { position = "right", width = 0.4 } })
-end, { desc = "Terminal vertical split" })
+  require("snacks").terminal.toggle(tmx, { count = 2, win = { position = "right", width = 0.4 } })
+end, { desc = "Terminal vertical (tmux)" })
 map("n", "<leader>Tf", function()
   require("snacks").terminal.toggle(nil, { count = 3, win = { position = "float" } })
 end, { desc = "Terminal float" })
