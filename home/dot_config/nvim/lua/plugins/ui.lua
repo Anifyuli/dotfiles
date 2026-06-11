@@ -129,7 +129,8 @@ return {
           local root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null")
           if vim.v.shell_error ~= 0 then
             local dir = vim.fn.fnamemodify(cwd, ":t")
-            return "󰙅 " .. dir
+            local parent = vim.fn.fnamemodify(cwd, ":h:t")
+            return " " .. parent .. "/" .. dir
           end
           root = root:gsub("\n", "")
           local name = vim.fn.fnamemodify(root, ":t")
