@@ -7,43 +7,43 @@ TMUX_POWERLINE_SEPARATOR_LEFT_THIN=" "
 TMUX_POWERLINE_SEPARATOR_RIGHT_BOLD=" "
 TMUX_POWERLINE_SEPARATOR_RIGHT_THIN=" "
 
-# Color palette - transparent background
+# Color palette - transparent background, adaptive foreground
 TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR='default'
-TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR='255'
+TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR='terminal'
 
 # Window status current (active window)
 TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-    "#[bg=237,fg=255]"
+    "#[bg=237,fg=terminal]"
     " #I#F  #W "
-    "#[bg=default,fg=255]"
+    "#[bg=default,fg=terminal]"
     " "
 )
 
 # Window status style
 TMUX_POWERLINE_WINDOW_STATUS_STYLE=(
-    "bg=237,fg=255"
+    "bg=237,fg=terminal"
 )
 
 # Window format
 TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
-    "#[bg=237,fg=255]"
+    "#[bg=237,fg=terminal]"
     " #I#{?window_flags,#F, }  #W "
 )
 
 # Left side: session (red), pwd (orange), branch (yellow), env (green) - Rainbow order
 TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-    "session_info 124 255"
-    "pwd_fish 166 255"
-    "vcs_branch 172 255"
-    "project_env 106 255"
+    "session_info 124 terminal"
+    "pwd_fish 166 terminal"
+    "vcs_branch 172 terminal"
+    "project_env 106 terminal"
 )
 
 # Right side: battery (aqua), time (blue), date (purple), hostname (magenta) - Rainbow order
 TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
-    "battery 72 255"
-    "time 66 255"
-    "date 132 255"
-    "hostname 175 255"
+    "battery 72 terminal"
+    "time 66 terminal"
+    "date 132 terminal"
+    "hostname 175 terminal"
 )
 
 # Custom formats
