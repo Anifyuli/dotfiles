@@ -75,7 +75,7 @@ autocmd({ "ColorScheme", "VimEnter" }, {
 -- Format on save
 autocmd("BufWritePre", {
   callback = function()
-    vim.lsp.buf.format { async = false }
+    pcall(vim.lsp.buf.format, { async = false })
   end
 })
 -- vim: ts=2 sts=2 sw=2 et
