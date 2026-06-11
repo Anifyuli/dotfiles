@@ -69,26 +69,8 @@ return {
     'lewis6991/gitsigns.nvim',
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local wk = require("which-key")
-      wk.add({
-        { "]c", desc = "Jump to next hunk", mode = { "n", "v" } },
-        { "[c", desc = "Jump to previous hunk", mode = { "n", "v" } },
-        { "<leader>hs", desc = "Stage hunk", mode = { "n", "v" } },
-        { "<leader>hr", desc = "Reset hunk", mode = { "n", "v" } },
-        { "<leader>hS", desc = "Stage buffer" },
-        { "<leader>hu", desc = "Undo stage hunk" },
-        { "<leader>hR", desc = "Reset buffer" },
-        { "<leader>hp", desc = "Preview hunk" },
-        { "<leader>hb", desc = "Blame line" },
-        { "<leader>hd", desc = "Diff against index" },
-        { "<leader>hD", desc = "Diff against last commit" },
-        { "<leader>tb", desc = "Toggle blame" },
-        { "<leader>td", desc = "Toggle deleted" },
-        { "ih", desc = "Select hunk", mode = { "o", "x" } },
-      })
       local gs = require('gitsigns')
 
-      -- Global normal-mode keymaps (available immediately, not buffer-local)
       vim.keymap.set('n', '<leader>hs', gs.stage_hunk, { desc = 'Stage hunk' })
       vim.keymap.set('n', '<leader>hr', gs.reset_hunk, { desc = 'Reset hunk' })
       vim.keymap.set('n', '<leader>hS', gs.stage_buffer, { desc = 'Stage buffer' })
