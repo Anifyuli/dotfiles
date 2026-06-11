@@ -122,7 +122,7 @@ return {
           offsets = {
             {
               filetype = "neo-tree",
-              text = "󰙅",
+              text = "󰙅 │",
               text_align = "left",
               highlight = "Directory",
             },
