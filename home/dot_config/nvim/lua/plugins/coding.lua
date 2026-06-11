@@ -47,6 +47,24 @@ return {
     opts = {}
   },
   {
+    -- Seamless navigation between Neovim windows & tmux panes
+    'christoomey/vim-tmux-navigator',
+    event = "VeryLazy",
+    cmd = { "TmuxNavigateLeft", "TmuxNavigateDown", "TmuxNavigateUp", "TmuxNavigateRight", "TmuxNavigatePrevious" },
+    init = function()
+      vim.g.tmux_navigator_no_wrap = 1
+    end,
+    config = function()
+      local wk = require("which-key")
+      wk.add({
+        { "<C-h>", desc = "Window left (tmux-aware)" },
+        { "<C-j>", desc = "Window down (tmux-aware)" },
+        { "<C-k>", desc = "Window up (tmux-aware)" },
+        { "<C-l>", desc = "Window right (tmux-aware)" },
+      })
+    end,
+  },
+  {
     -- Git signs
     'lewis6991/gitsigns.nvim',
     event = { "BufReadPre", "BufNewFile" },
