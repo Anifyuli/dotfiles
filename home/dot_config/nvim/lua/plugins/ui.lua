@@ -17,20 +17,94 @@ return {
         },
       })
       wk.add({
+        { "<leader><space>", desc = "Smart Find" },
+        { "<leader>,",       desc = "Buffers" },
+        { "<leader>/",       desc = "Grep" },
+        { "<leader>:",       desc = "Command History" },
+        { "<leader>e",       desc = "File Explorer" },
+        { "<leader>n",       desc = "New File" },
+        -- [T]erminal
         { "<leader>T", group = " [T]erminal" },
         { "<leader>Th", desc = "Horizontal" },
         { "<leader>Tv", desc = "Vertical" },
         { "<leader>Tf", desc = "Float" },
+        -- [R]est
         { "<leader>R", group = " [R]est Client" },
+        -- [F]ind
+        { "<leader>f", group = "󰈞 [F]ind" },
+        { "<leader>ff", desc = "Files" },
+        { "<leader>fg", desc = "Git Files" },
+        { "<leader>fr", desc = "Recent" },
+        { "<leader>fc", desc = "Config" },
+        -- [G]it
+        { "<leader>g", group = " [G]it" },
+        { "<leader>lg", desc = "LazyGit" },
+        -- [B]uffers
         { "<leader>b", group = "󰈙 [B]uffers" },
+        { "<leader>bd", desc = "Delete" },
+        { "<leader>bD", desc = "Delete (force)" },
+        -- [C]ode
         { "<leader>c", group = " [C]ode" },
-        { "<leader>d", group = "󰈬 [D]ocument" },
+        { "<leader>cf", desc = "Format" },
+        { "<leader>cx", desc = "Toggle Quickfix" },
+        { "<leader>cd", desc = "Line Diagnostics" },
+        -- [D]ebug
+        { "<leader>d", group = "󰃤 [D]ebug" },
+        { "<leader>dd", desc = "Pick & run" },
+        { "<leader>dr", desc = "Restart" },
+        { "<leader>ds", desc = "Document Symbols" },
+        -- [H]unk
         { "<leader>h", group = " [H]unk" },
+        { "<leader>hs", desc = "Stage hunk", mode = { "n", "v" } },
+        { "<leader>hr", desc = "Reset hunk", mode = { "n", "v" } },
+        { "<leader>hS", desc = "Stage buffer" },
+        { "<leader>hu", desc = "Undo stage" },
+        { "<leader>hR", desc = "Reset buffer" },
+        { "<leader>hp", desc = "Preview hunk" },
+        { "<leader>hb", desc = "Blame line" },
+        { "<leader>hd", desc = "Diff index" },
+        { "<leader>hD", desc = "Diff last commit" },
+        { "<leader>tb", desc = "Toggle blame" },
+        { "<leader>td", desc = "Toggle deleted" },
+        -- Sessions
+        { "<leader>q", group = " [S]ession" },
+        { "<leader>qs", desc = "Restore" },
+        { "<leader>ql", desc = "Restore last" },
+        { "<leader>qd", desc = "Don't save" },
+        -- [R]ename
         { "<leader>r", group = " [R]ename" },
+        -- [S]earch
         { "<leader>s", group = " [S]earch" },
+        { "<leader>sh", desc = "Help" },
+        { "<leader>sk", desc = "Keymaps" },
+        { "<leader>sg", desc = "Grep" },
+        { "<leader>sw", desc = "Grep word", mode = { "n", "x" } },
+        { "<leader>ss", desc = "LSP Symbols" },
+        { "<leader>sd", desc = "Diagnostics" },
+        { "<leader>sr", desc = "Resume" },
+        { "<leader>s.", desc = "Recent Files" },
+        { "<leader>s/", desc = "Grep buffers" },
+        { "<leader>sn", desc = "Config Files" },
+        { "<leader>sm", desc = "Icons" },
+        { "<leader>sM", desc = "Man Pages" },
+        -- [U]I
         { "<leader>u", group = "󰖔 [U]I" },
+        { "<leader>uT", desc = "Toggle theme" },
+        { "<leader>un", desc = "Notification History" },
+        -- [W]orkspace
         { "<leader>w", group = "󰱶 [W]orkspace" },
+        { "<leader>ws", desc = "Workspace Symbols" },
+        -- Dia[n]ostics
         { "<leader>x", group = "󰒡 Dia[n]ostics" },
+        { "<leader>xx", desc = "Trouble diagnostics" },
+        { "<leader>xw", desc = "Buffer diagnostics" },
+        { "<leader>xt", desc = "Todo" },
+        -- LSP (no prefix)
+        { "gd", desc = "Goto Definition" },
+        { "gD", desc = "Goto Declaration" },
+        { "gr", desc = "References", nowait = true },
+        { "gI", desc = "Goto Implementation" },
+        { "gy", desc = "Goto Type Definition" },
       })
     end,
   },
