@@ -118,33 +118,34 @@ return {
     config = function()
       vim.api.nvim_set_hl(0, "TabLineFill", { bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg })
 
-      local _git_info = { text = "", cwd = "" }
-      local function get_git_info()
+      local _offset_info = { text = "", cwd = "" }
+      local function get_offset_text()
         local cwd = vim.fn.getcwd()
-        if _git_info.text ~= "" and _git_info.cwd == cwd then
-          return _git_info.text
+        if _offset_info.text ~= "" and _offset_info.cwd == cwd then
+          return _offset_info.text
         end
-        _git_info.cwd = cwd
+        _offset_info.cwd = cwd
         local ok, result = pcall(function()
           local root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null")
           if vim.v.shell_error ~= 0 then
-            return ""
+            local dir = vim.fn.fnamemodify(cwd, ":t")
+            return "󰙅 " .. dir
           end
           root = root:gsub("\n", "")
           local name = vim.fn.fnamemodify(root, ":t")
           local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
           if branch == "" then
-            return " " .. name
+            return " " .. name
           end
-          return " " .. name .. " (" .. branch .. ")"
+          return " " .. name .. " (" .. branch .. ")"
         end)
-        _git_info.text = ok and result or ""
-        return _git_info.text
+        _offset_info.text = ok and result or ""
+        return _offset_info.text
       end
 
       vim.api.nvim_create_autocmd("DirChanged", {
         callback = function()
-          _git_info.text = ""
+          _offset_info.text = ""
         end,
       })
 
@@ -154,7 +155,7 @@ return {
           offsets = {
             {
               filetype = "neo-tree",
-              text = get_git_info,
+              text = get_offset_text,
               text_align = "left",
               highlight = "Directory",
               separator = false,
@@ -342,7 +343,7 @@ return {
         },
         left = {
           {
-            title = " File Explorer",
+            title = "󰙅 File Explorer",
             ft = "neo-tree",
             filter = function(buf)
               return vim.b[buf].neo_tree_source == "filesystem"
