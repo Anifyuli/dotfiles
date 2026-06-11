@@ -38,7 +38,7 @@ return {
         { "<leader>fc", desc = "Config" },
         -- [G]it
         { "<leader>g", group = " [G]it" },
-        { "<leader>lg", desc = "LazyGit" },
+        { "<leader>gl", desc = "LazyGit" },
         -- [B]uffers
         { "<leader>b", group = "󰈙 [B]uffers" },
         { "<leader>bd", desc = "Delete" },
