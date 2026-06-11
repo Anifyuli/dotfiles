@@ -22,18 +22,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- All terminals run tmux (shared session nvim-terminal)
-local tmx = { "tmux", "new-session", "-A", "-s", "nvim-terminal" }
+-- All terminals run tmux (shared session nvimterm)
+local tmx = { "tmux", "new-session", "-A", "-s", "nvimterm" }
 
 map("n", "<leader>Th", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
-end, { desc = "Terminal horizontal" })
+end, { desc = " Terminal horizontal" })
 map("n", "<leader>Tv", function()
-  require("snacks").terminal.toggle(tmx, { count = 2, win = { position = "right", width = 0.4 } })
-end, { desc = "Terminal vertical" })
+  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "right" } })
+end, { desc = " Terminal vertical" })
 map("n", "<leader>Tf", function()
-  require("snacks").terminal.toggle(tmx, { count = 3, win = { position = "float" } })
-end, { desc = "Terminal float" })
+  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "float" } })
+end, { desc = " Terminal float" })
 map({ "n", "t" }, "<F7>", function()
   require("snacks").terminal.toggle(tmx)
 end, { desc = "Toggle terminal" })
