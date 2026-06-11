@@ -298,6 +298,11 @@ return {
           enable_close_on_slash = true,
         },
       })
+      -- Attach ke buffer saat ini yang mungkin terlewat Filetype event
+      local TagConfigs = require("nvim-ts-autotag.config.init")
+      if TagConfigs:get(vim.bo.ft) then
+        require("nvim-ts-autotag.internal").attach(0)
+      end
     end,
   },
 }
