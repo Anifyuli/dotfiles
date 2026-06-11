@@ -57,11 +57,7 @@ return {
     input = { enabled = true },
     scope = { enabled = true },
     terminal = { enabled = true },
-    explorer = {
-      enabled = true,
-      replace_netrw = true,
-      trash = true,
-    },
+    explorer = { enabled = false },
     picker = {
       enabled = true,
       ui_select = true,
@@ -158,14 +154,7 @@ return {
     { "<leader>,",       function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>/",       function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>:",       function() Snacks.picker.command_history() end, desc = "Command History" },
-    { "<leader>e",       function()
-        local explorer = Snacks.picker.get({ source = "explorer" })[1]
-        if explorer then
-          explorer:close()
-        else
-          Snacks.explorer.reveal()
-        end
-      end, desc = "File Explorer (Toggle)" },
+    { "<leader>e",       "<cmd>Neotree toggle<cr>", desc = "File Explorer (Neo-tree)" },
     { "<leader>ff",      function() Snacks.picker.files() end, desc = "Find Files" },
     { "<leader>fg",      function() Snacks.picker.git_files() end, desc = "Find Git Files" },
     { "<leader>fr",      function() Snacks.picker.recent() end, desc = "Recent" },

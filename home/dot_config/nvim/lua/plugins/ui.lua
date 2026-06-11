@@ -162,10 +162,10 @@ return {
       require("cokeline").setup({
         buffers = {
           filter_valid = function(buffer)
-            return buffer.type ~= "terminal"
+            return buffer.type ~= "terminal" and buffer.filetype ~= "neo-tree"
           end,
           filter_visible = function(buffer)
-            return buffer.type ~= "terminal"
+            return buffer.type ~= "terminal" and buffer.filetype ~= "neo-tree"
           end,
           new_buffers_position = "next",
         },
@@ -284,6 +284,7 @@ return {
               "snacks_picker_input",
               "snacks_picker_list",
               "snacks_picker_preview",
+              "neo-tree",
             },
           },
         },
@@ -296,6 +297,70 @@ return {
           lualine_x = { sexy_location },
         },
         extensions = { "lazy", "mason", "nvim-tree", "nvim-dap-ui" },
+      })
+    end,
+  },
+  {
+    -- Neo-tree: persistent file explorer
+    "nvim-neo-tree/neo-tree.nvim",
+    event = "VeryLazy",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    cmd = "Neotree",
+    config = function()
+      vim.fn.sign_define("NeotreeGitAdded", { text = " ", texthl = "NeotreeGitAdded" })
+      vim.fn.sign_define("NeotreeGitModified", { text = " ", texthl = "NeotreeGitModified" })
+      vim.fn.sign_define("NeotreeGitDeleted", { text = " ", texthl = "NeotreeGitDeleted" })
+      vim.fn.sign_define("NeotreeGitUntracked", { text = " ", texthl = "NeotreeGitUntracked" })
+      vim.fn.sign_define("NeotreeGitIgnored", { text = " ", texthl = "NeotreeGitIgnored" })
+      vim.fn.sign_define("NeotreeGitConflict", { text = " ", texthl = "NeotreeGitConflict" })
+
+      require("neo-tree").setup({
+        close_if_last_window = true,
+        enable_git_status = true,
+        enable_diagnostics = true,
+        default_source = "filesystem",
+        sources = { "filesystem", "buffers", "git_status" },
+        filesystem = {
+          filtered_items = {
+            visible = true,
+            hide_dotfiles = false,
+            hide_gitignored = false,
+          },
+          follow_current_file = { enabled = true, leave_dirs_open = false },
+          use_libuv_file_watcher = true,
+        },
+        window = {
+          position = "left",
+          width = 30,
+          mappings = {
+            ["<space>"] = "none",
+            ["l"] = "open",
+            ["h"] = "close_node",
+            ["<cr>"] = "open",
+            ["o"] = "open",
+            ["z"] = "close_all_nodes",
+            ["S"] = "open_split",
+            ["s"] = "open_vsplit",
+            ["t"] = "open_tabnew",
+            ["w"] = "open_with_window_picker",
+            ["P"] = "toggle_preview",
+            ["C"] = "close_node",
+            ["r"] = "refresh",
+            ["a"] = "add",
+            ["d"] = "delete",
+            ["R"] = "rename",
+            ["c"] = "copy",
+            ["m"] = "move",
+            ["y"] = "copy_to_clipboard",
+            ["D"] = "duplicate",
+            ["q"] = "close_window",
+          },
+        },
       })
     end,
   },
@@ -336,11 +401,16 @@ return {
           { ft = "dapui_console", title = "Console" },
         },
         left = {
-          term_item("left", { width = 0.3 }),
+          {
+            title = "File Explorer",
+            ft = "neo-tree",
+            filter = function(buf)
+              return vim.b[buf].neo_tree_source == "filesystem"
+            end,
+            size = { width = 30 },
+          },
         },
-        top = {
-          term_item("top", { height = 0.3 }),
-        },
+        top = {},
         keys = {
           ["]w"] = false, ["[w"] = false,
           ["]W"] = false, ["[W"] = false,

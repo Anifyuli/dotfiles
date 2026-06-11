@@ -35,6 +35,7 @@ return {
           'mason',
           'toggleterm',
           'snacks_terminal',
+          'neo-tree',
         },
       },
     },
