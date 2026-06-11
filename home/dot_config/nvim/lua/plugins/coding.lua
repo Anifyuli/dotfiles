@@ -288,7 +288,16 @@ return {
   {
     -- Auto close HTML/JSX tags via treesitter
     'windwp/nvim-ts-autotag',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
     event = { "BufReadPre", "BufNewFile" },
-    opts = {},
+    config = function()
+      require("nvim-ts-autotag").setup({
+        opts = {
+          enable_close = true,
+          enable_rename = true,
+          enable_close_on_slash = true,
+        },
+      })
+    end,
   },
 }
