@@ -75,7 +75,13 @@ autocmd({ "ColorScheme", "VimEnter" }, {
 -- Format on save
 autocmd("BufWritePre", {
   callback = function()
-    pcall(vim.lsp.buf.format, { async = false })
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    for _, client in ipairs(clients) do
+      if client.supports_method("textDocument/formatting") then
+        vim.lsp.buf.format({ async = false })
+        break
+      end
+    end
   end
 })
 -- vim: ts=2 sts=2 sw=2 et
