@@ -3,10 +3,6 @@
 -- Add mapping support with calling vim.keymap.set
 local map = vim.keymap.set
 
--- Remap for dealing with word wrap
-map('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-map('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
 -- Diagnostic keymaps
 map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 map('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
@@ -178,5 +174,9 @@ vim.api.nvim_create_user_command('LineDiagnostics', vim.diagnostic.open_float, {
 map('n', '<leader>dd', function()
   require('pickers.task-picker').pick_and_run()
 end, { desc = 'Debug: pick and run' })
+-- Reopen task terminal without restarting (e.g. after accidental edgy close)
+map('n', '<leader>dD', function()
+  require('pickers.task-picker').reopen_task_terminal()
+end, { desc = 'Debug: reopen task terminal' })
 
 -- vim: ts=2 sts=2 sw=2 et

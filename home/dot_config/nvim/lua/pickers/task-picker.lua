@@ -413,4 +413,19 @@ function M.pick_and_run()
   })
 end
 
+--- Reopen the last task terminal window without restarting the task.
+--- Useful when the terminal was accidentally closed via edgy's close button.
+function M.reopen_task_terminal()
+  for _, term in pairs(task_terms) do
+    local buf = (type(term) == "table" and term.buf) or term
+    if buf and vim.api.nvim_buf_is_valid(buf) then
+      if type(term) == "table" and term.show then
+        term:show():focus()
+      end
+      return
+    end
+  end
+  vim.notify("No running task terminal", vim.log.levels.INFO)
+end
+
 return M
