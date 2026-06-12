@@ -350,7 +350,7 @@ return {
     },
     config = function()
       require("neotest").setup({
-        adapters = { require("neotest_plenary") },
+        adapters = { require("neotest-plenary") },
       })
     end,
   },
