@@ -84,4 +84,18 @@ autocmd("BufWritePre", {
     end
   end
 })
+
+-- Auto-show diagnostic under cursor on hover (like VS Code error popup)
+autocmd("CursorHold", {
+  callback = function()
+    vim.diagnostic.open_float(nil, {
+      scope = "cursor",
+      focusable = false,
+      close_events = {
+        "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre",
+        "BufLeave", "WinScrolled",
+      },
+    })
+  end,
+})
 -- vim: ts=2 sts=2 sw=2 et
