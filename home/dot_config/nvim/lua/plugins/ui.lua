@@ -28,7 +28,7 @@ return {
         { "<leader>Th", desc = "Horizontal" },
         { "<leader>Tv", desc = "Vertical" },
         { "<leader>Tf", desc = "Float" },
-        -- [T]est (using <leader>z to avoid conflict with tb/td toggles)
+        -- [T]est
         { "<leader>z", group = "󰙨 [T]est" },
         { "<leader>zt", desc = "Run file" },
         { "<leader>zT", desc = "Run all" },
@@ -46,6 +46,8 @@ return {
         -- [G]it
         { "<leader>g", group = " [G]it" },
         { "<leader>gl", desc = "LazyGit" },
+        { "<leader>gtb", desc = "Toggle blame" },
+        { "<leader>gtd", desc = "Toggle deleted" },
         -- [B]uffers
         { "<leader>b", group = "󰈙 [B]uffers" },
         { "<leader>bd", desc = "Delete" },
@@ -72,8 +74,6 @@ return {
         { "<leader>hb", desc = "Blame line" },
         { "<leader>hd", desc = "Diff index" },
         { "<leader>hD", desc = "Diff last commit" },
-        { "<leader>tb", desc = "Toggle blame" },
-        { "<leader>td", desc = "Toggle deleted" },
         -- Sessions
         { "<leader>q", group = " [S]ession" },
         { "<leader>qs", desc = "Restore" },
