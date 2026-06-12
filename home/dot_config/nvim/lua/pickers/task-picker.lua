@@ -266,8 +266,13 @@ local function build_args_str(args)
 end
 
 local icons = {
-  mise = "⚡", npm = "", dap = "▸",
-  vscode = "", launch = "", zed = "", taskfile = "",
+  mise = "\u{f013}",    -- gear
+  npm = "\u{e71c}",     -- npm
+  dap = "\u{f188}",     -- bug
+  vscode = "\u{f121}",  -- code
+  launch = "\u{f135}",  -- rocket
+  zed = "\u{f120}",     -- terminal
+  taskfile = "\u{f15b}",-- file
 }
 
 local dap_run = function(label)
