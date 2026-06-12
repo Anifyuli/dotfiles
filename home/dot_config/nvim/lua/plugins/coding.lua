@@ -85,8 +85,8 @@ return {
       vim.keymap.set('n', '<leader>hD', function()
         gs.diffthis '~'
       end, { desc = 'Diff against last commit' })
-      vim.keymap.set('n', '<leader>gtb', gs.toggle_current_line_blame, { desc = 'Toggle blame' })
-      vim.keymap.set('n', '<leader>gtd', gs.toggle_deleted, { desc = 'Toggle deleted' })
+      vim.keymap.set('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'Toggle blame' })
+      vim.keymap.set('n', '<leader>td', gs.toggle_deleted, { desc = 'Toggle deleted' })
 
       require('gitsigns').setup({
         signs = {
