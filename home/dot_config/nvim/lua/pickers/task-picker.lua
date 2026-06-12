@@ -3,6 +3,51 @@ local M = {}
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object
 
+--- Cache for picker results to speed up <leader>dd.
+--- Keyed by cwd, invalidated on file save / DirChanged / TTL expiry.
+local picker_cache = {}
+local PICKER_CACHE_TTL_MS = 30000 -- 30 seconds
+
+local function cache_key()
+  return vim.fn.getcwd()
+end
+
+local function cache_get(key)
+  local entry = picker_cache[key]
+  if not entry then return nil end
+  if vim.uv.now() - entry.time > PICKER_CACHE_TTL_MS then
+    picker_cache[key] = nil
+    return nil
+  end
+  return entry.results
+end
+
+local function cache_set(key, results)
+  picker_cache[key] = { results = results, time = vim.uv.now() }
+end
+
+local function invalidate_picker_cache()
+  picker_cache = {}
+end
+
+-- Invalidate cache when relevant files are saved or cwd changes
+local cache_augroup = vim.api.nvim_create_augroup("TaskPickerCache", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = cache_augroup,
+  pattern = {
+    "package.json",
+    "mise.toml",
+    ".vscode/tasks.json",
+    ".vscode/launch.json",
+    ".zed/debug.json",
+  },
+  callback = invalidate_picker_cache,
+})
+vim.api.nvim_create_autocmd("DirChanged", {
+  group = cache_augroup,
+  callback = invalidate_picker_cache,
+})
+
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
@@ -220,6 +265,11 @@ local function build_args_str(args)
   return ""
 end
 
+local icons = {
+  mise = "⚡", npm = "", dap = "▸",
+  vscode = "", launch = "", zed = "", taskfile = "",
+}
+
 local dap_run = function(label)
   local dap = require("dap")
   return function()
@@ -231,9 +281,64 @@ local dap_run = function(label)
   end
 end
 
+local function show_picker(results)
+  Snacks.picker.pick({
+    items = results,
+    format = function(item)
+      local icon = icons[item.source] or "▸"
+      local parts = {
+        { icon .. " ", "String" },
+        { item.label,  "Normal" },
+      }
+      if item.description and item.description ~= "" then
+        table.insert(parts, { "  " .. item.description, "Comment" })
+      end
+      return parts
+    end,
+    confirm = function(picker, item)
+      picker:close()
+      if item and item.run then item.run() end
+    end,
+    prompt = " ",
+    title = "Tasks",
+    preview = function(ctx)
+      local item = ctx.item
+      if not item then return end
+      local lines = {
+        "Source : " .. (item.source or "?"),
+        "Task   : " .. (item.label or "?"),
+      }
+      if item.dir and item.dir ~= "" and item.dir ~= "." then
+        table.insert(lines, "Dir    : " .. item.dir)
+      end
+      if item.description and item.description ~= "" then
+        table.insert(lines, "")
+        table.insert(lines, item.description)
+      end
+      ctx.preview:reset()
+      ctx.preview:set_lines(lines)
+    end,
+  })
+end
+
 function M.pick_and_run()
   local dap = require("dap")
   local dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
+
+  local key = cache_key()
+  local cached = cache_get(key)
+  if cached then
+    -- still re-check dap — adapters may load/unload between invocations
+    local need_dap = dap_ok or nil
+    local items = {}
+    for _, item in ipairs(cached) do
+      if item.source ~= "dap" or need_dap then
+        table.insert(items, item)
+      end
+    end
+    show_picker(items)
+    return
+  end
 
   local results = {}
 
@@ -369,48 +474,8 @@ function M.pick_and_run()
     table.insert(results, entry)
   end
 
-  local icons = {
-    mise = "⚡", npm = "", dap = "▸",
-    vscode = "", launch = "", zed = "", taskfile = "",
-  }
-
-  Snacks.picker.pick({
-    items = results,
-    format = function(item)
-      local icon = icons[item.source] or "▸"
-      local parts = {
-        { icon .. " ", "String" },
-        { item.label,  "Normal" },
-      }
-      if item.description and item.description ~= "" then
-        table.insert(parts, { "  " .. item.description, "Comment" })
-      end
-      return parts
-    end,
-    confirm = function(picker, item)
-      picker:close()
-      if item and item.run then item.run() end
-    end,
-    prompt = " ",
-    title = "Tasks",
-    preview = function(ctx)
-      local item = ctx.item
-      if not item then return end
-      local lines = {
-        "Source : " .. (item.source or "?"),
-        "Task   : " .. (item.label or "?"),
-      }
-      if item.dir and item.dir ~= "" and item.dir ~= "." then
-        table.insert(lines, "Dir    : " .. item.dir)
-      end
-      if item.description and item.description ~= "" then
-        table.insert(lines, "")
-        table.insert(lines, item.description)
-      end
-      ctx.preview:reset()
-      ctx.preview:set_lines(lines)
-    end,
-  })
+  cache_set(key, results)
+  show_picker(results)
 end
 
 --- Reopen the last task terminal window without restarting the task.
