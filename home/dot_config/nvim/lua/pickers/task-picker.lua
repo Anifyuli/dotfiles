@@ -1,28 +1,18 @@
 local M = {}
 
 local exclude_labels = { "install", "deploy" }
-local term_counts = {} -- task_id -> numeric count
-local term_next = 10
-
-local function should_include(label)
-  if type(label) ~= "string" or label == "" then return false end
-  for _, pattern in ipairs(exclude_labels) do
-    if label:lower():find(pattern, 1, true) then
-      return false
-    end
-  end
-  return true
-end
-
-local function read_json(path)
-  local f = io.open(path, "r")
-  if not f then return nil end
-  local ok, data = pcall(vim.json.decode, f:read("*a"))
-  f:close()
-  return ok and data or nil
-end
+local task_bufs = {}
 
 local function run_in_term(cmd, cwd, task_id)
+  -- close previous terminal for this task before creating a new one
+  if task_id and task_bufs[task_id] then
+    local old = task_bufs[task_id]
+    if old and vim.api.nvim_buf_is_valid(old) then
+      pcall(vim.cmd, "silent! bd! " .. old)
+    end
+    task_bufs[task_id] = nil
+  end
+
   local shell = vim.o.shell or "sh"
   local opts = {
     win = { position = "bottom", height = 0.3 },
@@ -31,39 +21,18 @@ local function run_in_term(cmd, cwd, task_id)
     opts.cwd = cwd
   end
 
-  local term, created
-
-  if task_id then
-    local c = term_counts[task_id]
-    if not c then
-      term_next = term_next + 1
-      c = term_next
-      term_counts[task_id] = c
-    end
-    opts.count = c
-    term, created = Snacks.terminal.get(shell, opts)
-  else
-    local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
-    term, created = Snacks.terminal.get({ shell, "-c", tagged }, opts)
-  end
-
-  if not term then return end
-  term:show():focus()
-
-  local buf = term.buf
-  if not buf or not vim.api.nvim_buf_is_valid(buf) then return end
-
-  local prefix = ""
+  local full_cmd = cmd
   if cwd and cwd ~= "" and cwd ~= "." then
-    prefix = "cd " .. vim.fn.shellescape(cwd) .. " && "
+    full_cmd = "cd " .. vim.fn.shellescape(cwd) .. " && " .. cmd
   end
 
-  if created then
-    vim.fn.term_sendkeys(buf, prefix .. cmd .. "\n")
-  else
-    vim.fn.term_sendkeys(buf, "\x03")
-    vim.wait(200, function() return false end)
-    vim.fn.term_sendkeys(buf, prefix .. cmd .. "\n")
+  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
+  local term = Snacks.terminal.get({ shell, "-c", full_cmd .. " #" .. tag }, opts)
+  if term then
+    term:show():focus()
+    if task_id and term.buf then
+      task_bufs[task_id] = term.buf
+    end
   end
 end
 
