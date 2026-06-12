@@ -3,51 +3,6 @@ local M = {}
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object
 
---- Cache for picker results to speed up <leader>dd.
---- Keyed by cwd, invalidated on file save / DirChanged / TTL expiry.
-local picker_cache = {}
-local PICKER_CACHE_TTL_MS = 30000 -- 30 seconds
-
-local function cache_key()
-  return vim.fn.getcwd()
-end
-
-local function cache_get(key)
-  local entry = picker_cache[key]
-  if not entry then return nil end
-  if vim.uv.now() - entry.time > PICKER_CACHE_TTL_MS then
-    picker_cache[key] = nil
-    return nil
-  end
-  return entry.results
-end
-
-local function cache_set(key, results)
-  picker_cache[key] = { results = results, time = vim.uv.now() }
-end
-
-local function invalidate_picker_cache()
-  picker_cache = {}
-end
-
--- Invalidate cache when relevant files are saved or cwd changes
-local cache_augroup = vim.api.nvim_create_augroup("TaskPickerCache", { clear = true })
-vim.api.nvim_create_autocmd("BufWritePost", {
-  group = cache_augroup,
-  pattern = {
-    "package.json",
-    "mise.toml",
-    ".vscode/tasks.json",
-    ".vscode/launch.json",
-    ".zed/debug.json",
-  },
-  callback = invalidate_picker_cache,
-})
-vim.api.nvim_create_autocmd("DirChanged", {
-  group = cache_augroup,
-  callback = invalidate_picker_cache,
-})
-
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
@@ -327,22 +282,10 @@ local function show_picker(results)
 end
 
 function M.pick_and_run()
-  local dap = require("dap")
-  local dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
-
-  local key = cache_key()
-  local cached = cache_get(key)
-  if cached then
-    -- still re-check dap — adapters may load/unload between invocations
-    local need_dap = dap_ok or nil
-    local items = {}
-    for _, item in ipairs(cached) do
-      if item.source ~= "dap" or need_dap then
-        table.insert(items, item)
-      end
-    end
-    show_picker(items)
-    return
+  local dap_ok = false
+  if package.loaded.dap then
+    local dap = require("dap")
+    dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
   end
 
   local results = {}
@@ -479,7 +422,6 @@ function M.pick_and_run()
     table.insert(results, entry)
   end
 
-  cache_set(key, results)
   show_picker(results)
 end
 
