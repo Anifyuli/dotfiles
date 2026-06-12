@@ -22,8 +22,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- All terminals run tmux (shared session nvimterm)
-local tmx = { "tmux", "new-session", "-A", "-s", "nvimterm" }
+-- All terminals run tmux (shared session nvimterm, fresh on every toggle)
+local tmx = { "sh", "-c", "tmux kill-session -t nvimterm 2>/dev/null; exec tmux new-session -s nvimterm" }
 
 map("n", "<leader>Th", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
@@ -78,24 +78,24 @@ map("n", "<leader>n", "<cmd>enew<cr>", { desc = "[N]ew File" })
 map("n", "<C-s>", "<cmd>w!<cr>", { desc = "Force write" })
 map("n", "<C-q>", "<cmd>qa!<cr>", { desc = "Force quit" })
 
--- cokeline keymaps
-map("n", "<S-Tab>", "<Plug>(cokeline-focus-prev)", { silent = true, desc = "Focus prev buffer" })
-map("n", "<Tab>", "<Plug>(cokeline-focus-next)", { silent = true, desc = "Focus next buffer" })
-map("n", "<Leader>bp", "<Plug>(cokeline-switch-prev)", { silent = true, desc = "Switch pre buffer" })
-map("n", "<Leader>bn", "<Plug>(cokeline-switch-next)", { silent = true, desc = "Switch next buffer" })
+-- Bufferline keymaps (ganti dari cokeline)
+map("n", "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Cycle prev buffer" })
+map("n", "<Tab>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Cycle next buffer" })
+map("n", "<Leader>bp", "<Cmd>BufferLineMovePrev<CR>", { silent = true, desc = "Move buffer prev" })
+map("n", "<Leader>bn", "<Cmd>BufferLineMoveNext<CR>", { silent = true, desc = "Move buffer next" })
 
 for i = 1, 9 do
   map(
     "n",
     ("<leader>b<F%s>"):format(i),
-    ("<Plug>(cokeline-focus-%s)"):format(i),
+    ("<Cmd>BufferLineGoToBuffer %s<CR>"):format(i),
     { silent = true, desc = "Buffer focus " .. i }
   )
   map(
     "n",
     ("<Leader>b%s"):format(i),
-    ("<Plug>(cokeline-switch-%s)"):format(i),
-    { silent = true, desc = "Buffer switch " .. i }
+    ("<Cmd>BufferLineMoveTo %s<CR>"):format(i),
+    { silent = true, desc = "Buffer move " .. i }
   )
 end
 
