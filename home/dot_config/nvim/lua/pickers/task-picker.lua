@@ -1,14 +1,12 @@
 local M = {}
 
 local exclude_labels = { "install", "deploy" }
-local task_bufs = {}
+local task_terms = {} -- task_id -> Snacks terminal object
 
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
-    if label:lower():find(pattern, 1, true) then
-      return false
-    end
+    if label:lower():find(pattern, 1, true) then return false end
   end
   return true
 end
@@ -21,35 +19,62 @@ local function read_json(path)
   return ok and data or nil
 end
 
+---Stop and delete a task terminal cleanly, without triggering exit notifications.
+local function stop_task_term(term)
+  local buf = (type(term) == "table" and term.buf) or (type(term) == "number" and term)
+  if not (buf and vim.api.nvim_buf_is_valid(buf)) then return end
+  local ok, chan = pcall(function() return vim.bo[buf].channel end)
+  if ok and type(chan) == "number" and chan > 0 then
+    pcall(vim.fn.jobstop, chan)
+  end
+  pcall(vim.api.nvim_buf_delete, buf, { force = true })
+end
+
 local function run_in_term(cmd, cwd, task_id)
-  -- close previous terminal for this task before creating a new one
-  if task_id and task_bufs[task_id] then
-    local old = task_bufs[task_id]
-    if old and vim.api.nvim_buf_is_valid(old) then
-      pcall(vim.cmd, "silent! bd! " .. old)
+  local buf = nil
+  if task_id and task_terms[task_id] then
+    buf = (type(task_terms[task_id]) == "table" and task_terms[task_id].buf) or task_terms[task_id]
+  end
+
+  if buf and vim.api.nvim_buf_is_valid(buf) then
+    local win = vim.fn.bufwinnr(buf)
+    if win and win > 0 then
+      -- window is visible → user wants to rerun → kill and recreate
+      stop_task_term(task_terms[task_id])
+      task_terms[task_id] = nil
+    else
+      -- window closed but buffer alive → just reopen (e.g. accidental edgy close)
+      local term = task_terms[task_id]
+      if type(term) == "table" and term.show then
+        term:show():focus()
+      end
+      return
     end
-    task_bufs[task_id] = nil
   end
 
   local shell = vim.o.shell or "sh"
+  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
+
   local opts = {
+    -- `interactive = false`:
+    --   • Opens in normal mode (scroll/copy without <C-\><C-n>)
+    --   • Suppresses Snacks' "Terminal exited with code -1" notification on kill
+    --     (the job exit is visible in the terminal buffer output instead)
+    interactive = false,
     win = { position = "bottom", height = 0.3 },
   }
   if cwd and cwd ~= "" and cwd ~= "." then
-    opts.cwd = cwd
+    opts.cwd = cwd -- Snacks sets initial directory via termopen; no "cd &&" prefix needed
   end
 
-  local full_cmd = cmd
-  if cwd and cwd ~= "" and cwd ~= "." then
-    full_cmd = "cd " .. vim.fn.shellescape(cwd) .. " && " .. cmd
-  end
-
-  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
-  local term = Snacks.terminal.get({ shell, "-c", full_cmd .. " #" .. tag }, opts)
+  -- The `#tag` suffix is a shell comment: it makes each run's command string
+  -- unique so Snacks.terminal.get() always creates a fresh terminal instance
+  -- instead of returning a cached one from a previous run.
+  local term = Snacks.terminal.get({ shell, "-c", cmd .. " #" .. tag }, opts)
   if term then
     term:show():focus()
-    if task_id and term.buf then
-      task_bufs[task_id] = term.buf
+    if task_id then
+      task_terms[task_id] = term
     end
   end
 end
@@ -61,7 +86,10 @@ local function collect_package_scripts()
   for name, script in pairs(data.scripts) do
     local label = type(name) == "string" and name or ""
     if should_include(label) then
-      table.insert(results, { source = "npm", label = label, text = label, description = type(script) == "string" and script or "" })
+      table.insert(results, {
+        source = "npm", label = label, text = label,
+        description = type(script) == "string" and script or "",
+      })
     end
   end
   table.sort(results, function(a, b) return a.label < b.label end)
@@ -81,35 +109,28 @@ local function collect_mise_tasks()
     handle:close()
   end
 
-  if #dirs == 0 then
-    dirs = { "." }
-  else
-    table.sort(dirs)
-  end
+  if #dirs == 0 then dirs = { "." } else table.sort(dirs) end
 
   for _, dir in ipairs(dirs) do
-    if dir and dir ~= "" then
-      local cmd = "cd " .. vim.fn.shellescape(dir) .. " && mise tasks ls --json 2>/dev/null"
-      local handle = io.popen(cmd)
-      if handle then
-        local output = handle:read("*a")
-        handle:close()
+    if dir ~= "" then
+      local h = io.popen("cd " .. vim.fn.shellescape(dir) .. " && mise tasks ls --json 2>/dev/null")
+      if h then
+        local output = h:read("*a")
+        h:close()
         if output ~= "" then
           local ok, tasks = pcall(vim.json.decode, output)
           if ok and tasks then
-          for _, t in ipairs(tasks) do
-            local label = type(t.name) == "string" and t.name or ""
-            if should_include(label) and not seen[label] then
-              seen[label] = true
-              table.insert(results, {
-                source = "mise",
-                label = label,
-                text = label,
-                description = type(t.description) == "string" and t.description or "",
-                dir = dir,
-              })
+            for _, t in ipairs(tasks) do
+              local label = type(t.name) == "string" and t.name or ""
+              if should_include(label) and not seen[label] then
+                seen[label] = true
+                table.insert(results, {
+                  source = "mise", label = label, text = label,
+                  description = type(t.description) == "string" and t.description or "",
+                  dir = dir,
+                })
+              end
             end
-          end
           end
         end
       end
@@ -126,7 +147,11 @@ local function collect_vscode_tasks()
   for _, t in ipairs(data.tasks) do
     local label = type(t.label) == "string" and t.label or ""
     if should_include(label) then
-      table.insert(results, { source = "vscode", label = label, text = label, description = type(t.detail) == "string" and t.detail or type(t.command) == "string" and t.command or "" })
+      table.insert(results, {
+        source = "vscode", label = label, text = label,
+        description = (type(t.detail) == "string" and t.detail)
+          or (type(t.command) == "string" and t.command) or "",
+      })
     end
   end
   return results
@@ -134,29 +159,31 @@ end
 
 local function collect_launch_configs()
   local data = read_json(".vscode/launch.json")
-  if data and data.configurations then
-    local results = {}
-    for _, c in ipairs(data.configurations) do
-      local label = type(c.name) == "string" and c.name or ""
-      if should_include(label) then
-        table.insert(results, { source = "launch", label = label, text = label, description = type(c.type) == "string" and c.type or "" })
-      end
+  if not (data and data.configurations) then return {} end
+  local results = {}
+  for _, c in ipairs(data.configurations) do
+    local label = type(c.name) == "string" and c.name or ""
+    if should_include(label) then
+      table.insert(results, {
+        source = "launch", label = label, text = label,
+        description = type(c.type) == "string" and c.type or "",
+      })
     end
-    return results
   end
-  return {}
+  return results
 end
 
 local function collect_zed_debug()
   local data = read_json(".zed/debug.json")
-  if not data or type(data) ~= "table" then return {} end
+  if not (data and type(data) == "table" and data[1]) then return {} end
   local results = {}
-  if data[1] then
-    for _, c in ipairs(data) do
-      local label = type(c.label) == "string" and c.label or ""
-      if should_include(label) then
-        table.insert(results, { source = "zed", label = label, text = label, description = type(c.type) == "string" and c.type or "" })
-      end
+  for _, c in ipairs(data) do
+    local label = type(c.label) == "string" and c.label or ""
+    if should_include(label) then
+      table.insert(results, {
+        source = "zed", label = label, text = label,
+        description = type(c.type) == "string" and c.type or "",
+      })
     end
   end
   return results
@@ -168,21 +195,39 @@ local function collect_taskfiles()
   if not ok then return {} end
   local entries = {}
   for _, f in ipairs(files) do
-    local path = taskdir .. "/" .. f
-    local content = read_json(path)
+    local content = read_json(taskdir .. "/" .. f)
     if content then
-      if type(content) == "table" and content[1] then
-        for _, t in ipairs(content) do
-          local label = type(t.label) == "string" and t.label or type(t.name) == "string" and t.name or f
-          table.insert(entries, { source = "taskfile", label = label, text = label, description = type(t.description) == "string" and t.description or type(t.detail) == "string" and t.detail or "" })
+      local items = (type(content) == "table" and content[1]) and content or { content }
+      for _, t in ipairs(items) do
+        -- Only include entries that actually have a runnable command
+        if t.command or t.run then
+          local label = (type(t.label) == "string" and t.label)
+            or (type(t.name) == "string" and t.name) or f
+          table.insert(entries, {
+            source = "taskfile", label = label, text = label,
+            description = (type(t.description) == "string" and t.description)
+              or (type(t.detail) == "string" and t.detail) or "",
+          })
         end
-      elseif content.command or content.run then
-        local label = type(content.label) == "string" and content.label or type(content.name) == "string" and content.name or f
-        table.insert(entries, { source = "taskfile", label = label, text = label, description = type(content.description) == "string" and content.description or type(content.detail) == "string" and content.detail or "" })
       end
     end
   end
   return entries
+end
+
+---Build an argument string from a launch.json/zed `args` field.
+---Handles both string ("--flag value") and array ({"--flag", "value"}) forms.
+local function build_args_str(args)
+  if type(args) == "string" and args ~= "" then
+    return " " .. args
+  elseif type(args) == "table" then
+    local parts = {}
+    for _, a in ipairs(args) do
+      if type(a) == "string" then table.insert(parts, a) end
+    end
+    return #parts > 0 and (" " .. table.concat(parts, " ")) or ""
+  end
+  return ""
 end
 
 local dap_run = function(label)
@@ -203,7 +248,10 @@ function M.pick_and_run()
   local results = {}
 
   if dap_ok then
-    table.insert(results, { source = "dap", label = "Launch file", text = "Launch file", run = dap_run("Launch file") })
+    table.insert(results, {
+      source = "dap", label = "Launch file", text = "Launch file",
+      run = dap_run("Launch file"),
+    })
     table.insert(results, {
       source = "dap", label = "Attach to process", text = "Attach to process",
       run = function()
@@ -224,63 +272,91 @@ function M.pick_and_run()
   end
 
   for _, task in ipairs(collect_mise_tasks()) do
-    local task_dir = task.dir
+    local dir = task.dir
     task.run = function()
-      local cwd = task_dir ~= "." and (vim.fn.getcwd() .. "/" .. task_dir) or nil
+      local cwd = (dir and dir ~= ".") and (vim.fn.getcwd() .. "/" .. dir) or nil
       run_in_term("mise run " .. task.label, cwd, task.label)
     end
     table.insert(results, task)
   end
 
   for _, task in ipairs(collect_vscode_tasks()) do
+    local task_label = task.label
     task.run = function()
-      run_in_term("npm run " .. task.label, nil, task.label)
+      -- Re-read tasks.json at run time to get the actual command
+      local data = read_json(".vscode/tasks.json")
+      local c
+      if data and data.tasks then
+        for _, t in ipairs(data.tasks) do
+          if t.label == task_label then c = t; break end
+        end
+      end
+      local cmd
+      if c then
+        if c.type == "npm" then
+          -- npm-type shorthand: run the `script` field (or label as fallback)
+          cmd = "npm run " .. (type(c.script) == "string" and c.script or task_label)
+        elseif type(c.command) == "string" and c.command ~= "" then
+          -- shell/process task: run verbatim command + args
+          cmd = c.command .. build_args_str(c.args)
+        end
+      end
+      run_in_term(cmd or ("npm run " .. task_label), nil, task_label)
     end
     table.insert(results, task)
   end
 
   for _, entry in ipairs(collect_launch_configs()) do
+    local entry_label = entry.label
     entry.run = function()
       local data = read_json(".vscode/launch.json")
       local c
       if data and data.configurations then
         for _, cfg in ipairs(data.configurations) do
-          if cfg.name == entry.label then c = cfg; break end
+          if cfg.name == entry_label then c = cfg; break end
         end
       end
-      local cmd = c and c.command or ""
+      if not c then return end
+      local cmd = type(c.command) == "string" and c.command or ""
       if cmd ~= "" then
-        local program = c and c.program or "."
         local file = vim.fn.expand("%:p") or "."
-        cmd = cmd:gsub("%${file}", file):gsub("%${workspaceFolder}", vim.fn.getcwd())
-        run_in_term(cmd .. (c.args and " " .. c.args or ""), nil, entry.label)
+        cmd = cmd
+          :gsub("%${file}", file)
+          :gsub("%${workspaceFolder}", vim.fn.getcwd())
+        cmd = cmd .. build_args_str(c.args)
+        run_in_term(cmd, nil, entry_label)
       end
     end
     table.insert(results, entry)
   end
 
   for _, entry in ipairs(collect_zed_debug()) do
+    local entry_label = entry.label
     entry.run = function()
       local data = read_json(".zed/debug.json")
       local c
       if data and data[1] then
         for _, cfg in ipairs(data) do
-          if cfg.label == entry.label then c = cfg; break end
+          if cfg.label == entry_label then c = cfg; break end
         end
       end
-      if c then
-        local cmd = type(c.command) == "string" and c.command or c.program or ""
-        if cmd ~= "" then
-          local file = vim.fn.expand("%:p") or "."
-          cmd = cmd:gsub("%$ZED_FILE", file):gsub("%$ZED_WORKTREE_ROOT", vim.fn.getcwd())
-          run_in_term(cmd .. (c.args and " " .. c.args or ""), nil, entry.label)
-        end
+      if not c then return end
+      local cmd = (type(c.command) == "string" and c.command)
+        or (type(c.program) == "string" and c.program) or ""
+      if cmd ~= "" then
+        local file = vim.fn.expand("%:p") or "."
+        cmd = cmd
+          :gsub("%$ZED_FILE", file)
+          :gsub("%$ZED_WORKTREE_ROOT", vim.fn.getcwd())
+        cmd = cmd .. build_args_str(c.args)
+        run_in_term(cmd, nil, entry_label)
       end
     end
     table.insert(results, entry)
   end
 
   for _, entry in ipairs(collect_taskfiles()) do
+    local entry_label = entry.label
     entry.run = function()
       local taskdir = vim.fn.stdpath("config") .. "/tasks"
       local files = vim.fn.readdir(taskdir) or {}
@@ -288,51 +364,54 @@ function M.pick_and_run()
       for _, f in ipairs(files) do
         local content = read_json(taskdir .. "/" .. f)
         if content then
-          local items = type(content) == "table" and content[1] and content or { content }
+          local items = (type(content) == "table" and content[1]) and content or { content }
           for _, t in ipairs(items) do
-            local label = t.label or t.name or f
-            if label == entry.label then c = t; break end
+            if (t.label or t.name or f) == entry_label then c = t; break end
           end
         end
         if c then break end
       end
       local cmd = (c and (c.command or c.run)) or ""
       if cmd ~= "" then
-        run_in_term(cmd, nil, entry.label)
+        run_in_term(cmd, nil, entry_label)
       end
     end
     table.insert(results, entry)
   end
 
   local icons = {
-    mise = "⚡", npm = "", dap = "▸",
-    vscode = "", launch = "", zed = "", taskfile = "",
+    mise = "⚡", npm = "", dap = "▸",
+    vscode = "", launch = "", zed = "", taskfile = "",
   }
 
   Snacks.picker.pick({
     items = results,
     format = function(item)
       local icon = icons[item.source] or "▸"
-      local text = icon .. " " .. item.label
+      local parts = {
+        { icon .. " ", "String" },
+        { item.label,  "Normal" },
+      }
       if item.description and item.description ~= "" then
-        text = text .. "  " .. item.description
+        table.insert(parts, { "  " .. item.description, "Comment" })
       end
-      return { { text, "Normal" } }
+      return parts
     end,
     confirm = function(picker, item)
       picker:close()
       if item and item.run then item.run() end
     end,
-    prompt = " ",
-    title = "Debug",
+    prompt = " ",
+    title = "Tasks",
     preview = function(ctx)
       local item = ctx.item
       if not item then return end
-      local lines = {}
-      table.insert(lines, "Source: " .. (item.source or "?"))
-      table.insert(lines, "Task:   " .. (item.label or "?"))
+      local lines = {
+        "Source : " .. (item.source or "?"),
+        "Task   : " .. (item.label or "?"),
+      }
       if item.dir and item.dir ~= "" and item.dir ~= "." then
-        table.insert(lines, "Dir:    " .. item.dir)
+        table.insert(lines, "Dir    : " .. item.dir)
       end
       if item.description and item.description ~= "" then
         table.insert(lines, "")
