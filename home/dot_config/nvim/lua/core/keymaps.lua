@@ -174,4 +174,9 @@ vim.api.nvim_create_user_command('ToggleQuickfix', function()
 end, { desc = 'Toggle quickfix window' })
 vim.api.nvim_create_user_command('LineDiagnostics', vim.diagnostic.open_float, { desc = 'Show diagnostics for current line' })
 
+-- Task picker / debug runner
+map('n', '<leader>dd', function()
+  require('pickers.task-picker').pick_and_run()
+end, { desc = 'Debug: pick and run' })
+
 -- vim: ts=2 sts=2 sw=2 et

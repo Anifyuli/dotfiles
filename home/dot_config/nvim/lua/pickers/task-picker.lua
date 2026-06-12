@@ -80,11 +80,16 @@ local function collect_mise_tasks()
   local results = {}
   local seen = {}
 
-  local dirs = vim.fn.systemlist(
-    "find . -name 'mise.toml' -not -path '*/node_modules/*' -not -path '*/.git/*' -printf '%h\\n' 2>/dev/null"
-  )
+  local dirs = {}
+  local handle = io.popen("find . -name 'mise.toml' -not -path '*/node_modules/*' -not -path '*/.git/*' -printf '%h\\n' 2>/dev/null")
+  if handle then
+    for line in handle:lines() do
+      if line ~= "" then table.insert(dirs, line) end
+    end
+    handle:close()
+  end
 
-  if not dirs or #dirs == 0 then
+  if #dirs == 0 then
     dirs = { "." }
   else
     table.sort(dirs)
