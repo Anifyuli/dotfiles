@@ -3,6 +3,24 @@ local M = {}
 local exclude_labels = { "install", "deploy" }
 local task_bufs = {}
 
+local function should_include(label)
+  if type(label) ~= "string" or label == "" then return false end
+  for _, pattern in ipairs(exclude_labels) do
+    if label:lower():find(pattern, 1, true) then
+      return false
+    end
+  end
+  return true
+end
+
+local function read_json(path)
+  local f = io.open(path, "r")
+  if not f then return nil end
+  local ok, data = pcall(vim.json.decode, f:read("*a"))
+  f:close()
+  return ok and data or nil
+end
+
 local function run_in_term(cmd, cwd, task_id)
   -- close previous terminal for this task before creating a new one
   if task_id and task_bufs[task_id] then
