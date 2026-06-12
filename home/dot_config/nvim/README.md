@@ -72,11 +72,11 @@ git push
     │   ├── keymaps.lua       # Global keymaps
     │   └── autocmds.lua      # Autocommands
     └── plugins/
-        ├── ui.lua          # Dashboard, which-key, neo-tree, lualine, toggleterm, bufferline
-        ├── snacks.lua      # Fuzzy finder, git (lazygit), image, explorer
+        ├── ui.lua          # Which-key, bufferline, edgy, neo-tree, lualine
+        ├── snacks.lua      # Picker, image, dashboard, terminal, scroll
         ├── treesitter.lua  # Treesitter + textobjects
         ├── lspconfig.lua   # LSP, Mason, formatters
-        ├── coding.lua      # Git, comments, completion, indent, trouble
+        ├── coding.lua      # Git, comments, flash, neotest, completion, indent, trouble
         ├── debugger.lua    # DAP + DAP UI
         └── lang/
             ├── typescript.lua  # TS/JS DAP configs
@@ -100,7 +100,7 @@ git push
 - **Colorscheme:** Gruvbox (soft contrast, italic comments)
 - **Dashboard:** Doom-style with startup timing stats
 - **Statusline:** Lualine with mode, filename, line/col
-- **Bufferline:** Cokeline with devicons, diagnostics, sidebar support
+- **Bufferline:** Bufferline.nvim with devicons, diagnostics, sidebar support
 - **File explorer:** Neo-tree v3 with filesystem, buffers, git status sources
 
 ### LSP & Completion
@@ -121,7 +121,8 @@ git push
 - Configurations for Node.js, NestJS, React Native, Expo
 
 ### Terminal
-- ToggleTerm with horizontal/vertical/float layouts
+- Snacks Terminal with tmux (horizontal/vertical/float layouts)
+- Fresh tmux session on every toggle (no stale re-attach)
 - Winbar indicator, window navigation from terminal mode
 
 ### Language Support
@@ -153,8 +154,8 @@ See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 | `Space+ff` | Find files |
 | `Space+/` or `Space+sg` | Live grep |
 | `Space+e` | File explorer |
-| `Space+lg` | LazyGit |
-| `Space+T H/V/F` | Terminal (horiz/vert/float) |
+| `Space+gl` | LazyGit |
+| `Space+T h/v/f` | Terminal (horiz/vert/float) |
 | `F5` | Debug continue |
 | `gd` | Go to definition |
 | `K` | Hover documentation |
@@ -163,7 +164,7 @@ See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 
 Managed by [lazy.nvim](https://github.com/folke/lazy.nvim). Press `Space+L` or run `:Lazy` to manage.
 
-Key plugins: gruvbox, which-key, snacks.nvim, neo-tree, cokeline, lualine, toggleterm, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, render-markdown, kulala.
+Key plugins: gruvbox, which-key, snacks.nvim, neo-tree, bufferline, lualine, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, flash.nvim, neotest, render-markdown, kulala.
 
 ## Notes
 
