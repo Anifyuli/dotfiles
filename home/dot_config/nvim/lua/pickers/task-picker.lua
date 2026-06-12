@@ -21,13 +21,15 @@ local function read_json(path)
 end
 
 local function run_in_term(cmd, cwd)
+  -- unique tag so each run creates a fresh terminal
+  local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
   local opts = {
     win = { position = "bottom", height = 0.3 },
   }
   if cwd and cwd ~= "" and cwd ~= "." then
     opts.cwd = cwd
   end
-  local term, created = Snacks.terminal.get({ "sh", "-c", cmd }, opts)
+  local term = Snacks.terminal.get({ "sh", "-c", tagged }, opts)
   if term then
     term:show():focus()
   end
