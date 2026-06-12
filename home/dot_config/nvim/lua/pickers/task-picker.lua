@@ -20,6 +20,14 @@ local function read_json(path)
   return ok and data or nil
 end
 
+local function run_in_term(cmd, cwd)
+  local opts = {}
+  if cwd and cwd ~= "" and cwd ~= "." then
+    opts.cwd = cwd
+  end
+  Snacks.terminal.toggle({ "sh", "-c", cmd }, opts)
+end
+
 local function collect_package_scripts()
   local data = read_json("package.json")
   if not data or not data.scripts then return {} end
@@ -159,33 +167,27 @@ end
 
 function M.pick_and_run()
   local dap = require("dap")
-  if not dap.adapters["pwa-node"] then
-    vim.notify("DAP pwa-node adapter not available", vim.log.levels.ERROR)
-    return
-  end
+  local dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
 
   local results = {}
 
-  table.insert(results, { source = "dap", label = "Launch file", text = "Launch file", run = dap_run("Launch file") })
-  table.insert(results, {
-    source = "dap", label = "Attach to process", text = "Attach to process",
-    run = function()
-      dap.run({
-        type = "pwa-node", request = "attach", name = "Attach to process",
-        processId = require("dap.utils").pick_process, cwd = vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
-    end,
-  })
+  if dap_ok then
+    table.insert(results, { source = "dap", label = "Launch file", text = "Launch file", run = dap_run("Launch file") })
+    table.insert(results, {
+      source = "dap", label = "Attach to process", text = "Attach to process",
+      run = function()
+        dap.run({
+          type = "pwa-node", request = "attach", name = "Attach to process",
+          processId = require("dap.utils").pick_process, cwd = vim.fn.getcwd(),
+          skipFiles = { "<node_internals>/**", "node_modules/**" },
+        })
+      end,
+    })
+  end
 
   for _, s in ipairs(collect_package_scripts()) do
     s.run = function()
-      dap.run({
-        type = "pwa-node", request = "launch", name = s.label,
-        runtimeExecutable = "npm", runtimeArgs = { "run", s.label },
-        cwd = vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
+      run_in_term("npm run " .. s.label)
     end
     table.insert(results, s)
   end
@@ -193,24 +195,15 @@ function M.pick_and_run()
   for _, task in ipairs(collect_mise_tasks()) do
     local task_dir = task.dir
     task.run = function()
-      dap.run({
-        type = "pwa-node", request = "launch", name = task.label,
-        runtimeExecutable = "mise", runtimeArgs = { "run", task.label },
-        cwd = task_dir ~= "." and (vim.fn.getcwd() .. "/" .. task_dir) or vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
+      local cwd = task_dir ~= "." and (vim.fn.getcwd() .. "/" .. task_dir) or nil
+      run_in_term("mise run " .. task.label, cwd)
     end
     table.insert(results, task)
   end
 
   for _, task in ipairs(collect_vscode_tasks()) do
     task.run = function()
-      dap.run({
-        type = "pwa-node", request = "launch", name = task.label,
-        runtimeExecutable = "npm", runtimeArgs = { "run", task.label },
-        cwd = vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
+      run_in_term("npm run " .. task.label)
     end
     table.insert(results, task)
   end
@@ -224,14 +217,13 @@ function M.pick_and_run()
           if cfg.name == entry.label then c = cfg; break end
         end
       end
-      dap.run({
-        type = "pwa-node", request = (c and c.request) or "launch", name = entry.label,
-        program = (c and c.program) or "${file}",
-        runtimeExecutable = c and c.runtimeExecutable or nil,
-        runtimeArgs = c and c.runtimeArgs or nil,
-        cwd = vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
+      local cmd = c and c.command or ""
+      if cmd ~= "" then
+        local program = c and c.program or "."
+        local file = vim.fn.expand("%:p") or "."
+        cmd = cmd:gsub("%${file}", file):gsub("%${workspaceFolder}", vim.fn.getcwd())
+        run_in_term(cmd .. (c.args and " " .. c.args or ""))
+      end
     end
     table.insert(results, entry)
   end
@@ -245,13 +237,14 @@ function M.pick_and_run()
           if cfg.label == entry.label then c = cfg; break end
         end
       end
-      local prog = c and (c.program or ""):gsub("%$ZED_FILE", vim.fn.expand("%:p")):gsub("%$ZED_WORKTREE_ROOT", vim.fn.getcwd()) or "${file}"
-      local adapter = (c and c.adapter == "JavaScript") and "pwa-node" or (c and c.adapter) or "pwa-node"
-      dap.run({
-        type = adapter, request = (c and c.request) or "launch", name = entry.label,
-        program = prog, cwd = vim.fn.getcwd(),
-        skipFiles = (c and c.skipFiles) or { "<node_internals>/**", "node_modules/**" },
-      })
+      if c then
+        local cmd = type(c.command) == "string" and c.command or c.program or ""
+        if cmd ~= "" then
+          local file = vim.fn.expand("%:p") or "."
+          cmd = cmd:gsub("%$ZED_FILE", file):gsub("%$ZED_WORKTREE_ROOT", vim.fn.getcwd())
+          run_in_term(cmd .. (c.args and " " .. c.args or ""))
+        end
+      end
     end
     table.insert(results, entry)
   end
@@ -273,13 +266,9 @@ function M.pick_and_run()
         if c then break end
       end
       local cmd = (c and (c.command or c.run)) or ""
-      local parts = vim.split(cmd, " ")
-      local exe = table.remove(parts, 1)
-      dap.run({
-        type = "pwa-node", request = "launch", name = entry.label,
-        runtimeExecutable = exe, runtimeArgs = parts, cwd = vim.fn.getcwd(),
-        skipFiles = { "<node_internals>/**", "node_modules/**" },
-      })
+      if cmd ~= "" then
+        run_in_term(cmd)
+      end
     end
     table.insert(results, entry)
   end
