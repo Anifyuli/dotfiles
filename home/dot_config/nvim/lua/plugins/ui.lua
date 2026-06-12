@@ -199,6 +199,11 @@ return {
     "echasnovski/mini.bufremove",
   },
   {
+    "echasnovski/mini.comment",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
     -- measure startuptime
     "dstein64/vim-startuptime",
     cmd = "StartupTime",

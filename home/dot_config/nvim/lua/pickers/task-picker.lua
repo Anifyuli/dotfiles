@@ -3,6 +3,53 @@ local M = {}
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object
 
+-- cache
+local picker_cache = {}
+local PICKER_CACHE_TTL_MS = 30000
+local mise_cache = nil
+local mise_cache_time = 0
+local MISE_CACHE_TTL_MS = 300000
+
+local function cache_key()
+  return vim.fn.getcwd()
+end
+
+local function cache_get(key)
+  local entry = picker_cache[key]
+  if not entry then return nil end
+  if vim.uv.now() - entry.time > PICKER_CACHE_TTL_MS then
+    picker_cache[key] = nil
+    return nil
+  end
+  return entry.results
+end
+
+local function cache_set(key, results)
+  picker_cache[key] = { results = results, time = vim.uv.now() }
+end
+
+local function invalidate_task_caches()
+  picker_cache = {}
+  mise_cache = nil
+end
+
+local cache_augroup = vim.api.nvim_create_augroup("TaskPickerCache", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = cache_augroup,
+  pattern = {
+    "package.json",
+    "mise.toml",
+    ".vscode/tasks.json",
+    ".vscode/launch.json",
+    ".zed/debug.json",
+  },
+  callback = invalidate_task_caches,
+})
+vim.api.nvim_create_autocmd("DirChanged", {
+  group = cache_augroup,
+  callback = invalidate_task_caches,
+})
+
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
@@ -87,6 +134,10 @@ local function collect_package_scripts()
 end
 
 local function collect_mise_tasks()
+  if mise_cache_time > 0 and vim.uv.now() - mise_cache_time < MISE_CACHE_TTL_MS then
+    return mise_cache
+  end
+
   local results = {}
   local seen = {}
 
@@ -127,6 +178,8 @@ local function collect_mise_tasks()
     end
   end
 
+  mise_cache = results
+  mise_cache_time = vim.uv.now()
   return results
 end
 
@@ -288,6 +341,19 @@ function M.pick_and_run()
     dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
   end
 
+  local key = cache_key()
+  local cached = cache_get(key)
+  if cached then
+    local items = {}
+    for _, item in ipairs(cached) do
+      if item.source ~= "dap" or dap_ok then
+        table.insert(items, item)
+      end
+    end
+    show_picker(items)
+    return
+  end
+
   local results = {}
 
   if dap_ok then
@@ -422,6 +488,7 @@ function M.pick_and_run()
     table.insert(results, entry)
   end
 
+  cache_set(key, results)
   show_picker(results)
 end
 
