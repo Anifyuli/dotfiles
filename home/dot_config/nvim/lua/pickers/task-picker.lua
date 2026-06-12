@@ -1,6 +1,8 @@
 local M = {}
 
 local exclude_labels = { "install", "deploy" }
+local term_counts = {} -- task_id -> numeric count
+local term_next = 10
 
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
@@ -21,6 +23,7 @@ local function read_json(path)
 end
 
 local function run_in_term(cmd, cwd, task_id)
+  local shell = vim.o.shell or "sh"
   local opts = {
     win = { position = "bottom", height = 0.3 },
   }
@@ -28,14 +31,40 @@ local function run_in_term(cmd, cwd, task_id)
     opts.cwd = cwd
   end
 
-  local full_cmd = cmd
-  if cwd and cwd ~= "" and cwd ~= "." then
-    full_cmd = "cd " .. vim.fn.shellescape(cwd) .. " && " .. cmd
+  local term, created
+
+  if task_id then
+    local c = term_counts[task_id]
+    if not c then
+      term_next = term_next + 1
+      c = term_next
+      term_counts[task_id] = c
+    end
+    opts.count = c
+    term, created = Snacks.terminal.get(shell, opts)
+  else
+    local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
+    term, created = Snacks.terminal.get({ shell, "-c", tagged }, opts)
   end
 
-  local tag = tostring((vim.uv or vim.loop).hrtime())
-  local term = Snacks.terminal.get({ "sh", "-c", full_cmd .. " #" .. tag }, opts)
-  if term then term:show():focus() end
+  if not term then return end
+  term:show():focus()
+
+  local buf = term.buf
+  if not buf or not vim.api.nvim_buf_is_valid(buf) then return end
+  local job_id = vim.b[buf] and vim.b[buf].terminal_job_id
+  if not job_id then return end
+
+  local prefix = ""
+  if cwd and cwd ~= "" and cwd ~= "." then
+    prefix = "cd " .. vim.fn.shellescape(cwd) .. " && "
+  end
+
+  if created then
+    vim.fn.chansend(job_id, prefix .. cmd .. "\n")
+  else
+    vim.fn.chansend(job_id, "\x03" .. prefix .. cmd .. "\n")
+  end
 end
 
 local function collect_package_scripts()
