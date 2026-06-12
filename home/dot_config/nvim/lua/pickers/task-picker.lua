@@ -33,19 +33,46 @@ local function collect_package_scripts()
 end
 
 local function collect_mise_tasks()
-  local handle = io.popen("mise tasks ls --json 2>/dev/null")
-  if not handle then return {} end
-  local output = handle:read("*a")
-  handle:close()
-  if output == "" then return {} end
-  local ok, tasks = pcall(vim.json.decode, output)
-  if not ok or not tasks then return {} end
   local results = {}
-  for _, t in ipairs(tasks) do
-    if should_include(t.name) then
-      table.insert(results, { source = "mise", label = t.name, description = t.description or "" })
+  local seen = {}
+
+  local dirs = vim.fn.systemlist(
+    "find . -name 'mise.toml' -not -path '*/node_modules/*' -not -path '*/.git/*' -printf '%h\\n' 2>/dev/null"
+  )
+
+  if not dirs or #dirs == 0 then
+    dirs = { "." }
+  else
+    table.sort(dirs)
+  end
+
+  for _, dir in ipairs(dirs) do
+    if dir and dir ~= "" then
+      local cmd = "cd " .. vim.fn.shellescape(dir) .. " && mise tasks ls --json 2>/dev/null"
+      local handle = io.popen(cmd)
+      if handle then
+        local output = handle:read("*a")
+        handle:close()
+        if output ~= "" then
+          local ok, tasks = pcall(vim.json.decode, output)
+          if ok and tasks then
+            for _, t in ipairs(tasks) do
+              if should_include(t.name) and not seen[t.name] then
+                seen[t.name] = true
+                table.insert(results, {
+                  source = "mise",
+                  label = t.name,
+                  description = t.description or "",
+                  dir = dir,
+                })
+              end
+            end
+          end
+        end
+      end
     end
   end
+
   return results
 end
 
@@ -155,11 +182,12 @@ function M.pick_and_run()
   end
 
   for _, task in ipairs(collect_mise_tasks()) do
+    local task_dir = task.dir
     task.run = function()
       dap.run({
         type = "pwa-node", request = "launch", name = task.label,
         runtimeExecutable = "mise", runtimeArgs = { "run", task.label },
-        cwd = vim.fn.getcwd(),
+        cwd = task_dir ~= "." and (vim.fn.getcwd() .. "/" .. task_dir) or vim.fn.getcwd(),
         skipFiles = { "<node_internals>/**", "node_modules/**" },
       })
     end
@@ -248,7 +276,7 @@ function M.pick_and_run()
   end
 
   local icons = {
-    dap = "▸", npm = "", mise = "⚡",
+    mise = "⚡", npm = "", dap = "▸",
     vscode = "", launch = "", zed = "", taskfile = "",
   }
 
@@ -274,6 +302,9 @@ function M.pick_and_run()
       local lines = {}
       table.insert(lines, "Source: " .. (item.source or "?"))
       table.insert(lines, "Task:   " .. (item.label or "?"))
+      if item.dir and item.dir ~= "" and item.dir ~= "." then
+        table.insert(lines, "Dir:    " .. item.dir)
+      end
       if item.description and item.description ~= "" then
         table.insert(lines, "")
         table.insert(lines, item.description)
