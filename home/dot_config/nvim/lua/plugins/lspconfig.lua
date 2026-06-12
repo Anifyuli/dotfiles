@@ -59,6 +59,18 @@ return {
       vim.lsp.config.cssls = {
         capabilities = capabilities,
         filetypes = { "css", "scss", "html", "less" },
+        settings = {
+          css = {
+            lint = {
+              unknownAtRules = "ignore",
+            },
+          },
+        },
+      }
+
+      vim.lsp.config.tailwindcss = {
+        capabilities = capabilities,
+        filetypes = { "css", "scss", "html", "less", "javascript", "javascriptreact", "typescript", "typescriptreact" },
         settings = {},
       }
 
