@@ -176,6 +176,7 @@ return {
               "json", "jsonc", "yaml", "markdown", "graphql",
             },
           }),
+          nls.builtins.diagnostics.markdownlint,
         },
       })
     end,
