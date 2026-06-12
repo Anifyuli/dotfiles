@@ -84,8 +84,7 @@ return {
         { "<leader>r", group = " [R]ename" },
         -- [S]earch
         { "<leader>s", group = " [S]earch" },
-        { "<leader>sf", desc = "Find Files" },
-        { "<leader>sb", desc = "Search Buffer" },
+        { "<leader>sb", desc = "Buffers" },
         { "<leader>sh", desc = "Help" },
         { "<leader>sk", desc = "Keymaps" },
         { "<leader>sg", desc = "Grep" },
@@ -93,9 +92,7 @@ return {
         { "<leader>ss", desc = "LSP Symbols" },
         { "<leader>sd", desc = "Diagnostics" },
         { "<leader>sr", desc = "Resume" },
-        { "<leader>s.", desc = "Recent Files" },
         { "<leader>s/", desc = "Grep buffers" },
-        { "<leader>sn", desc = "Config Files" },
         { "<leader>sm", desc = "Icons" },
         { "<leader>sM", desc = "Man Pages" },
         -- [U]I
