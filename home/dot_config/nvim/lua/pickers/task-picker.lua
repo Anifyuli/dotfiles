@@ -20,18 +20,45 @@ local function read_json(path)
   return ok and data or nil
 end
 
-local function run_in_term(cmd, cwd)
-  -- unique tag so each run creates a fresh terminal
-  local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
+local function run_in_term(cmd, cwd, task_id)
+  local shell = vim.o.shell or "sh"
   local opts = {
     win = { position = "bottom", height = 0.3 },
   }
   if cwd and cwd ~= "" and cwd ~= "." then
     opts.cwd = cwd
   end
-  local term = Snacks.terminal.get({ "sh", "-c", tagged }, opts)
-  if term then
-    term:show():focus()
+
+  local term, created
+  if task_id then
+    -- persistent terminal per task: reuse & reset
+    local task_opts = vim.deepcopy(opts)
+    task_opts.count = task_id
+    term, created = Snacks.terminal.get(shell, task_opts)
+  else
+    -- one-shot terminal for unnamed tasks
+    local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
+    term, created = Snacks.terminal.get({ "sh", "-c", tagged }, opts)
+  end
+
+  if not term then return end
+  term:show():focus()
+
+  local buf = term.buf
+  if buf and vim.api.nvim_buf_is_valid(buf) then
+    local job_id = vim.b[buf].terminal_job_id
+    if job_id and task_id then
+      -- reset previous run and send command fresh
+      if not created then
+        vim.fn.chansend(job_id, "\x03")
+        vim.wait(50, function() return false end)
+      end
+      local prefix = ""
+      if cwd and cwd ~= "" and cwd ~= "." then
+        prefix = "cd " .. vim.fn.shellescape(cwd) .. " && "
+      end
+      vim.fn.chansend(job_id, prefix .. cmd .. "\n")
+    end
   end
 end
 
@@ -194,7 +221,7 @@ function M.pick_and_run()
 
   for _, s in ipairs(collect_package_scripts()) do
     s.run = function()
-      run_in_term("npm run " .. s.label)
+      run_in_term("npm run " .. s.label, nil, s.label)
     end
     table.insert(results, s)
   end
@@ -203,14 +230,14 @@ function M.pick_and_run()
     local task_dir = task.dir
     task.run = function()
       local cwd = task_dir ~= "." and (vim.fn.getcwd() .. "/" .. task_dir) or nil
-      run_in_term("mise run " .. task.label, cwd)
+      run_in_term("mise run " .. task.label, cwd, task.label)
     end
     table.insert(results, task)
   end
 
   for _, task in ipairs(collect_vscode_tasks()) do
     task.run = function()
-      run_in_term("npm run " .. task.label)
+      run_in_term("npm run " .. task.label, nil, task.label)
     end
     table.insert(results, task)
   end
@@ -229,7 +256,7 @@ function M.pick_and_run()
         local program = c and c.program or "."
         local file = vim.fn.expand("%:p") or "."
         cmd = cmd:gsub("%${file}", file):gsub("%${workspaceFolder}", vim.fn.getcwd())
-        run_in_term(cmd .. (c.args and " " .. c.args or ""))
+        run_in_term(cmd .. (c.args and " " .. c.args or ""), nil, entry.label)
       end
     end
     table.insert(results, entry)
@@ -249,7 +276,7 @@ function M.pick_and_run()
         if cmd ~= "" then
           local file = vim.fn.expand("%:p") or "."
           cmd = cmd:gsub("%$ZED_FILE", file):gsub("%$ZED_WORKTREE_ROOT", vim.fn.getcwd())
-          run_in_term(cmd .. (c.args and " " .. c.args or ""))
+          run_in_term(cmd .. (c.args and " " .. c.args or ""), nil, entry.label)
         end
       end
     end
@@ -274,7 +301,7 @@ function M.pick_and_run()
       end
       local cmd = (c and (c.command or c.run)) or ""
       if cmd ~= "" then
-        run_in_term(cmd)
+        run_in_term(cmd, nil, entry.label)
       end
     end
     table.insert(results, entry)
