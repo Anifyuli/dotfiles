@@ -2,6 +2,17 @@ local M = {}
 
 local exclude_labels = { "install", "deploy" }
 
+-- stable numeric ID per task name (Snacks.terminal count must be a number)
+local task_ids = {}
+local id_counter = 10
+
+local function task_count(task_id)
+  if task_ids[task_id] then return task_ids[task_id] end
+  id_counter = id_counter + 1
+  task_ids[task_id] = id_counter
+  return id_counter
+end
+
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
@@ -33,7 +44,7 @@ local function run_in_term(cmd, cwd, task_id)
   if task_id then
     -- persistent terminal per task: reuse & reset
     local task_opts = vim.deepcopy(opts)
-    task_opts.count = task_id
+    task_opts.count = task_count(task_id)
     term, created = Snacks.terminal.get(shell, task_opts)
   else
     -- one-shot terminal for unnamed tasks
