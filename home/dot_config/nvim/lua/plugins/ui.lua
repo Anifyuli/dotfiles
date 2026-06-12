@@ -60,7 +60,6 @@ return {
         { "<leader>cl", desc = "LSP Info" },
         -- [D]ebug
         { "<leader>d", group = "󰃤 [D]ebug" },
-        { "<leader>dd", desc = "Pick & run" },
         { "<leader>dr", desc = "Restart" },
         { "<leader>ds", desc = "Document Symbols" },
         -- [H]unk
@@ -83,6 +82,8 @@ return {
         { "<leader>r", group = " [R]ename" },
         -- [S]earch
         { "<leader>s", group = " [S]earch" },
+        { "<leader>sf", desc = "Find Files" },
+        { "<leader>sb", desc = "Search Buffer" },
         { "<leader>sh", desc = "Help" },
         { "<leader>sk", desc = "Keymaps" },
         { "<leader>sg", desc = "Grep" },
@@ -108,11 +109,15 @@ return {
         { "<leader>xw", desc = "Buffer diagnostics" },
         { "<leader>xt", desc = "Todo" },
         -- LSP (no prefix)
+        { "K", desc = "Hover Documentation" },
         { "gd", desc = "Goto Definition" },
         { "gD", desc = "Goto Declaration" },
         { "gr", desc = "References", nowait = true },
         { "gI", desc = "Goto Implementation" },
         { "gy", desc = "Goto Type Definition" },
+        -- Misc
+        { "<leader><leader>", desc = "Find existing buffers" },
+        { "<leader>D", desc = "Type Definition" },
       })
     end,
   },

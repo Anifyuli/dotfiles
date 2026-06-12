@@ -13,7 +13,6 @@ return {
     { "<leader>b", desc = "Debug: Toggle Breakpoint" },
     { "<leader>B", desc = "Debug: Set Breakpoint" },
     { "<leader>dr", desc = "Debug: Restart" },
-    { "<leader>dd", desc = "Debug: pick and run" },
   },
   dependencies = {
     -- Creates a beautiful debugger UI
@@ -66,7 +65,6 @@ return {
       { "<leader>B", desc = "Debug: Set Breakpoint" },
       { "<F4>", desc = "Debug: Run to Cursor" },
       { "<leader>dr", desc = "Debug: Restart" },
-      { "<leader>dd", desc = "Debug: pick and run" },
       { "<F12>", desc = "Debug: Toggle UI" },
     })
 
