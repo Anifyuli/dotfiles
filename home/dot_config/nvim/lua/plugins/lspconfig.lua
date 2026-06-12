@@ -166,6 +166,18 @@ return {
           "stylua",
         },
       })
+      local nls = require("null-ls")
+      nls.setup({
+        sources = {
+          nls.builtins.formatting.prettier.with({
+            filetypes = {
+              "html", "css", "scss", "less",
+              "javascript", "javascriptreact", "typescript", "typescriptreact",
+              "json", "jsonc", "yaml", "markdown", "graphql",
+            },
+          }),
+        },
+      })
     end,
   },
 }
