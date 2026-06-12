@@ -42,6 +42,9 @@ require('lazy').setup({
     { import = '../plugins/lang' },
   },
   {
+    git = {
+      url = "git@github.com:",
+    },
     install = {
       colorscheme = { "gruvbox" },
     },
