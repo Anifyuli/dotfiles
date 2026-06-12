@@ -21,11 +21,16 @@ local function read_json(path)
 end
 
 local function run_in_term(cmd, cwd)
-  local opts = {}
+  local opts = {
+    win = { position = "bottom", height = 0.3 },
+  }
   if cwd and cwd ~= "" and cwd ~= "." then
     opts.cwd = cwd
   end
-  Snacks.terminal.toggle({ "sh", "-c", cmd }, opts)
+  local term, created = Snacks.terminal.get({ "sh", "-c", cmd }, opts)
+  if term then
+    term:show():focus()
+  end
 end
 
 local function collect_package_scripts()
