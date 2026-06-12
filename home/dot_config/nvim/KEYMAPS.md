@@ -2,92 +2,92 @@
 
 **Leader key** = `Space`
 
-**Notasi modifier:** `Ctrl` = tombol Control, `Alt` = tombol Alt, `Shift` = tombol Shift, `Space` = spasi
+**Modifier notation:** `Ctrl` = Control key, `Alt` = Alt key, `Shift` = Shift key
 
 ---
 
 ## General
 
-| Tombol | Mode | Fungsi |
-|--------|------|--------|
-| `Ctrl+S` | Normal | Simpan file |
-| `Ctrl+Q` | Normal | Tutup paksa semua |
-| `Space+N` | Normal | File baru |
-| `Space+Q` | Normal | Tutup semua (konfirmasi) |
-| `Del` | Visual | Hapus tanpa yank |
-| `J` / `K` | Normal, Visual | Gerak cerdas (respek word wrap) |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Ctrl+S` | Normal | Save file |
+| `Ctrl+Q` | Normal | Force close all |
+| `Space+N` | Normal | New file |
+| `Space+Q` | Normal | Close all (confirm) |
+| `Del` | Visual | Delete without yank |
+| `J` / `K` | Normal, Visual | Smart movement (respects word wrap) |
 
 ## Window Navigation
 
-| Tombol | Fungsi |
-|--------|--------|
-| `Ctrl+H/J/K/L` | Pindah ke kiri/bawah/atas/kanan |
+| Key | Action |
+|-----|--------|
+| `Ctrl+H/J/K/L` | Move left/down/up/right |
 | `Ctrl+↑/↓/←/→` | Resize window |
 
 ## LSP & Diagnostics
 
-| Tombol | Fungsi |
-|--------|--------|
+| Key | Action |
+|-----|--------|
 | `gd` | Go to definition |
 | `gr` | Go to references |
 | `gI` | Go to implementation |
 | `gD` | Go to declaration |
 | `Space+D` | Type definition |
-| `K` | Hover dokumentasi |
+| `K` | Hover documentation |
 | `Space+R N` | Rename symbol |
 | `Space+C A` | Code action (Normal & Visual) |
 | `Space+D S` | Document symbols |
 | `Space+W S` | Workspace symbols |
 | `Space+C F` | Format buffer |
 | `Space+C D` | Line diagnostics (float) |
-| `[d` / `]d` | Diagnostic sebelumnya/selanjutnya |
+| `[d` / `]d` | Previous/next diagnostic |
 | (auto) | Diagnostic popup on cursor hold |
 
-> **Note:** Diagnostic popup appears automatically on cursor hold (like VS Code hover tooltip). Auto-closes on cursor move. Code action (`<leader>ca`) in visual mode applies to the selection.
+> **Note:** Diagnostic popup appears automatically when cursor rests on an error (like VS Code hover tooltip). Auto-closes on cursor move. Code action (`<leader>ca`) in visual mode applies fixes to the selection.
 
 ## Picker (Snacks)
 
-| Tombol | Fungsi |
-|--------|--------|
-| `Space+ff` | Cari file |
-| `Space+fg` | Cari file git |
-| `Space+fr` | File terbaru |
-| `Space+fc` | File config Neovim |
-| `Space+sg` atau `Space+/` | Live grep |
-| `Space+sw` | Cari kata sekarang (N/X) |
-| `Space+sh` | Cari help |
-| `Space+sk` | Cari keymap |
-| `Space+ss` | LSP Symbols |
-| `Space+sd` | Cari diagnostic |
+| Key | Action |
+|-----|--------|
+| `Space+ff` | Find files |
+| `Space+fg` | Git files |
+| `Space+fr` | Recent files |
+| `Space+fc` | Neovim config files |
+| `Space+sg` or `Space+/` | Live grep |
+| `Space+sw` | Search current word (N/X) |
+| `Space+sh` | Search help |
+| `Space+sk` | Search keymaps |
+| `Space+ss` | LSP symbols |
+| `Space+sd` | Search diagnostics |
 | `Space+sr` | Resume |
-| `Space+s.` | File terbaru |
-| `Space+sn` | File config Neovim |
-| `Space+s/` | Cari di file terbuka |
+| `Space+s.` | Recent files |
+| `Space+sn` | Neovim config files |
+| `Space+s/` | Search in open files |
 | `Space+sm` | Icons |
 | `Space+sM` | Man pages |
-| `Space+,` | Buffer |
+| `Space+,` | Buffers |
 | `Space+<space>` | Smart find |
 | `Space+:` | Command history |
 
-## Trouble (Error/Warning Dialog)
+## Trouble (Error/Warning Panel)
 
-| Tombol | Fungsi |
-|--------|--------|
-| `Space+X X` | Toggle panel diagnostic |
-| `Space+X W` | Toggle diagnostic buffer |
+| Key | Action |
+|-----|--------|
+| `Space+X X` | Toggle diagnostic panel |
+| `Space+X W` | Toggle buffer diagnostics |
 | `Space+X T` | Toggle TODO/FIXME |
 | `Space+C X` | Toggle quickfix list |
 
 ## Debugger (DAP)
 
-| Tombol | Fungsi |
-|--------|--------|
+| Key | Action |
+|-----|--------|
 | `F5` | Start / Continue |
 | `F1` | Step Into |
 | `F2` | Step Over |
 | `F3` | Step Out |
 | `F4` | Run to Cursor |
-| `F12` | Toggle panel DAP UI |
+| `F12` | Toggle DAP UI panel |
 | `Space+B` | Toggle breakpoint |
 | `Space+Shift+B` | Conditional breakpoint |
 | `Space+D R` | Restart |
@@ -95,9 +95,9 @@
 
 ## Git (Gitsigns)
 
-| Tombol | Fungsi |
-|--------|--------|
-| `]c` / `[c` | Hunk berikutnya/sebelumnya |
+| Key | Action |
+|-----|--------|
+| `]c` / `[c` | Next/previous hunk |
 | `Space+H S` | Stage hunk |
 | `Space+H R` | Reset hunk |
 | `Space+Shift+S` | Stage buffer |
@@ -113,31 +113,31 @@
 
 ## Treesitter Text Objects
 
-| Tombol | Fungsi |
-|--------|--------|
+| Key | Action |
+|-----|--------|
 | `aa` / `ia` | Parameter outer/inner |
 | `af` / `if` | Function outer/inner |
 | `ac` / `ic` | Class outer/inner |
-| `]m` / `[m` | Function start berikutnya/sebelumnya |
-| `]]` / `[[` | Class start berikutnya/sebelumnya |
-| `Space+A` / `Space+Shift+A` | Swap parameter berikutnya/sebelumnya |
+| `]m` / `[m` | Function start next/prev |
+| `]]` / `[[` | Class start next/prev |
+| `Space+A` / `Space+Shift+A` | Swap parameter next/prev |
 | `Ctrl+Space` | Incremental selection (expand) |
 | `Alt+Space` | Incremental selection (shrink) |
 
 ## Buffer Management
 
-| Tombol | Fungsi |
-|--------|--------|
-| `Tab` / `Shift+Tab` | Buffer berikutnya/sebelumnya |
+| Key | Action |
+|-----|--------|
+| `Tab` / `Shift+Tab` | Next/previous buffer |
 | `Space+B N` / `Space+B P` | Switch next/prev buffer |
-| `Space+B 1`–`9` | Switch ke buffer by index |
-| `Space+B D` | Hapus buffer |
-| `Space+Shift+D` | Hapus buffer (paksa) |
+| `Space+B 1`–`9` | Switch to buffer by index |
+| `Space+B D` | Delete buffer |
+| `Space+Shift+D` | Delete buffer (force) |
 
 ## Test (Neotest)
 
-| Tombol | Fungsi |
-|--------|--------|
+| Key | Action |
+|-----|--------|
 | `Space+z T` | Run all tests |
 | `Space+z t` | Run file |
 | `Space+z r` | Run nearest test |
@@ -146,41 +146,41 @@
 
 ## Quick Jump (Flash)
 
-| Tombol | Mode | Fungsi |
-|--------|------|--------|
-| `s` | Normal | Jump ke label |
-| `S` | Normal, Visual | Jump ke kata (treesitter) |
+| Key | Mode | Action |
+|-----|------|--------|
+| `s` | Normal | Jump to label |
+| `S` | Normal, Visual | Jump to word (treesitter) |
 | `R` | Normal | Remote jump |
-| `Ctrl+S` | Insert | Jump ke label |
+| `Ctrl+S` | Insert | Jump to label |
 | `r` | Op-pending | Remote operator |
 
 ## Terminal (Snacks/Tmux)
 
-| Tombol | Mode | Fungsi |
-|--------|------|--------|
+| Key | Mode | Action |
+|-----|------|--------|
 | `F7` | Normal, Terminal | Toggle terminal |
 | `Space+T H` | Normal | Terminal horizontal |
-| `Space+T V` | Normal | Terminal vertikal |
+| `Space+T V` | Normal | Terminal vertical |
 | `Space+T F` | Normal | Terminal floating |
-| `jk` / `Alt+Q` | Terminal | Keluar terminal mode → normal |
-| `Ctrl+H/J/K/L` | Terminal | Pindah ke kiri/bawah/atas/kanan |
-| `Ctrl+W` | Terminal | Window commands (dilanjut h/j/k/l...) |
-| `Alt+.` | Normal, Terminal | Tutup semua terminal |
-| `Alt+,` | Normal, Terminal | Tutup terminal aktif |
+| `jk` / `Alt+Q` | Terminal | Exit terminal mode → normal |
+| `Ctrl+H/J/K/L` | Terminal | Move left/down/up/right |
+| `Ctrl+W` | Terminal | Window commands (followed by h/j/k/l...) |
+| `Alt+.` | Normal, Terminal | Close all terminals |
+| `Alt+,` | Normal, Terminal | Close active terminal |
 
 ## API Client (Kulala)
 
-| Tombol | Fungsi |
-|--------|--------|
-| `Space+R S` | Kirim request di bawah kursor |
-| `Space+R A` | Kirim semua request di file |
-| `Space+R D` | Kirim request (debug mode) |
-| `Space+R B` | Buka scratchpad |
+| Key | Action |
+|-----|--------|
+| `Space+R S` | Send request under cursor |
+| `Space+R A` | Send all requests in file |
+| `Space+R D` | Send request (debug mode) |
+| `Space+R B` | Open scratchpad |
 
 ## Other
 
-| Tombol | Fungsi |
-|--------|--------|
+| Key | Action |
+|-----|--------|
 | `Space+e` | Toggle file explorer (Neo-tree) |
 | `Space+gl` | LazyGit (floating) |
 | `gc` | Toggle comment (Normal/Visual) |
@@ -189,7 +189,7 @@
 
 ## Commands
 
-| Command | Fungsi |
+| Command | Action |
 |---------|--------|
 | `:Format` | Format buffer via LSP |
 | `:ToggleQuickfix` | Toggle quickfix window |
