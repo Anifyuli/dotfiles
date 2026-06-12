@@ -2,16 +2,8 @@ local M = {}
 
 local exclude_labels = { "install", "deploy" }
 
--- stable numeric ID per task name (Snacks.terminal count must be a number)
-local task_ids = {}
-local id_counter = 10
-
-local function task_count(task_id)
-  if task_ids[task_id] then return task_ids[task_id] end
-  id_counter = id_counter + 1
-  task_ids[task_id] = id_counter
-  return id_counter
-end
+-- track terminal buffers per task for reuse
+local task_terminals = {}
 
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
@@ -32,7 +24,15 @@ local function read_json(path)
 end
 
 local function run_in_term(cmd, cwd, task_id)
-  local shell = vim.o.shell or "sh"
+  -- close previous terminal buffer for this task if still alive
+  if task_id and task_terminals[task_id] then
+    local old = task_terminals[task_id]
+    if old and vim.api.nvim_buf_is_valid(old) then
+      pcall(vim.api.nvim_buf_delete, old, { force = true })
+    end
+    task_terminals[task_id] = nil
+  end
+
   local opts = {
     win = { position = "bottom", height = 0.3 },
   }
@@ -40,35 +40,17 @@ local function run_in_term(cmd, cwd, task_id)
     opts.cwd = cwd
   end
 
-  local term, created
-  if task_id then
-    -- persistent terminal per task: reuse & reset
-    local task_opts = vim.deepcopy(opts)
-    task_opts.count = task_count(task_id)
-    term, created = Snacks.terminal.get(shell, task_opts)
-  else
-    -- one-shot terminal for unnamed tasks
-    local tagged = cmd .. " #" .. (vim.uv or vim.loop).hrtime()
-    term, created = Snacks.terminal.get({ "sh", "-c", tagged }, opts)
+  local full_cmd = cmd
+  if cwd and cwd ~= "" and cwd ~= "." then
+    full_cmd = "cd " .. vim.fn.shellescape(cwd) .. " && " .. cmd
   end
 
-  if not term then return end
-  term:show():focus()
-
-  local buf = term.buf
-  if buf and vim.api.nvim_buf_is_valid(buf) then
-    local job_id = vim.b[buf].terminal_job_id
-    if job_id and task_id then
-      -- reset previous run and send command fresh
-      if not created then
-        vim.fn.chansend(job_id, "\x03")
-        vim.wait(50, function() return false end)
-      end
-      local prefix = ""
-      if cwd and cwd ~= "" and cwd ~= "." then
-        prefix = "cd " .. vim.fn.shellescape(cwd) .. " && "
-      end
-      vim.fn.chansend(job_id, prefix .. cmd .. "\n")
+  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
+  local term = Snacks.terminal.get({ "sh", "-c", full_cmd .. " #" .. tag }, opts)
+  if term then
+    term:show():focus()
+    if task_id and term.buf then
+      task_terminals[task_id] = term.buf
     end
   end
 end
