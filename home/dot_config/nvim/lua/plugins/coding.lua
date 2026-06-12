@@ -309,4 +309,48 @@ return {
       end
     end,
   },
+  {
+    -- Quick jump — motion with labels
+    'folke/flash.nvim',
+    event = "VeryLazy",
+    keys = {
+      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,        desc = "Flash" },
+      { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,  desc = "Flash Treesitter" },
+      { "r",     mode = "o",               function() require("flash").remote() end,      desc = "Remote Flash" },
+      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "i", "x", "t" }, function() require("flash").jump() end,        desc = "Flash" },
+    },
+    opts = {
+      labels = "abcdefghijklmnopqrstuvwxyz",
+      search = {
+        mode = function(str)
+          return "\\V" .. str
+        end,
+      },
+      jump = {
+        autojump = true,
+      },
+    },
+  },
+  {
+    -- Test runner (adapters menyusul)
+    'nvim-neotest/neotest',
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "antoineco/neotest-plenary",     -- untuk Neovim Lua tests
+    },
+    keys = {
+      { "<leader>zt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run file" },
+      { "<leader>zT", function() require("neotest").run.run(vim.uv.cwd()) end,       desc = "Run all" },
+      { "<leader>zr", function() require("neotest").run.run() end,                   desc = "Run nearest" },
+      { "<leader>zs", function() require("neotest").summary.toggle() end,            desc = "Toggle summary" },
+      { "<leader>zo", function() require("neotest").output.open({ enter = true }) end, desc = "Show output" },
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {},
+      })
+    end,
+  },
 }

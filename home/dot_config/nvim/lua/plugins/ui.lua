@@ -28,6 +28,13 @@ return {
         { "<leader>Th", desc = "Horizontal" },
         { "<leader>Tv", desc = "Vertical" },
         { "<leader>Tf", desc = "Float" },
+        -- [T]est (using <leader>z to avoid conflict with tb/td toggles)
+        { "<leader>z", group = "󰙨 [T]est" },
+        { "<leader>zt", desc = "Run file" },
+        { "<leader>zT", desc = "Run all" },
+        { "<leader>zr", desc = "Run nearest" },
+        { "<leader>zs", desc = "Summary" },
+        { "<leader>zo", desc = "Output" },
         -- [R]est
         { "<leader>R", group = " [R]est Client" },
         -- [F]ind
@@ -245,7 +252,6 @@ return {
               "snacks_picker_list",
               "snacks_picker_preview",
               "neo-tree",
-              "snacks_terminal",
             },
           },
         },
