@@ -1,3 +1,4 @@
+local gh = require("github_token")
 return {
   {
     -- Add Wakatime to tracking coding activities in Neovim
@@ -338,6 +339,7 @@ return {
     event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      gh.url("nvim-neotest/neotest-plenary"),
     },
     keys = {
       { "<leader>zt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run file" },
@@ -348,7 +350,7 @@ return {
     },
     config = function()
       require("neotest").setup({
-        adapters = { require("neotest.plenary") },
+        adapters = { require("neotest_plenary") },
       })
     end,
   },
