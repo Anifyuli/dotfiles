@@ -52,8 +52,6 @@ local function run_in_term(cmd, cwd, task_id)
 
   local buf = term.buf
   if not buf or not vim.api.nvim_buf_is_valid(buf) then return end
-  local job_id = vim.b[buf] and vim.b[buf].terminal_job_id
-  if not job_id then return end
 
   local prefix = ""
   if cwd and cwd ~= "" and cwd ~= "." then
@@ -61,9 +59,11 @@ local function run_in_term(cmd, cwd, task_id)
   end
 
   if created then
-    vim.fn.chansend(job_id, prefix .. cmd .. "\n")
+    vim.fn.term_sendkeys(buf, prefix .. cmd .. "\n")
   else
-    vim.fn.chansend(job_id, "\x03" .. prefix .. cmd .. "\n")
+    vim.fn.term_sendkeys(buf, "\x03")
+    vim.wait(200, function() return false end)
+    vim.fn.term_sendkeys(buf, prefix .. cmd .. "\n")
   end
 end
 
