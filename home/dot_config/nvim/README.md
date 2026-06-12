@@ -1,17 +1,17 @@
-# Konfigurasi Neovim
+# Neovim Configuration
 
-Konfigurasi Neovim modular berbasis [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim), fokus pada pengembangan TypeScript/JavaScript/React dengan fitur IDE lengkap.
+A modular Neovim configuration based on [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim), focused on TypeScript/JavaScript/React development with full IDE features.
 
-Config ini ada di dalam repo dotfiles [Chezmoi](https://chezmoi.io) di [github.com/Anifyuli/dotfiles](https://github.com/Anifyuli/dotfiles).
+This config lives inside a [Chezmoi](https://chezmoi.io) dotfiles repo at [github.com/Anifyuli/dotfiles](https://github.com/Anifyuli/dotfiles).
 
-## Persyaratan
+## Requirements
 
-- Neovim **>= 0.12.x** (menggunakan `vim.uv`, `vim.lsp.config`, dan API terbaru lainnya)
-- **Nerd Font** (untuk ikon di which-key, statusline, bufferline, dll.)
-- `git`, `make`, `unzip`, C compiler (untuk Treesitter dan plugin native)
-- **Opsional:** `lazygit`, `ripgrep`, `fd`, `jq` (untuk pencarian dan Hurl)
+- Neovim **>= 0.12.x** (uses `vim.uv`, `vim.lsp.config`, and other recent APIs)
+- **Nerd Font** (for icons in which-key, statusline, bufferline, etc.)
+- `git`, `make`, `unzip`, C compiler (for Treesitter and native plugins)
+- **Optional:** `lazygit`, `ripgrep`, `fd`, `jq` (for enhanced search and Hurl)
 
-## Clone tanpa Chezmoi
+## Clone without Chezmoi
 
 ```bash
 git clone --depth 1 --filter=blob:none --sparse \
@@ -24,151 +24,151 @@ rm -rf /tmp/dotfiles
 nvim
 ```
 
-## Mulai Cepat (dengan Chezmoi)
+## Quick Start (with Chezmoi)
 
 ```bash
 # Install Chezmoi
 sudo dnf install chezmoi  # Fedora
-# atau: brew install chezmoi
+# or: brew install chezmoi
 
-# Terapkan dotfiles dari repo sumber
+# Apply dotfiles from the source repo
 chezmoi init --apply https://github.com/Anifyuli/dotfiles.git
 
-# Jalankan Neovim — plugin akan terinstall otomatis
+# Start Neovim — plugins will auto-install
 nvim
 ```
 
-### Penggunaan sehari-hari
+### Day-to-day usage
 
 ```bash
-# Edit file yang dikelola (buka di $EDITOR)
+# Edit a managed file (opens in $EDITOR)
 chezmoi edit ~/.config/nvim/init.lua
 
-# Lihat perubahan tertunda
+# See pending changes
 chezmoi diff
 
-# Terapkan perubahan ke home directory
+# Apply changes to home directory
 chezmoi apply
 
-# Commit dan push semua perubahan
-chezmoi cd   # masuk ke direktori sumber
+# Commit and push all changes
+chezmoi cd   # enter source directory
 git add . && git commit -m "update nvim config"
 git push
 ```
 
-## Struktur
+## Structure
 
 ```
 ~/.config/nvim/
 ├── init.lua              # Entry point
-├── .editorconfig         # EditorConfig (indent 2-spasi)
-├── KEYMAPS.md            # Referensi keymap lengkap
+├── .editorconfig         # EditorConfig (2-space indent)
+├── KEYMAPS.md            # Full keymap reference
 ├── lazy-lock.json        # Plugin lockfile
 └── lua/
     ├── core/
-    │   ├── lazy.lua          # Bootstrap lazy.nvim
-    │   ├── lazy-plugins.lua  # Loader spesifikasi plugin
-    │   ├── options.lua       # Opsi Neovim
-    │   ├── keymaps.lua       # Keymap global
+    │   ├── lazy.lua          # Lazy.nvim bootstrap
+    │   ├── lazy-plugins.lua  # Plugin spec loader
+    │   ├── options.lua       # Neovim options
+    │   ├── keymaps.lua       # Global keymaps
     │   └── autocmds.lua      # Autocommands
     └── plugins/
         ├── ui.lua          # Which-key, bufferline, edgy, neo-tree, lualine
         ├── snacks.lua      # Picker, image, dashboard, terminal, scroll
         ├── treesitter.lua  # Treesitter + textobjects
-        ├── lspconfig.lua   # LSP, Mason, formatter
-        ├── coding.lua      # Git, komentar, flash, neotest, completion, indent, trouble
+        ├── lspconfig.lua   # LSP, Mason, formatters
+        ├── coding.lua      # Git, comments, flash, neotest, completion, indent, trouble
         ├── debugger.lua    # DAP + DAP UI
         └── lang/
-            ├── typescript.lua  # Konfigurasi DAP TS/JS
-            ├── http.lua        # Klien Kulala .http
+            ├── typescript.lua  # TS/JS DAP configs
+            ├── http.lua        # Kulala .http client
             ├── markdown.lua    # Marksman, markdownlint, preview
             ├── json.lua        # SchemaStore, jsonls
-            └── tailwind.lua    # LSP Tailwind + pratinjau warna
+            └── tailwind.lua    # Tailwind LSP + color preview
 ```
 
-## Fitur
+## Features
 
 ### Editor
-- Tombol Leader dipetakan ke `Space` dengan `which-key.nvim` (delay 50ms)
-- Indentasi 2-spasi, smart tabs via `vim-sleuth`
-- Undo persisten (10k level)
-- Pencarian cerdas (case-insensitive saat semua huruf kecil)
-- Buat direktori otomatis saat menyimpan
-- Pergerakan `j`/`k` sadar word-wrap
+- Leader key mapped to `Space` with `which-key.nvim` popup (50ms delay)
+- 2-space indentation, smart tabs via `vim-sleuth`
+- Persistent undo (10k levels)
+- Smart search (case-insensitive when all lowercase)
+- Auto-create directories on save
+- Word-wrap aware `j`/`k` movement
 
-### Tema & UI
-- **Skema warna:** Gruvbox (soft contrast, italic comments)
-- **Dashboard:** Gaya Doom dengan statistik startup
-- **Statusline:** Lualine dengan mode, nama file, baris/kolom
-- **Bufferline:** Bufferline.nvim dengan devicon, diagnostik, dukungan sidebar
-- **File explorer:** Neo-tree v3 dengan filesystem, buffer, status git
+### Theme & UI
+- **Colorscheme:** Gruvbox (soft contrast, italic comments)
+- **Dashboard:** Doom-style with startup timing stats
+- **Statusline:** Lualine with mode, filename, line/col
+- **Bufferline:** Bufferline.nvim with devicons, diagnostics, sidebar support
+- **File explorer:** Neo-tree v3 with filesystem, buffers, git status sources
 
 ### LSP & Completion
-- **Mason** auto-install server LSP: `ts_ls`, `lua_ls`, `cssls`, `html`, `eslint`, `tailwindcss`, `marksman`
-- **Formatter:** Prettier, ESLint, Stylua, markdownlint
-- **nvim-cmp** dengan sumber LSP, LuaSnip, path, dan buffer
-- Auto-pairing bracket
+- **Mason** auto-installs LSP servers: `ts_ls`, `lua_ls`, `cssls`, `html`, `eslint`, `tailwindcss`, `marksman`
+- **Formatters:** Prettier, ESLint, Stylua, markdownlint
+- **nvim-cmp** with LSP, LuaSnip, path, and buffer sources
+- Auto-pairing for brackets
 
-### Tools Coding
+### Coding Tools
 - **Git:** Gitsigns (inline blame, hunk staging), Fugitive, Rhubarb
-- **Komentar:** `gc` untuk toggle, highlighting TODO/FIXME
-- **Panduan indent** dengan karakter blankline
-- **Trouble** panel untuk diagnostik dan daftar TODO/FIXME
+- **Comments:** `gc` to toggle, TODO/FIXME highlighting
+- **Indent guides** with blankline characters
+- **Trouble** panel for diagnostics and TODO/FIXME lists
 
 ### Debugging (DAP)
-- Debug adapter JavaScript/TypeScript via Mason
-- DAP UI dengan scopes, breakpoints, stacks, watches, REPL
-- Konfigurasi untuk Node.js, NestJS, React Native, Expo
+- JavaScript/TypeScript debug adapter via Mason
+- DAP UI with scopes, breakpoints, stacks, watches, REPL
+- Configurations for Node.js, NestJS, React Native, Expo
 
 ### Terminal
-- Snacks Terminal dengan tmux (tata letak horizontal/vertikal/float)
-- Sesi tmux baru setiap toggle (tidak ada re-attach basi)
-- Indikator Winbar, navigasi window dari mode terminal
+- Snacks Terminal with tmux (horizontal/vertical/float layouts)
+- Fresh tmux session on every toggle (no stale re-attach)
+- Winbar indicator, window navigation from terminal mode
 
-### Dukungan Bahasa
-| Bahasa | LSP | Tools |
-|--------|-----|-------|
+### Language Support
+| Language | LSP | Tools |
+|----------|-----|-------|
 | TypeScript/JavaScript | `ts_ls`, `eslint` | DAP, complete function calls |
 | Lua | `lua_ls` | Neovim runtime library |
-| CSS/HTML | `cssls`, `html` | Pratinjau warna Tailwind |
-| JSON | `jsonls` | Validasi SchemaStore |
-| HTTP/REST | `kulala` (built-in) | Eksekusi file .http, scripting, auth |
-| Markdown | `marksman` | markdownlint, render inline |
-| Tailwind CSS | `tailwindcss` | Colorizer di menu completion |
+| CSS/HTML | `cssls`, `html` | Tailwind color preview |
+| JSON | `jsonls` | SchemaStore validation |
+| HTTP/REST | `kulala` (built-in) | .http file execution, scripting, auth |
+| Markdown | `marksman` | markdownlint, inline render |
+| Tailwind CSS | `tailwindcss` | Colorizer in completion menu |
 
 ### Text Objects (Treesitter)
-| Objek | Pilih | Pindah |
-|-------|-------|--------|
+| Object | Select | Move |
+|--------|--------|------|
 | Parameter | `aa` / `ia` | Swap: `<leader>a` / `<leader>A` |
-| Fungsi | `af` / `if` | `]m` / `[m` |
+| Function | `af` / `if` | `]m` / `[m` |
 | Class | `ac` / `ic` | `]]` / `[[` |
 
-## Keymap
+## Keymaps
 
-Lihat [KEYMAPS.md](./KEYMAPS.md) untuk referensi lengkap.
+See [KEYMAPS.md](./KEYMAPS.md) for the complete reference.
 
-**Sorotan cepat:**
+**Quick highlights:**
 
-| Tombol | Aksi |
-|--------|------|
-| `Space+ff` | Cari file |
-| `Space+/` atau `Space+sg` | Live grep |
+| Key | Action |
+|-----|--------|
+| `Space+ff` | Find files |
+| `Space+/` or `Space+sg` | Live grep |
 | `Space+e` | File explorer |
 | `Space+gl` | LazyGit |
 | `Space+T h/v/f` | Terminal (horiz/vert/float) |
 | `F5` | Debug continue |
 | `gd` | Go to definition |
-| `K` | Hover dokumentasi |
+| `K` | Hover documentation |
 
-## Plugin (~50 total)
+## Plugins (~50 total)
 
-Dikelola oleh [lazy.nvim](https://github.com/folke/lazy.nvim). Tekan `Space+L` atau jalankan `:Lazy` untuk mengelola.
+Managed by [lazy.nvim](https://github.com/folke/lazy.nvim). Press `Space+L` or run `:Lazy` to manage.
 
-Plugin utama: gruvbox, which-key, snacks.nvim, neo-tree, bufferline, lualine, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, flash.nvim, neotest, render-markdown, kulala.
+Key plugins: gruvbox, which-key, snacks.nvim, neo-tree, bufferline, lualine, treesitter, nvim-cmp, lspconfig, mason, gitsigns, fugitive, trouble, nvim-dap, flash.nvim, neotest, render-markdown, kulala.
 
-## Catatan
+## Notes
 
-- Buffer terminal difilter dari bufferline dan manajemen sesi
-- DAP UI terbuka otomatis saat debug mulai dan tertutup saat selesai
-- Format on save diaktifkan global via autocmd `BufWritePre`
-- Tombol `q` menutup buffer khusus (help, LSP info, quickfix, dll.)
+- Terminal buffers are filtered out from the bufferline and session management
+- DAP UI opens automatically on debug start and closes on termination
+- Format on save is enabled globally via `BufWritePre` autocmd
+- The `q` key closes special buffers (help, LSP info, quickfix, etc.)

@@ -1,12 +1,12 @@
-# Referensi Keymap Neovim
+# Neovim Keymap Reference
 
-**Tombol Leader** = `Space`
+**Leader key** = `Space`
 
 **Notasi modifier:** `Ctrl` = tombol Control, `Alt` = tombol Alt, `Shift` = tombol Shift, `Space` = spasi
 
 ---
 
-## Umum
+## General
 
 | Tombol | Mode | Fungsi |
 |--------|------|--------|
@@ -17,14 +17,14 @@
 | `Del` | Visual | Hapus tanpa yank |
 | `J` / `K` | Normal, Visual | Gerak cerdas (respek word wrap) |
 
-## Navigasi Window
+## Window Navigation
 
 | Tombol | Fungsi |
 |--------|--------|
 | `Ctrl+H/J/K/L` | Pindah ke kiri/bawah/atas/kanan |
 | `Ctrl+↑/↓/←/→` | Resize window |
 
-## LSP & Diagnostik
+## LSP & Diagnostics
 
 | Tombol | Fungsi |
 |--------|--------|
@@ -35,15 +35,12 @@
 | `Space+D` | Type definition |
 | `K` | Hover dokumentasi |
 | `Space+R N` | Rename symbol |
-| `Space+C A` | Code action (Normal & Visual) |
+| `Space+C A` | Code action |
 | `Space+D S` | Document symbols |
 | `Space+W S` | Workspace symbols |
 | `Space+C F` | Format buffer |
-| `Space+C D` | Diagnostik baris (float) |
-| `[d` / `]d` | Diagnostik sebelumnya/selanjutnya |
-| (otomatis) | — | Popup diagnostik saat cursor diam di error |
-
-> **Catatan:** Popup diagnostik muncul otomatis pas cursor berhenti bentar di baris error — mirip hover tooltip VS Code/Zed. Tutup otomatis pas cursor pindah. Code action (`<leader>ca`) di visual mode nerapin fix ke selection.
+| `Space+C D` | Line diagnostics (float) |
+| `[d` / `]d` | Diagnostic sebelumnya/selanjutnya |
 
 ## Picker (Snacks)
 
@@ -58,23 +55,23 @@
 | `Space+sh` | Cari help |
 | `Space+sk` | Cari keymap |
 | `Space+ss` | LSP Symbols |
-| `Space+sd` | Cari diagnostik |
+| `Space+sd` | Cari diagnostic |
 | `Space+sr` | Resume |
 | `Space+s.` | File terbaru |
 | `Space+sn` | File config Neovim |
 | `Space+s/` | Cari di file terbuka |
-| `Space+sm` | Ikon |
+| `Space+sm` | Icons |
 | `Space+sM` | Man pages |
 | `Space+,` | Buffer |
 | `Space+<space>` | Smart find |
-| `Space+:` | Riwayat command |
+| `Space+:` | Command history |
 
-## Trouble (Dialog Error/Warning)
+## Trouble (Error/Warning Dialog)
 
 | Tombol | Fungsi |
 |--------|--------|
-| `Space+X X` | Toggle panel diagnostik |
-| `Space+X W` | Toggle diagnostik buffer |
+| `Space+X X` | Toggle panel diagnostic |
+| `Space+X W` | Toggle diagnostic buffer |
 | `Space+X T` | Toggle TODO/FIXME |
 | `Space+C X` | Toggle quickfix list |
 
@@ -91,7 +88,7 @@
 | `Space+B` | Toggle breakpoint |
 | `Space+Shift+B` | Conditional breakpoint |
 | `Space+D R` | Restart |
-| `Space+D D` | Jalankan konfigurasi DAP |
+| `Space+D D` | Run DAP configuration |
 
 ## Git (Gitsigns)
 
@@ -105,26 +102,26 @@
 | `Space+Shift+R` | Reset buffer |
 | `Space+H P` | Preview hunk |
 | `Space+H B` | Blame line |
-| `Space+H D` | Diff terhadap index |
-| `Space+Shift+D` | Diff terhadap commit terakhir |
+| `Space+H D` | Diff against index |
+| `Space+Shift+D` | Diff against last commit |
 | `Space+G B` | Toggle inline blame |
 | `Space+G D` | Toggle deleted |
-| `ih` | Text object: pilih hunk |
+| `ih` | Text object: select hunk |
 
-## Text Objects (Treesitter)
+## Treesitter Text Objects
 
 | Tombol | Fungsi |
 |--------|--------|
 | `aa` / `ia` | Parameter outer/inner |
-| `af` / `if` | Fungsi outer/inner |
+| `af` / `if` | Function outer/inner |
 | `ac` / `ic` | Class outer/inner |
-| `]m` / `[m` | Awal fungsi berikutnya/sebelumnya |
-| `]]` / `[[` | Awal class berikutnya/sebelumnya |
+| `]m` / `[m` | Function start berikutnya/sebelumnya |
+| `]]` / `[[` | Class start berikutnya/sebelumnya |
 | `Space+A` / `Space+Shift+A` | Swap parameter berikutnya/sebelumnya |
-| `Ctrl+Space` | Seleksi incremental (expand) |
-| `Alt+Space` | Seleksi incremental (shrink) |
+| `Ctrl+Space` | Incremental selection (expand) |
+| `Alt+Space` | Incremental selection (shrink) |
 
-## Manajemen Buffer
+## Buffer Management
 
 | Tombol | Fungsi |
 |--------|--------|
@@ -138,20 +135,20 @@
 
 | Tombol | Fungsi |
 |--------|--------|
-| `Space+z T` | Jalankan semua test |
-| `Space+z t` | Jalankan file |
-| `Space+z r` | Jalankan test terdekat |
+| `Space+z T` | Run all tests |
+| `Space+z t` | Run file |
+| `Space+z r` | Run nearest test |
 | `Space+z s` | Toggle summary |
-| `Space+z o` | Tampilkan output |
+| `Space+z o` | Show output |
 
-## Lompat Cepat (Flash)
+## Quick Jump (Flash)
 
 | Tombol | Mode | Fungsi |
 |--------|------|--------|
-| `s` | Normal | Lompat ke label |
-| `S` | Normal, Visual | Lompat ke kata (treesitter) |
+| `s` | Normal | Jump ke label |
+| `S` | Normal, Visual | Jump ke kata (treesitter) |
 | `R` | Normal | Remote jump |
-| `Ctrl+S` | Insert | Lompat ke label |
+| `Ctrl+S` | Insert | Jump ke label |
 | `r` | Op-pending | Remote operator |
 
 ## Terminal (Snacks/Tmux)
@@ -177,20 +174,20 @@
 | `Space+R D` | Kirim request (debug mode) |
 | `Space+R B` | Buka scratchpad |
 
-## Lainnya
+## Other
 
 | Tombol | Fungsi |
 |--------|--------|
 | `Space+e` | Toggle file explorer (Neo-tree) |
 | `Space+gl` | LazyGit (floating) |
-| `gc` | Toggle komentar (Normal/Visual) |
+| `gc` | Toggle comment (Normal/Visual) |
 | `Space+C P` | Toggle markdown render |
 | `Space+Q S` / `Space+Q D` / `Space+Q L` | Session save/restore |
 
-## Perintah
+## Commands
 
-| Perintah | Fungsi |
-|----------|--------|
+| Command | Fungsi |
+|---------|--------|
 | `:Format` | Format buffer via LSP |
 | `:ToggleQuickfix` | Toggle quickfix window |
-| `:LineDiagnostics` | Tampilkan diagnostik baris |
+| `:LineDiagnostics` | Show line diagnostics |
