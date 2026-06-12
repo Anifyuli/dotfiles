@@ -64,7 +64,8 @@ return {
       { "<leader>db", desc = "Debug: Toggle Breakpoint" },
       { "<leader>dB", desc = "Debug: Set Breakpoint" },
       { "<F4>", desc = "Debug: Run to Cursor" },
-      { "<leader>dr", desc = "Debug: Restart" },
+    { "<leader>dr", desc = "Debug: Restart" },
+    { "<leader>dd", desc = "Debug: pick and run" },
       { "<F12>", desc = "Debug: Toggle UI" },
     })
 
