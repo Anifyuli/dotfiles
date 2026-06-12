@@ -104,8 +104,8 @@
 | `Space+H B` | Blame line |
 | `Space+H D` | Diff against index |
 | `Space+Shift+D` | Diff against last commit |
-| `Space+T B` | Toggle inline blame |
-| `Space+T D` | Toggle deleted |
+| `Space+G B` | Toggle inline blame |
+| `Space+G D` | Toggle deleted |
 | `ih` | Text object: select hunk |
 
 ## Treesitter Text Objects
@@ -131,7 +131,27 @@
 | `Space+B D` | Hapus buffer |
 | `Space+Shift+D` | Hapus buffer (paksa) |
 
-## Terminal (Toggleterm)
+## Test (Neotest)
+
+| Tombol | Fungsi |
+|--------|--------|
+| `Space+z T` | Run all tests |
+| `Space+z t` | Run file |
+| `Space+z r` | Run nearest test |
+| `Space+z s` | Toggle summary |
+| `Space+z o` | Show output |
+
+## Quick Jump (Flash)
+
+| Tombol | Mode | Fungsi |
+|--------|------|--------|
+| `s` | Normal | Jump ke label |
+| `S` | Normal, Visual | Jump ke kata (treesitter) |
+| `R` | Normal | Remote jump |
+| `Ctrl+S` | Insert | Jump ke label |
+| `r` | Op-pending | Remote operator |
+
+## Terminal (Snacks/Tmux)
 
 | Tombol | Mode | Fungsi |
 |--------|------|--------|
@@ -158,8 +178,8 @@
 
 | Tombol | Fungsi |
 |--------|--------|
-| `Space+e` | Toggle file explorer (Snacks) |
-| `Space+lg` | LazyGit (floating) |
+| `Space+e` | Toggle file explorer (Neo-tree) |
+| `Space+gl` | LazyGit (floating) |
 | `gc` | Toggle comment (Normal/Visual) |
 | `Space+C P` | Toggle markdown render |
 | `Space+Q S` / `Space+Q D` / `Space+Q L` | Session save/restore |
