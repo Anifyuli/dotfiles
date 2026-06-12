@@ -60,6 +60,8 @@ return {
         { "<leader>cl", desc = "LSP Info" },
         -- [D]ebug
         { "<leader>d", group = "󰃤 [D]ebug" },
+        { "<leader>db", desc = "Toggle Breakpoint" },
+        { "<leader>dB", desc = "Set Breakpoint" },
         { "<leader>dr", desc = "Restart" },
         { "<leader>ds", desc = "Document Symbols" },
         -- [H]unk
