@@ -37,19 +37,9 @@ local function run_in_term(cmd, cwd, task_id)
   end
 
   if buf and vim.api.nvim_buf_is_valid(buf) then
-    local win = vim.fn.bufwinnr(buf)
-    if win and win > 0 then
-      -- window is visible → user wants to rerun → kill and recreate
-      stop_task_term(task_terms[task_id])
-      task_terms[task_id] = nil
-    else
-      -- window closed but buffer alive → just reopen (e.g. accidental edgy close)
-      local term = task_terms[task_id]
-      if type(term) == "table" and term.show then
-        term:show():focus()
-      end
-      return
-    end
+    -- always kill and recreate, regardless of window visibility
+    stop_task_term(task_terms[task_id])
+    task_terms[task_id] = nil
   end
 
   local shell = vim.o.shell or "sh"
