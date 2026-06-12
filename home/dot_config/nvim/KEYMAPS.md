@@ -35,12 +35,15 @@
 | `Space+D` | Type definition |
 | `K` | Hover dokumentasi |
 | `Space+R N` | Rename symbol |
-| `Space+C A` | Code action |
+| `Space+C A` | Code action (Normal & Visual) |
 | `Space+D S` | Document symbols |
 | `Space+W S` | Workspace symbols |
 | `Space+C F` | Format buffer |
 | `Space+C D` | Line diagnostics (float) |
 | `[d` / `]d` | Diagnostic sebelumnya/selanjutnya |
+| (auto) | Diagnostic popup on cursor hold |
+
+> **Note:** Diagnostic popup appears automatically on cursor hold (like VS Code hover tooltip). Auto-closes on cursor move. Code action (`<leader>ca`) in visual mode applies to the selection.
 
 ## Picker (Snacks)
 
