@@ -95,11 +95,7 @@
       "model": "codestral-latest",
     },
   },
-  "language_models": {
-    "ollama": {
-      "auto_discover": true,
-    },
-  },
+  "language_models": {},
   "agent_servers": {
     "kilo": { "type": "registry" },
     "gemini": { "type": "registry" },
