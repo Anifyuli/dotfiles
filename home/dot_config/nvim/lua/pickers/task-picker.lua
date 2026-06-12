@@ -3,6 +3,7 @@ local M = {}
 local exclude_labels = { "install", "deploy" }
 
 local function should_include(label)
+  if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
     if label:lower():find(pattern, 1, true) then
       return false
@@ -24,8 +25,9 @@ local function collect_package_scripts()
   if not data or not data.scripts then return {} end
   local results = {}
   for name, script in pairs(data.scripts) do
-    if should_include(name) then
-      table.insert(results, { source = "npm", label = name, description = script })
+    local label = type(name) == "string" and name or ""
+    if should_include(label) then
+      table.insert(results, { source = "npm", label = label, text = label, description = type(script) == "string" and script or "" })
     end
   end
   table.sort(results, function(a, b) return a.label < b.label end)
@@ -56,17 +58,19 @@ local function collect_mise_tasks()
         if output ~= "" then
           local ok, tasks = pcall(vim.json.decode, output)
           if ok and tasks then
-            for _, t in ipairs(tasks) do
-              if should_include(t.name) and not seen[t.name] then
-                seen[t.name] = true
-                table.insert(results, {
-                  source = "mise",
-                  label = t.name,
-                  description = t.description or "",
-                  dir = dir,
-                })
-              end
+          for _, t in ipairs(tasks) do
+            local label = type(t.name) == "string" and t.name or ""
+            if should_include(label) and not seen[label] then
+              seen[label] = true
+              table.insert(results, {
+                source = "mise",
+                label = label,
+                text = label,
+                description = type(t.description) == "string" and t.description or "",
+                dir = dir,
+              })
             end
+          end
           end
         end
       end
@@ -81,8 +85,9 @@ local function collect_vscode_tasks()
   if not data or not data.tasks then return {} end
   local results = {}
   for _, t in ipairs(data.tasks) do
-    if should_include(t.label or "") then
-      table.insert(results, { source = "vscode", label = t.label, description = t.detail or t.command or "" })
+    local label = type(t.label) == "string" and t.label or ""
+    if should_include(label) then
+      table.insert(results, { source = "vscode", label = label, text = label, description = type(t.detail) == "string" and t.detail or type(t.command) == "string" and t.command or "" })
     end
   end
   return results
@@ -93,8 +98,9 @@ local function collect_launch_configs()
   if data and data.configurations then
     local results = {}
     for _, c in ipairs(data.configurations) do
-      if should_include(c.name or "") then
-        table.insert(results, { source = "launch", label = c.name, description = c.type or "" })
+      local label = type(c.name) == "string" and c.name or ""
+      if should_include(label) then
+        table.insert(results, { source = "launch", label = label, text = label, description = type(c.type) == "string" and c.type or "" })
       end
     end
     return results
@@ -108,8 +114,9 @@ local function collect_zed_debug()
   local results = {}
   if data[1] then
     for _, c in ipairs(data) do
-      if should_include(c.label or "") then
-        table.insert(results, { source = "zed", label = c.label, description = c.type or "" })
+      local label = type(c.label) == "string" and c.label or ""
+      if should_include(label) then
+        table.insert(results, { source = "zed", label = label, text = label, description = type(c.type) == "string" and c.type or "" })
       end
     end
   end
@@ -127,10 +134,12 @@ local function collect_taskfiles()
     if content then
       if type(content) == "table" and content[1] then
         for _, t in ipairs(content) do
-          table.insert(entries, { source = "taskfile", label = t.label or t.name or f, description = t.description or t.detail or "" })
+          local label = type(t.label) == "string" and t.label or type(t.name) == "string" and t.name or f
+          table.insert(entries, { source = "taskfile", label = label, text = label, description = type(t.description) == "string" and t.description or type(t.detail) == "string" and t.detail or "" })
         end
       elseif content.command or content.run then
-        table.insert(entries, { source = "taskfile", label = content.label or content.name or f, description = content.description or content.detail or "" })
+        local label = type(content.label) == "string" and content.label or type(content.name) == "string" and content.name or f
+        table.insert(entries, { source = "taskfile", label = label, text = label, description = type(content.description) == "string" and content.description or type(content.detail) == "string" and content.detail or "" })
       end
     end
   end
@@ -157,9 +166,9 @@ function M.pick_and_run()
 
   local results = {}
 
-  table.insert(results, { source = "dap", label = "Launch file", run = dap_run("Launch file") })
+  table.insert(results, { source = "dap", label = "Launch file", text = "Launch file", run = dap_run("Launch file") })
   table.insert(results, {
-    source = "dap", label = "Attach to process",
+    source = "dap", label = "Attach to process", text = "Attach to process",
     run = function()
       dap.run({
         type = "pwa-node", request = "attach", name = "Attach to process",
