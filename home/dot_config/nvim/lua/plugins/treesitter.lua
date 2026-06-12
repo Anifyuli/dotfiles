@@ -6,29 +6,6 @@ return {
   },
   event = { "BufReadPre", "BufNewFile" },
   build = ':TSUpdate',
-  init = function()
-    local ok, parsers = pcall(require, 'nvim-treesitter.parsers')
-    if ok and parsers and not parsers.ft_to_lang then
-      parsers.ft_to_lang = function(ft)
-        local ok, lang = pcall(vim.treesitter.language.get_lang, ft)
-        return ok and lang or ft
-      end
-    end
-
-    -- Shim untuk nvim-treesitter.configs (dihapus di versi baru, tapi masih dipakai telescope)
-    if not package.loaded['nvim-treesitter.configs'] then
-      local ts_ok, ts = pcall(require, 'nvim-treesitter')
-      local is_ts_active = false
-      if ts_ok then
-        local installed = ts.get_installed()
-        is_ts_active = #installed > 0
-      end
-      package.loaded['nvim-treesitter.configs'] = {
-        is_enabled = function() return is_ts_active end,
-        get_module = function() return { additional_vim_regex_highlighting = false } end,
-      }
-    end
-  end,
   config = function()
     -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
     vim.defer_fn(function()
