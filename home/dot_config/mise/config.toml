@@ -3,7 +3,6 @@ gradle = "latest"
 node   = "latest"
 pnpm   = "latest"
 yarn   = "latest"
-pi     = "latest"
 usage  = "latest"
 uv     = "latest"
 
@@ -16,7 +15,6 @@ uv     = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
-"npm:pi-acp"                    = "latest"
 "npm:opencode-ai"               = "latest"
 
 [settings]
