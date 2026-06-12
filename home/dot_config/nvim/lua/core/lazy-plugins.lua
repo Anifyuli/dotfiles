@@ -1,3 +1,13 @@
+local function read_file(path)
+  local f = io.open(vim.fn.expand(path), "r")
+  if not f then return nil end
+  local content = f:read("*a"):gsub("%s+", "")
+  f:close()
+  return content
+end
+
+local token = read_file("~/.config/nvim/.github_token")
+
 require('lazy').setup({
     {
       -- Gruvbox colorscheme
@@ -43,7 +53,9 @@ require('lazy').setup({
   },
   {
     git = {
-      url = "git@github.com:",
+      url = token
+        and ("https://x-access-token:" .. token .. "@github.com/")
+        or "https://github.com/",
     },
     install = {
       colorscheme = { "gruvbox" },
