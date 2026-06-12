@@ -2,9 +2,6 @@ local M = {}
 
 local exclude_labels = { "install", "deploy" }
 
--- track terminal buffers per task for reuse
-local task_terminals = {}
-
 local function should_include(label)
   if type(label) ~= "string" or label == "" then return false end
   for _, pattern in ipairs(exclude_labels) do
@@ -24,15 +21,6 @@ local function read_json(path)
 end
 
 local function run_in_term(cmd, cwd, task_id)
-  -- close previous terminal buffer for this task if still alive
-  if task_id and task_terminals[task_id] then
-    local old = task_terminals[task_id]
-    if old and vim.api.nvim_buf_is_valid(old) then
-      pcall(vim.api.nvim_buf_delete, old, { force = true })
-    end
-    task_terminals[task_id] = nil
-  end
-
   local opts = {
     win = { position = "bottom", height = 0.3 },
   }
@@ -45,14 +33,9 @@ local function run_in_term(cmd, cwd, task_id)
     full_cmd = "cd " .. vim.fn.shellescape(cwd) .. " && " .. cmd
   end
 
-  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
+  local tag = tostring((vim.uv or vim.loop).hrtime())
   local term = Snacks.terminal.get({ "sh", "-c", full_cmd .. " #" .. tag }, opts)
-  if term then
-    term:show():focus()
-    if task_id and term.buf then
-      task_terminals[task_id] = term.buf
-    end
-  end
+  if term then term:show():focus() end
 end
 
 local function collect_package_scripts()
