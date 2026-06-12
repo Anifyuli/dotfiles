@@ -267,11 +267,11 @@ end
 
 local icons = {
   mise = "\u{f013}",    -- gear
-  npm = "\u{e71c}",     -- npm
+  npm = "\u{e71e}",     -- npm
   dap = "\u{f188}",     -- bug
   vscode = "\u{f121}",  -- code
   launch = "\u{f135}",  -- rocket
-  zed = "\u{f120}",     -- terminal
+  zed = "\u{f121}",     -- code (same as vscode)
   taskfile = "\u{f15b}",-- file
 }
 
