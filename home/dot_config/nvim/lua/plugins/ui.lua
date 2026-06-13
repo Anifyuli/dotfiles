@@ -184,7 +184,14 @@ return {
           separator_style = "thin",
           always_show_bufferline = true,
           close_command = function()
+            local listed = vim.tbl_filter(function(b) return vim.bo[b].buflisted end, vim.api.nvim_list_bufs())
+            local is_last = #listed <= 1
             pcall(require("mini.bufremove").delete, 0, false)
+            if is_last then
+              vim.schedule(function()
+                pcall(function() require("snacks").dashboard() end)
+              end)
+            end
           end,
           diagnostics = "nvim_lsp",
           diagnostics_indicator = function(count, level, diagnostics_dict, context)
