@@ -96,6 +96,15 @@ autocmd("TermOpen", {
   end,
 })
 
+-- JSX/TSX commentstring biar mini.comment pake {/**/}
+autocmd("FileType", {
+  group = augroup("jsx_comment"),
+  pattern = { "typescriptreact", "javascriptreact" },
+  callback = function()
+    vim.bo.commentstring = "{/*%s*/}"
+  end,
+})
+
 -- Auto-show diagnostic under cursor on hover (like VS Code error popup)
 autocmd("CursorHold", {
   callback = function()
