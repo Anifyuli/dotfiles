@@ -85,6 +85,16 @@ autocmd("BufWritePre", {
   end
 })
 
+-- Clean up terminal buffers (no indent, no list, no cursorline)
+autocmd({ "BufEnter", "WinEnter" }, {
+  group = augroup("terminal_cleanup"),
+  pattern = "term://*",
+  callback = function()
+    vim.opt_local.list = false
+    vim.opt_local.cursorline = false
+  end,
+})
+
 -- Auto-show diagnostic under cursor on hover (like VS Code error popup)
 autocmd("CursorHold", {
   callback = function()
