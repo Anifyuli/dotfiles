@@ -18,18 +18,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-local function tmux_cmd(tag)
-  return { "sh", "-c", "tmux new-session -A -s nvimterm #" .. tag }
+local function shell_cmd(tag)
+  return { "sh", "-c", vim.o.shell .. " #" .. tag }
 end
 
 map("n", "<leader>Th", function()
-  require("snacks").terminal.toggle(tmux_cmd("h"), { win = { position = "bottom" } })
+  require("snacks").terminal.toggle(shell_cmd("h"), { win = { position = "bottom" } })
 end, { desc = " Terminal horizontal" })
 map("n", "<leader>Tv", function()
-  require("snacks").terminal.toggle(tmux_cmd("v"), { win = { position = "right" } })
+  require("snacks").terminal.toggle(shell_cmd("v"), { win = { position = "right" } })
 end, { desc = " Terminal vertical" })
 map("n", "<leader>Tf", function()
-  require("snacks").terminal.toggle(tmux_cmd("f"), { win = { position = "float" } })
+  require("snacks").terminal.toggle(shell_cmd("f"), { win = { position = "float" } })
 end, { desc = " Terminal float" })
 map({ "n", "t" }, "<F7>", function()
   require("snacks").terminal.toggle()
