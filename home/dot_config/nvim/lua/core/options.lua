@@ -34,10 +34,11 @@ opt.fillchars:append({ eob = " " })
 -- Code folding with tree-sitter
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-opt.foldcolumn = "1"
+opt.foldcolumn = "auto:2"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
+vim.opt.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = "│" })
 
 -- Auto adjust window size
 opt.equalalways = true
