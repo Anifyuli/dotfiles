@@ -114,7 +114,7 @@ local fold_ns = vim.api.nvim_create_namespace("fold_sign")
 local function update_fold_sign()
   if vim.wo.foldmethod ~= "expr" then return end
   local buf = vim.api.nvim_get_current_buf()
-  pcall(vim.api.nvim_buf_del_extmark, buf, fold_ns, 0)
+  pcall(vim.api.nvim_buf_del_extmark, buf, fold_ns, 1)
   local lnum = vim.fn.line(".")
   if vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) then
     local closed = vim.fn.foldclosed(lnum)
@@ -122,7 +122,7 @@ local function update_fold_sign()
       sign_text = (closed ~= -1) and "▸" or "▾",
       sign_hl_group = "Folded",
       priority = 200,
-      id = 0,
+      id = 1,
     })
   end
 end
