@@ -28,6 +28,7 @@ return {
         { "<leader>Th", desc = "Horizontal" },
         { "<leader>Tv", desc = "Vertical" },
         { "<leader>Tf", desc = "Float" },
+        { "<leader>Tt", desc = "Picker terminal" },
         -- [T]est (<leader>z karena tb/td pindah ke <leader>g)
         { "<leader>z", group = "󰙨 [T]est" },
         { "<leader>zt", desc = "Run file" },

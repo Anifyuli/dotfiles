@@ -34,6 +34,27 @@ map({ "n", "t" }, "<F7>", function()
   require("snacks").terminal.toggle(tmx)
 end, { desc = "Toggle terminal" })
 
+-- Terminal picker: reopen hidden terminals (e.g. after edgy close)
+map("n", "<leader>Tt", function()
+  local terminals = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].buftype == "terminal" then
+      local name = vim.fn.bufname(buf)
+      table.insert(terminals, { buf = buf, name = name ~= "" and name or "[No Name]" })
+    end
+  end
+  if #terminals == 0 then
+    vim.notify("No terminal buffers", vim.log.levels.INFO)
+    return
+  end
+  vim.ui.select(terminals, {
+    prompt = "Select terminal",
+    format_item = function(item) return item.name end,
+  }, function(choice)
+    if choice then vim.api.nvim_win_set_buf(0, choice.buf) end
+  end)
+end, { desc = "Terminal picker" })
+
 -- Remove terminal buffers
 map({ "n", "t" }, "<M-.>", function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
