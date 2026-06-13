@@ -393,8 +393,8 @@ local dap_run = function(label)
 end
 
 local function mode_label()
-  local icon = M.task_mode == "tmux" and "\u{ebc8}" or "\u{e6ae}" --  tmux /  neovim
-  return icon .. "  " .. M.task_mode:sub(1, 1):upper() .. M.task_mode:sub(2)
+  local icon = M.task_mode == "tmux" and "\u{ebc8}" or "\u{e6ae}"
+  return icon .. " " .. M.task_mode:sub(1, 1):upper() .. M.task_mode:sub(2)
 end
 
 local function show_picker(results)
@@ -418,7 +418,7 @@ local function show_picker(results)
       end
     end,
     prompt = " ",
-    title = "Tasks " .. mode_label(),
+    title = "Task: " .. mode_label(),
     preview = function(ctx)
       local item = ctx.item
       if not item then
