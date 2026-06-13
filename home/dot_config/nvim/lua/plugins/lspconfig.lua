@@ -24,6 +24,20 @@ return {
           map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
           map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
           vim.keymap.set("x", "<leader>ca", vim.lsp.buf.code_action, { buffer = event.buf, desc = "LSP: [C]ode [A]ction (selection)" })
+          -- Source actions: organize imports, add missing imports, remove unused, etc.
+          map("<leader>cA", function()
+            vim.lsp.buf.code_action({
+              apply = true,
+              context = { only = { "source" }, diagnostics = {} },
+            })
+          end, "[S]ource [A]ction")
+          -- Direct organize imports
+          map("<leader>co", function()
+            vim.lsp.buf.code_action({
+              apply = true,
+              context = { only = { "source.organizeImports" }, diagnostics = {} },
+            })
+          end, "[O]rganize Imports")
           map("K", vim.lsp.buf.hover, "Hover Documentation")
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
@@ -51,7 +65,10 @@ return {
         { "<leader>", group = "VISUAL <leader>", mode = "v" },
         { "<leader>h", group = "Git [H]unk", mode = "v" },
         { "<leader>rn", desc = "LSP: Rename" },
+        { "<leader>c", group = "LSP" },
         { "<leader>ca", desc = "LSP: Code Action" },
+        { "<leader>cA", desc = "LSP: Source Action (imports, etc.)" },
+        { "<leader>co", desc = "LSP: Organize Imports" },
         { "K", desc = "LSP: Hover" },
         { "gD", desc = "LSP: Declaration" },
       })
@@ -119,8 +136,31 @@ return {
       vim.lsp.config.ts_ls = {
         capabilities = capabilities,
         settings = {
-          completions = {
-            completeFunctionCalls = true,
+          typescript = {
+            suggest = {
+              autoImports = true,
+              includeCompletionsForImportStatements = true,
+              includeAutomaticOptionalChainCompletions = true,
+              includeCompletionsWithSnippetText = true,
+              completeFunctionCalls = true,
+            },
+            preferences = {
+              includePackageJsonAutoImports = "auto",
+              autoImportFileExcludePatterns = {},
+            },
+          },
+          javascript = {
+            suggest = {
+              autoImports = true,
+              includeCompletionsForImportStatements = true,
+              includeAutomaticOptionalChainCompletions = true,
+              includeCompletionsWithSnippetText = true,
+              completeFunctionCalls = true,
+            },
+            preferences = {
+              includePackageJsonAutoImports = "auto",
+              autoImportFileExcludePatterns = {},
+            },
           },
         },
       }

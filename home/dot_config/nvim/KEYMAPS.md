@@ -35,7 +35,9 @@
 | `Space+D` | Type definition |
 | `K` | Hover documentation |
 | `Space+R N` | Rename symbol |
-| `Space+C A` | Code action (Normal & Visual) |
+| `Space+ca` | Code action (Normal & Visual) |
+| `Space+cA` | Source action (imports, remove unused, etc.) |
+| `Space+co` | Organize imports |
 | `Space+D S` | Document symbols |
 | `Space+W S` | Workspace symbols |
 | `Space+C F` | Format buffer |
