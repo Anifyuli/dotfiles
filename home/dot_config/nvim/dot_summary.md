@@ -4,10 +4,13 @@ Managed via Chezmoi. Source: `~/.local/share/chezmoi/home/dot_config/nvim/`
 
 ## Sesi Ini
 
-- **KEYMAPS.md konsisten Inggris** — semua kolom, deskripsi, dan note full English.
-- **`<leader>Tt`** — Terminal picker: daftar semua buffer terminal hidup untuk reopen setelah edgy hide.
-- **Auto-diagnostic popup** pada CursorHold (float, auto-close saat cursor pindah).
-- **Visual mode `<leader>ca`** — code action pada selection.
+- **Toggle task mode** (`<leader>dt`): neovim (Snacks terminal) ↔ tmux (persistent session `nvim-tasks`).
+  - Tmux mode bikin headless session otomatis — gak perlu ada di dalam tmux.
+  - Task persist walau Neovim ditutup. Cek via `tmux attach -t nvim-tasks`.
+- **Prewarm cache** — task picker cache di-populate 3 detik setelah buffer pertama dibuka, `<leader>dd` jadi instan.
+- **Startup 76ms → 54ms** — defer `vim.lsp`/`vim.diagnostic` load (keymap wrapper), cache `detect_background()` dibatalkan (risiko bug > benefit).
+- **Task picker header** — `Task:  Neovim` / `Task:  Tmux`.
+- **Silent toggle** — nggak ada WARN notification kalo di luar tmux.
 
 ## Commands
 
