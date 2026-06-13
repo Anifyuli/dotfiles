@@ -18,8 +18,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- All terminals run tmux (shared session nvimterm, fresh on every toggle)
-local tmx = { "sh", "-c", "tmux kill-session -t nvimterm 2>/dev/null; exec tmux new-session -s nvimterm" }
+-- All terminals run plain shell (no nested tmux)
+local tmx = vim.o.shell
 
 map("n", "<leader>Th", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
