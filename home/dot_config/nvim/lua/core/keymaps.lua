@@ -169,6 +169,13 @@ vim.api.nvim_create_user_command('ToggleQuickfix', function()
   if qf_open then vim.cmd('cclose') else vim.cmd('copen') end
 end, { desc = 'Toggle quickfix window' })
 vim.api.nvim_create_user_command('LineDiagnostics', vim.diagnostic.open_float, { desc = 'Show diagnostics for current line' })
+vim.api.nvim_create_user_command('LspRestart', function()
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+    local config = vim.deepcopy(client.config)
+    client:stop()
+    vim.lsp.start(config)
+  end
+end, { desc = 'Restart LSP clients for current buffer' })
 
 -- Task picker / debug runner
 map('n', '<leader>dd', function()
