@@ -203,7 +203,17 @@ return {
   {
     "echasnovski/mini.comment",
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      options = {
+        custom_commentstring = function()
+          local ft = vim.bo.filetype
+          if ft == "typescriptreact" or ft == "javascriptreact" then
+            return "{/*%s*/}"
+          end
+          return nil
+        end,
+      },
+    },
   },
   {
     -- measure startuptime

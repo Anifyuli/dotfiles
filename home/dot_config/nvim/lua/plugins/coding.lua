@@ -42,12 +42,6 @@ return {
     },
   },
   {
-    -- 'gc' to comment visual regions/lines
-    'numToStr/Comment.nvim',
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {}
-  },
-  {
     -- Seamless navigation between Neovim windows & tmux panes
     'christoomey/vim-tmux-navigator',
     event = "VeryLazy",
