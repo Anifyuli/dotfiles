@@ -38,7 +38,7 @@ opt.foldcolumn = "auto:2"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
-vim.opt.fillchars:append({ foldopen = "", foldclose = "", fold = " ", foldsep = "│" })
+vim.opt.fillchars:append({ foldopen = "▾", foldclose = "▸", fold = " ", foldsep = "│" })
 
 -- Auto adjust window size
 opt.equalalways = true
