@@ -1,7 +1,10 @@
 local M = {}
 
+M.task_mode = "neovim" -- "neovim" | "tmux"; toggle via <leader>dt
+
 local exclude_labels = { "install", "deploy" }
-local task_terms = {} -- task_id -> Snacks terminal object
+local task_terms = {} -- task_id -> Snacks terminal object (neovim mode)
+local last_tmux_task = nil -- last task tag for <leader>dD in tmux mode
 
 -- cache
 local picker_cache = {}
@@ -66,6 +69,15 @@ local function read_json(path)
   return ok and data or nil
 end
 
+local function is_in_tmux()
+  return vim.env.TMUX ~= nil
+end
+
+local function stop_tmux_task(tag)
+  if not tag then return end
+  pcall(vim.fn.system, { "tmux", "kill-window", "-t", ":" .. tag })
+end
+
 ---Stop and delete a task terminal cleanly, without triggering exit notifications.
 local function stop_task_term(term)
   local buf = (type(term) == "table" and term.buf) or (type(term) == "number" and term)
@@ -78,6 +90,36 @@ local function stop_task_term(term)
 end
 
 local function run_in_term(cmd, cwd, task_id)
+  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
+
+  if M.task_mode == "tmux" then
+    if not is_in_tmux() then
+      vim.notify("Not inside tmux, falling back to Neovim mode", vim.log.levels.WARN)
+      M.task_mode = "neovim"
+    else
+      -- kill old tmux window with same tag before creating a new one
+      stop_tmux_task(tag)
+
+      local args = { "tmux", "new-window", "-n", tag }
+      if cwd and cwd ~= "" and cwd ~= "." then
+        table.insert(args, "-c")
+        table.insert(args, cwd)
+      end
+      local shell = vim.o.shell or "sh"
+      table.insert(args, shell)
+      table.insert(args, "-c")
+      table.insert(args, cmd)
+      vim.fn.system(args)
+
+      if task_id then
+        last_tmux_task = tag
+        task_terms[task_id] = nil
+      end
+      return
+    end
+  end
+
+  -- Neovim mode (Snacks terminal)
   local buf = nil
   if task_id and task_terms[task_id] then
     buf = (type(task_terms[task_id]) == "table" and task_terms[task_id].buf) or task_terms[task_id]
@@ -90,7 +132,6 @@ local function run_in_term(cmd, cwd, task_id)
   end
 
   local shell = vim.o.shell or "sh"
-  local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
 
   local opts = {
     -- `interactive = false`:
@@ -294,6 +335,11 @@ local dap_run = function(label)
   end
 end
 
+local function mode_label()
+  local icon = M.task_mode == "tmux" and "\u{ebc8}" or "\u{e6ae}" --  tmux /  neovim
+  return icon .. "  " .. M.task_mode:sub(1, 1):upper() .. M.task_mode:sub(2)
+end
+
 local function show_picker(results)
   Snacks.picker.pick({
     items = results,
@@ -313,7 +359,7 @@ local function show_picker(results)
       if item and item.run then item.run() end
     end,
     prompt = " ",
-    title = "Tasks",
+    title = "Tasks  " .. mode_label(),
     preview = function(ctx)
       local item = ctx.item
       if not item then return end
@@ -324,6 +370,8 @@ local function show_picker(results)
       if item.dir and item.dir ~= "" and item.dir ~= "." then
         table.insert(lines, "Dir    : " .. item.dir)
       end
+      table.insert(lines, "")
+      table.insert(lines, mode_label())
       if item.description and item.description ~= "" then
         table.insert(lines, "")
         table.insert(lines, item.description)
@@ -334,26 +382,7 @@ local function show_picker(results)
   })
 end
 
-function M.pick_and_run()
-  local dap_ok = false
-  if package.loaded.dap then
-    local dap = require("dap")
-    dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
-  end
-
-  local key = cache_key()
-  local cached = cache_get(key)
-  if cached then
-    local items = {}
-    for _, item in ipairs(cached) do
-      if item.source ~= "dap" or dap_ok then
-        table.insert(items, item)
-      end
-    end
-    show_picker(items)
-    return
-  end
-
+local function collect_all_tasks(dap_ok)
   local results = {}
 
   if dap_ok then
@@ -392,7 +421,6 @@ function M.pick_and_run()
   for _, task in ipairs(collect_vscode_tasks()) do
     local task_label = task.label
     task.run = function()
-      -- Re-read tasks.json at run time to get the actual command
       local data = read_json(".vscode/tasks.json")
       local c
       if data and data.tasks then
@@ -403,10 +431,8 @@ function M.pick_and_run()
       local cmd
       if c then
         if c.type == "npm" then
-          -- npm-type shorthand: run the `script` field (or label as fallback)
           cmd = "npm run " .. (type(c.script) == "string" and c.script or task_label)
         elseif type(c.command) == "string" and c.command ~= "" then
-          -- shell/process task: run verbatim command + args
           cmd = c.command .. build_args_str(c.args)
         end
       end
@@ -488,13 +514,79 @@ function M.pick_and_run()
     table.insert(results, entry)
   end
 
+  return results
+end
+
+-- Prewarm task cache after first buffer opens so <leader>dd feels instant
+local prewarm_group = vim.api.nvim_create_augroup("TaskPrewarm", { clear = true })
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = prewarm_group,
+  once = true,
+  callback = function()
+    vim.defer_fn(function()
+      local key = cache_key()
+      if not cache_get(key) then
+        local dap_ok = false
+        if package.loaded.dap then
+          local dap = require("dap")
+          dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
+        end
+        cache_set(key, collect_all_tasks(dap_ok))
+      end
+    end, 3000)
+  end,
+})
+
+function M.pick_and_run()
+  local dap_ok = false
+  if package.loaded.dap then
+    local dap = require("dap")
+    dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
+  end
+
+  local key = cache_key()
+  local cached = cache_get(key)
+  if cached then
+    local items = {}
+    for _, item in ipairs(cached) do
+      if item.source ~= "dap" or dap_ok then
+        table.insert(items, item)
+      end
+    end
+    show_picker(items)
+    return
+  end
+
+  local results = collect_all_tasks(dap_ok)
+
   cache_set(key, results)
   show_picker(results)
+end
+
+--- Toggle between Neovim (Snacks terminal) and tmux execution mode.
+function M.toggle_task_mode()
+  if not is_in_tmux() then
+    vim.notify("Not inside tmux, staying in Neovim mode", vim.log.levels.WARN)
+    M.task_mode = "neovim"
+    return
+  end
+  M.task_mode = M.task_mode == "neovim" and "tmux" or "neovim"
+  local msg = M.task_mode == "tmux" and "tmux window" or "Neovim (Snacks terminal)"
+  vim.notify("Task mode: " .. msg)
 end
 
 --- Reopen the last task terminal window without restarting the task.
 --- Useful when the terminal was accidentally closed via edgy's close button.
 function M.reopen_task_terminal()
+  if M.task_mode == "tmux" then
+    if last_tmux_task then
+      pcall(vim.fn.system, { "tmux", "select-window", "-t", ":" .. last_tmux_task })
+    else
+      vim.notify("No tmux task window to switch to", vim.log.levels.INFO)
+    end
+    return
+  end
+
   for _, term in pairs(task_terms) do
     local buf = (type(term) == "table" and term.buf) or term
     if buf and vim.api.nvim_buf_is_valid(buf) then

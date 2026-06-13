@@ -64,6 +64,7 @@ return {
         { "<leader>db", desc = "Toggle Breakpoint" },
         { "<leader>dB", desc = "Set Breakpoint" },
         { "<leader>dr", desc = "Restart" },
+        { "<leader>dt", desc = "Toggle mode (neovim/tmux)" },
         { "<leader>ds", desc = "Document Symbols" },
         -- [H]unk
         { "<leader>h", group = " [H]unk" },
