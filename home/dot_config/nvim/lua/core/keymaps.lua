@@ -32,7 +32,21 @@ map("n", "<leader>Tf", function()
   require("snacks").terminal.toggle(shell_cmd("f"), { win = { position = "float" } })
 end, { desc = " Terminal float" })
 map({ "n", "t" }, "<F7>", function()
-  require("snacks").terminal.toggle()
+  local snacks = require("snacks")
+  -- If already in a terminal buffer, close window (keeps process alive)
+  if vim.bo.buftype == "terminal" then
+    vim.cmd("close")
+    return
+  end
+  -- Find hidden Snacks terminal via list()
+  for _, term in ipairs(snacks.terminal.list()) do
+    if vim.fn.bufwinnr(term.buf) == -1 then
+      term:show():focus()
+      return
+    end
+  end
+  -- No hidden terminal found, create new default
+  snacks.terminal.toggle()
 end, { desc = "Toggle terminal" })
 
 -- Terminal picker: reopen hidden terminals (e.g. after edgy close)

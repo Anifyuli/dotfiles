@@ -1,6 +1,18 @@
 local M = {}
 
+local STATE_FILE = vim.fn.stdpath("state") .. "/task_mode"
+local function load_task_mode()
+  local f = io.open(STATE_FILE, "r")
+  if f then
+    local mode = f:read("*l")
+    f:close()
+    if mode == "tmux" or mode == "neovim" then
+      M.task_mode = mode
+    end
+  end
+end
 M.task_mode = "neovim" -- "neovim" | "tmux"; toggle via <leader>dt
+load_task_mode()
 
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object (neovim mode)
@@ -672,8 +684,18 @@ function M.toggle_task_mode()
     return
   end
   M.task_mode = M.task_mode == "neovim" and "tmux" or "neovim"
+  local f = io.open(STATE_FILE, "w")
+  if f then f:write(M.task_mode .. "\n"); f:close() end
   local msg = M.task_mode == "tmux" and "tmux (persistent)" or "Neovim (Snacks terminal)"
   vim.notify("Task mode: " .. msg)
+end
+
+--- Find the most recent window name in the tmux tasks session.
+local function last_tmux_window()
+  local output = vim.fn.system({ "tmux", "list-windows", "-t", TASKS_SESSION, "-F", "#{window_name}" })
+  if vim.v.shell_error ~= 0 then return nil end
+  local windows = vim.split(vim.trim(output), "\n")
+  return windows[#windows]
 end
 
 --- Reopen the last task terminal window without restarting the task.
@@ -681,13 +703,26 @@ end
 --- In tmux mode, re-creates the attached Snacks terminal if needed.
 function M.reopen_task_terminal()
   if M.task_mode == "tmux" then
-    if not last_tmux_task then
-      vim.notify("No tmux task window", vim.log.levels.INFO)
+    -- Check if session exists
+    vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
+    if vim.v.shell_error ~= 0 then
+      vim.notify("No tmux task session", vim.log.levels.INFO)
       return
     end
 
+    -- Resolve window tag: use last_tmux_task, or find latest window in session
+    local tag = last_tmux_task
+    if not tag then
+      tag = last_tmux_window()
+      if not tag then
+        vim.notify("No windows in tmux session", vim.log.levels.INFO)
+        return
+      end
+      last_tmux_task = tag
+    end
+
     -- Check for existing valid Snacks terminal
-    local existing = task_terms[last_tmux_task]
+    local existing = task_terms[tag]
     if existing then
       local buf = (type(existing) == "table" and existing.buf) or existing
       if buf and vim.api.nvim_buf_is_valid(buf) then
@@ -698,16 +733,9 @@ function M.reopen_task_terminal()
       end
     end
 
-    -- Check if tmux window still exists before reattaching
-    vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
-    if vim.v.shell_error ~= 0 then
-      vim.notify("tmux session '" .. TASKS_SESSION .. "' no longer exists", vim.log.levels.INFO)
-      return
-    end
-
     -- Re-create a Snacks terminal attached to the tmux window
     local shell = vim.o.shell or "sh"
-    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. last_tmux_task .. " #" .. last_tmux_task
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. tag .. " #" .. tag
     local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
       interactive = true,
       win = { position = "bottom", height = 0.3 },
