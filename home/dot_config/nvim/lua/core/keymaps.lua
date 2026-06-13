@@ -18,8 +18,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- All terminals run plain shell (no nested tmux)
-local tmx = vim.o.shell
+-- All terminals share a persistent tmux session (survives Nvim close)
+local tmx = { "sh", "-c", "tmux new-session -A -s nvimterm" }
 
 map("n", "<leader>Th", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
