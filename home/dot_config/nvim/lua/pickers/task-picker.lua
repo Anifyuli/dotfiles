@@ -116,27 +116,47 @@ local function run_in_term(cmd, cwd, task_id)
   local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
 
   if M.task_mode == "tmux" then
+    -- Kill old Snacks terminal for this task (if any)
+    local old_term = task_terms[task_id]
+    if old_term then
+      stop_task_term(old_term)
+      task_terms[task_id] = nil
+    end
+
     ensure_tmux_session()
     stop_tmux_task(tag)
 
-    local args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
-    if cwd and cwd ~= "" and cwd ~= "." then
-      table.insert(args, "-c")
-      table.insert(args, cwd)
-    end
     local shell = vim.o.shell or "sh"
-    table.insert(args, shell)
-    table.insert(args, "-c")
-    table.insert(args, cmd)
-    vim.fn.system(args)
+
+    -- Create tmux window for the task
+    local tmux_args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
+    if cwd and cwd ~= "" and cwd ~= "." then
+      table.insert(tmux_args, "-c")
+      table.insert(tmux_args, cwd)
+    end
+    table.insert(tmux_args, shell)
+    table.insert(tmux_args, "-c")
+    table.insert(tmux_args, cmd)
+    vim.fn.system(tmux_args)
 
     if is_in_tmux() then
       vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
     end
 
+    -- Open a Snacks terminal attached to the tmux session/window
+    -- This way F7 toggles it and edgy shows the hide button
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. tag .. " #" .. tag
+    local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+      interactive = true,
+      win = { position = "bottom", height = 0.3 },
+    })
+    if term then
+      term:show():focus()
+    end
+
     if task_id then
       last_tmux_task = tag
-      task_terms[task_id] = nil
+      task_terms[task_id] = term
     end
     return
   end
