@@ -84,8 +84,8 @@ local function is_in_tmux()
 end
 
 local function ensure_tmux_session()
-  local ok = pcall(vim.fn.system, { "tmux", "has-session", "-t", TASKS_SESSION })
-  if not ok then
+  vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
+  if vim.v.shell_error ~= 0 then
     vim.fn.system({ "tmux", "new-session", "-d", "-s", TASKS_SESSION })
   end
 end
