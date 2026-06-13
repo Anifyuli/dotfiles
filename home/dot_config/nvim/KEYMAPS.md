@@ -159,6 +159,7 @@
 | Key | Mode | Action |
 |-----|------|--------|
 | `F7` | Normal, Terminal | Toggle terminal |
+| `Space+T T` | Normal | Terminal picker (reopen hidden terminals) |
 | `Space+T H` | Normal | Terminal horizontal |
 | `Space+T V` | Normal | Terminal vertical |
 | `Space+T F` | Normal | Terminal floating |

@@ -2,12 +2,12 @@
 
 Managed via Chezmoi. Source: `~/.local/share/chezmoi/home/dot_config/nvim/`
 
-## Perubahan Sesi Ini
+## Sesi Ini
 
-1. **render-markdown.nvim H1 hitam fixed**: `heading.backgrounds = {}` — akar masalah `DiffText` punya `fg = #282828` (background-color gelap) yang override heading text via `hl_eol`.
-2. **headlines.nvim di-remove**: redundant dengan render-markdown.
-3. **README.md diperbarui**: instruksi clone git → Chezmoi init/apply + daily usage commands.
-4. **Config pindah ke Chezmoi**: `chezmoi add ~/.config/nvim`, local `.git` dihapus.
+- **KEYMAPS.md konsisten Inggris** — semua kolom, deskripsi, dan note full English.
+- **`<leader>Tt`** — Terminal picker: daftar semua buffer terminal hidup untuk reopen setelah edgy hide.
+- **Auto-diagnostic popup** pada CursorHold (float, auto-close saat cursor pindah).
+- **Visual mode `<leader>ca`** — code action pada selection.
 
 ## Commands
 
