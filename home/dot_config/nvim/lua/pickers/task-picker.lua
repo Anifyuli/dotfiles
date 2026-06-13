@@ -678,19 +678,43 @@ end
 
 --- Reopen the last task terminal window without restarting the task.
 --- Useful when the terminal was accidentally closed via edgy's close button.
+--- In tmux mode, re-creates the attached Snacks terminal if needed.
 function M.reopen_task_terminal()
   if M.task_mode == "tmux" then
-    if last_tmux_task then
-      if is_in_tmux() then
-        pcall(vim.fn.system, { "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. last_tmux_task })
-      else
-        vim.notify(
-          "Task running in tmux session '" .. TASKS_SESSION .. "' — attach with: tmux attach -t " .. TASKS_SESSION,
-          vim.log.levels.INFO
-        )
-      end
-    else
+    if not last_tmux_task then
       vim.notify("No tmux task window", vim.log.levels.INFO)
+      return
+    end
+
+    -- Check for existing valid Snacks terminal
+    local existing = task_terms[last_tmux_task]
+    if existing then
+      local buf = (type(existing) == "table" and existing.buf) or existing
+      if buf and vim.api.nvim_buf_is_valid(buf) then
+        if type(existing) == "table" and existing.show then
+          existing:show():focus()
+        end
+        return
+      end
+    end
+
+    -- Check if tmux window still exists before reattaching
+    vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
+    if vim.v.shell_error ~= 0 then
+      vim.notify("tmux session '" .. TASKS_SESSION .. "' no longer exists", vim.log.levels.INFO)
+      return
+    end
+
+    -- Re-create a Snacks terminal attached to the tmux window
+    local shell = vim.o.shell or "sh"
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. last_tmux_task .. " #" .. last_tmux_task
+    local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+      interactive = true,
+      win = { position = "bottom", height = 0.3 },
+    })
+    if term then
+      term:show():focus()
+      task_terms[last_tmux_task] = term
     end
     return
   end
