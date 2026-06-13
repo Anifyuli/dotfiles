@@ -85,11 +85,12 @@ autocmd("BufWritePre", {
   end
 })
 
--- Clean up terminal buffers (no indent, no list, no cursorline)
-autocmd({ "BufEnter", "WinEnter" }, {
+-- Clean up terminal buffers
+autocmd("TermOpen", {
   group = augroup("terminal_cleanup"),
-  pattern = "term://*",
   callback = function()
+    vim.b.snacks_indent = false
+    vim.b.snacks_scroll = false
     vim.opt_local.list = false
     vim.opt_local.cursorline = false
   end,
