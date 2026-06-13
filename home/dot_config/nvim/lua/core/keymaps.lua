@@ -3,9 +3,9 @@
 -- Add mapping support with calling vim.keymap.set
 local map = vim.keymap.set
 
--- Diagnostic keymaps
-map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-map('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+-- Diagnostic keymaps (wrapped to defer vim.diagnostic load)
+map('n', '[d', function() vim.diagnostic.goto_prev() end, { desc = 'Go to previous diagnostic message' })
+map('n', ']d', function() vim.diagnostic.goto_next() end, { desc = 'Go to next diagnostic message' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -142,8 +142,8 @@ map('n', '<leader>bD',
 
 -- [[ Code Editing Keymaps ]]
 
--- Format buffer
-map('n', '<leader>cf', vim.lsp.buf.format, { desc = '[F]ormat buffer' })
+-- Format buffer (wrapped to defer vim.lsp load)
+map('n', '<leader>cf', function() vim.lsp.buf.format() end, { desc = '[F]ormat buffer' })
 
 -- Toggle quickfix list
 map('n', '<leader>cx', function()
@@ -162,7 +162,7 @@ map('n', '<leader>cx', function()
 end, { desc = 'Toggle Quickfix li[x]' })
 
 -- Show line diagnostics in floating window
-map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line [D]iagnostics' })
+map('n', '<leader>cd', function() vim.diagnostic.open_float() end, { desc = 'Line [D]iagnostics' })
 
 -- LSP info
 map('n', '<leader>cl', function()
@@ -179,7 +179,7 @@ map('n', '<leader>cl', function()
 end, { desc = 'LSP [I]nfo' })
 
 -- User commands
-vim.api.nvim_create_user_command('Format', vim.lsp.buf.format, { desc = 'Format buffer using LSP' })
+vim.api.nvim_create_user_command('Format', function() vim.lsp.buf.format() end, { desc = 'Format buffer using LSP' })
 vim.api.nvim_create_user_command('ToggleQuickfix', function()
   local qf_open = false
   for _, win in ipairs(vim.api.nvim_list_wins()) do

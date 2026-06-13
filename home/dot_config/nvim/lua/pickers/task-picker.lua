@@ -69,13 +69,22 @@ local function read_json(path)
   return ok and data or nil
 end
 
+local TASKS_SESSION = "nvim-tasks"
+
 local function is_in_tmux()
   return vim.env.TMUX ~= nil
 end
 
+local function ensure_tmux_session()
+  local ok = pcall(vim.fn.system, { "tmux", "has-session", "-t", TASKS_SESSION })
+  if not ok then
+    vim.fn.system({ "tmux", "new-session", "-d", "-s", TASKS_SESSION })
+  end
+end
+
 local function stop_tmux_task(tag)
   if not tag then return end
-  pcall(vim.fn.system, { "tmux", "kill-window", "-t", ":" .. tag })
+  pcall(vim.fn.system, { "tmux", "kill-window", "-t", TASKS_SESSION .. ":" .. tag })
 end
 
 ---Stop and delete a task terminal cleanly, without triggering exit notifications.
@@ -93,30 +102,29 @@ local function run_in_term(cmd, cwd, task_id)
   local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
 
   if M.task_mode == "tmux" then
-    if not is_in_tmux() then
-      vim.notify("Not inside tmux, falling back to Neovim mode", vim.log.levels.WARN)
-      M.task_mode = "neovim"
-    else
-      -- kill old tmux window with same tag before creating a new one
-      stop_tmux_task(tag)
+    ensure_tmux_session()
+    stop_tmux_task(tag)
 
-      local args = { "tmux", "new-window", "-n", tag }
-      if cwd and cwd ~= "" and cwd ~= "." then
-        table.insert(args, "-c")
-        table.insert(args, cwd)
-      end
-      local shell = vim.o.shell or "sh"
-      table.insert(args, shell)
+    local args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
+    if cwd and cwd ~= "" and cwd ~= "." then
       table.insert(args, "-c")
-      table.insert(args, cmd)
-      vim.fn.system(args)
-
-      if task_id then
-        last_tmux_task = tag
-        task_terms[task_id] = nil
-      end
-      return
+      table.insert(args, cwd)
     end
+    local shell = vim.o.shell or "sh"
+    table.insert(args, shell)
+    table.insert(args, "-c")
+    table.insert(args, cmd)
+    vim.fn.system(args)
+
+    if is_in_tmux() then
+      vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
+    end
+
+    if task_id then
+      last_tmux_task = tag
+      task_terms[task_id] = nil
+    end
+    return
   end
 
   -- Neovim mode (Snacks terminal)
@@ -565,13 +573,13 @@ end
 
 --- Toggle between Neovim (Snacks terminal) and tmux execution mode.
 function M.toggle_task_mode()
-  if not is_in_tmux() then
-    vim.notify("Not inside tmux, staying in Neovim mode", vim.log.levels.WARN)
+  if vim.fn.executable("tmux") ~= 1 then
+    vim.notify("tmux binary not found", vim.log.levels.WARN)
     M.task_mode = "neovim"
     return
   end
   M.task_mode = M.task_mode == "neovim" and "tmux" or "neovim"
-  local msg = M.task_mode == "tmux" and "tmux window" or "Neovim (Snacks terminal)"
+  local msg = M.task_mode == "tmux" and "tmux (persistent)" or "Neovim (Snacks terminal)"
   vim.notify("Task mode: " .. msg)
 end
 
@@ -580,9 +588,13 @@ end
 function M.reopen_task_terminal()
   if M.task_mode == "tmux" then
     if last_tmux_task then
-      pcall(vim.fn.system, { "tmux", "select-window", "-t", ":" .. last_tmux_task })
+      if is_in_tmux() then
+        pcall(vim.fn.system, { "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. last_tmux_task })
+      else
+        vim.notify("Task running in tmux session '" .. TASKS_SESSION .. "' — attach with: tmux attach -t " .. TASKS_SESSION, vim.log.levels.INFO)
+      end
     else
-      vim.notify("No tmux task window to switch to", vim.log.levels.INFO)
+      vim.notify("No tmux task window", vim.log.levels.INFO)
     end
     return
   end

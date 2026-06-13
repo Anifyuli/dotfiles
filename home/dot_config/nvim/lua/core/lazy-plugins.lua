@@ -14,17 +14,22 @@ require('lazy').setup({
         contrast = 'soft',
       },
       config = function(_, opts)
-        local function detect_background()
-          local f = io.open(vim.fn.expand("~/.config/kdeglobals"), "r")
-          if not f then return end
-          local content = f:read("*a")
-          f:close()
-          local scheme = content:match("ColorScheme%s*=%s*([^\n]+)")
-          if scheme then
-            vim.o.background = scheme:lower():find("dark") and "dark" or "light"
+        do
+          local cached = vim.g._gruvbox_background
+          if not cached then
+            local f = io.open(vim.fn.expand("~/.config/kdeglobals"), "r")
+            if f then
+              local content = f:read("*a")
+              f:close()
+              local scheme = content:match("ColorScheme%s*=%s*([^\n]+)")
+              cached = scheme and (scheme:lower():find("dark") and "dark" or "light") or "dark"
+              vim.g._gruvbox_background = cached
+            end
+          end
+          if cached then
+            vim.o.background = cached
           end
         end
-        detect_background()
         require("gruvbox").setup(opts)
         vim.cmd.colorscheme("gruvbox")
       end,
