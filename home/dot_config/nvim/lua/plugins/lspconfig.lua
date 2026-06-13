@@ -65,7 +65,6 @@ return {
         { "<leader>", group = "VISUAL <leader>", mode = "v" },
         { "<leader>h", group = "Git [H]unk", mode = "v" },
         { "<leader>rn", desc = "LSP: Rename" },
-        { "<leader>c", group = "LSP" },
         { "<leader>ca", desc = "LSP: Code Action" },
         { "<leader>cA", desc = "LSP: Source Action (imports, etc.)" },
         { "<leader>co", desc = "LSP: Organize Imports" },
@@ -133,7 +132,7 @@ return {
         filetypes = { "rpm_spec", "spec" },
       }
 
-      vim.lsp.config.ts_ls = {
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         settings = {
           typescript = {
@@ -163,7 +162,8 @@ return {
             },
           },
         },
-      }
+      })
+      vim.lsp.enable("ts_ls")
 
       -- Filetype detection for RPM spec files
       vim.filetype.add({
