@@ -56,7 +56,10 @@ return {
     indent = { enabled = true },
     input = { enabled = true },
     scope = { enabled = true },
-    terminal = { enabled = true },
+    terminal = {
+      enabled = true,
+      win = { position = "bottom" },
+    },
     explorer = { enabled = false },
     picker = {
       enabled = true,

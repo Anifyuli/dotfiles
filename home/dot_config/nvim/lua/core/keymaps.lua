@@ -31,7 +31,7 @@ map("n", "<leader>Tf", function()
   require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "float" } })
 end, { desc = " Terminal float" })
 map({ "n", "t" }, "<F7>", function()
-  require("snacks").terminal.toggle(tmx, { win = { position = "bottom" } })
+  require("snacks").terminal.toggle(tmx)
 end, { desc = "Toggle terminal" })
 
 -- Terminal picker: reopen hidden terminals (e.g. after edgy close)
