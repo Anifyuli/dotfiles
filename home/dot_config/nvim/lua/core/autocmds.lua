@@ -109,6 +109,28 @@ autocmd("FileType", {
 -- Suppress built-in LSP progress notifications (fidget.nvim handles them)
 pcall(function() vim.lsp.handlers["$/progress"] = function() end end)
 
+-- Fold sign on cursor line: shows ▾ (open) or ▸ (closed) in signcolumn
+local fold_ns = vim.api.nvim_create_namespace("fold_sign")
+local function update_fold_sign()
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.bo[buf].foldmethod ~= "expr" then return end
+  pcall(vim.api.nvim_buf_del_extmark, buf, fold_ns, 0)
+  local lnum = vim.fn.line(".")
+  if vim.fn.foldlevel(lnum) > vim.fn.foldlevel(lnum - 1) then
+    local closed = vim.fn.foldclosed(lnum)
+    vim.api.nvim_buf_set_extmark(buf, fold_ns, lnum - 1, -1, {
+      sign_text = (closed ~= -1) and "▸" or "▾",
+      sign_hl_group = "Folded",
+      priority = 200,
+      id = 0,
+    })
+  end
+end
+autocmd({ "CursorMoved", "CursorMovedI" }, {
+  group = augroup("fold_sign"),
+  callback = update_fold_sign,
+})
+
 -- Auto-show diagnostic under cursor on hover (like VS Code error popup)
 autocmd("CursorHold", {
   callback = function()
