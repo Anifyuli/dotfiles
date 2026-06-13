@@ -18,20 +18,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- All terminals share a persistent tmux session (survives Nvim close)
-local tmx = { "sh", "-c", "tmux new-session -A -s nvimterm" }
+local function tmux_cmd(tag)
+  return { "sh", "-c", "tmux new-session -A -s nvimterm #" .. tag }
+end
 
 map("n", "<leader>Th", function()
-  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "bottom" } })
+  require("snacks").terminal.toggle(tmux_cmd("h"), { win = { position = "bottom" } })
 end, { desc = " Terminal horizontal" })
 map("n", "<leader>Tv", function()
-  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "right" } })
+  require("snacks").terminal.toggle(tmux_cmd("v"), { win = { position = "right" } })
 end, { desc = " Terminal vertical" })
 map("n", "<leader>Tf", function()
-  require("snacks").terminal.toggle(tmx, { count = 1, win = { position = "float" } })
+  require("snacks").terminal.toggle(tmux_cmd("f"), { win = { position = "float" } })
 end, { desc = " Terminal float" })
 map({ "n", "t" }, "<F7>", function()
-  require("snacks").terminal.toggle(tmx)
+  require("snacks").terminal.toggle()
 end, { desc = "Toggle terminal" })
 
 -- Terminal picker: reopen hidden terminals (e.g. after edgy close)
