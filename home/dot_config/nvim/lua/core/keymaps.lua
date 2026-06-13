@@ -38,8 +38,16 @@ map({ "n", "t" }, "<F7>", function()
     vim.cmd("close")
     return
   end
-  -- Find hidden Snacks terminal via list()
-  for _, term in ipairs(snacks.terminal.list()) do
+  local terms = snacks.terminal.list()
+  -- If any terminal is visible, hide it
+  for _, term in ipairs(terms) do
+    if vim.fn.bufwinnr(term.buf) ~= -1 then
+      vim.api.nvim_win_close(vim.fn.bufwinnr(term.buf), true)
+      return
+    end
+  end
+  -- No visible terminal: show a hidden one
+  for _, term in ipairs(terms) do
     if vim.fn.bufwinnr(term.buf) == -1 then
       term:show():focus()
       return
