@@ -183,6 +183,9 @@ return {
           show_close_icon = false,
           separator_style = "thin",
           always_show_bufferline = true,
+          close_command = function()
+            pcall(require("mini.bufremove").delete, 0, false)
+          end,
           diagnostics = "nvim_lsp",
           diagnostics_indicator = function(count, level, diagnostics_dict, context)
             local s = ""
