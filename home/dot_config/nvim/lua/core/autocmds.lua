@@ -72,14 +72,15 @@ autocmd({ "ColorScheme", "VimEnter" }, {
   end
 })
 
--- Format on save
+-- Format on save via null-ls only (avoids LSP progress noise from tsserver)
 autocmd("BufWritePre", {
+  group = augroup("format_on_save"),
   callback = function()
     local clients = vim.lsp.get_clients({ bufnr = 0 })
     for _, client in ipairs(clients) do
-      if client.supports_method("textDocument/formatting") then
-        vim.lsp.buf.format({ async = false })
-        break
+      if client.name == "null-ls" then
+        vim.lsp.buf.format({ async = false, name = "null-ls" })
+        return
       end
     end
   end
@@ -104,6 +105,9 @@ autocmd("FileType", {
     vim.bo.commentstring = "{/*%s*/}"
   end,
 })
+
+-- Suppress built-in LSP progress notifications (fidget.nvim handles them)
+pcall(function() vim.lsp.handlers["$/progress"] = function() end end)
 
 -- Auto-show diagnostic under cursor on hover (like VS Code error popup)
 autocmd("CursorHold", {
