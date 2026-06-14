@@ -147,7 +147,8 @@ local function run_in_term(cmd, cwd, task_id)
       local tmux_args = { "tmux", "new-window", "-c", task_cwd, "-t", TASKS_SESSION, "-n", tag }
       table.insert(tmux_args, shell)
       table.insert(tmux_args, "-c")
-      table.insert(tmux_args, cmd)
+      -- keep shell alive after command so tmux window stays open
+      table.insert(tmux_args, cmd .. "; exec " .. shell)
       vim.fn.system(tmux_args)
     end
 
