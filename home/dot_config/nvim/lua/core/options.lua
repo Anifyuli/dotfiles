@@ -14,6 +14,7 @@ opt.clipboard = "unnamedplus"
 opt.breakindent = true
 opt.undofile = true
 opt.undolevels = 10000
+opt.directory = "/tmp//"
 opt.ignorecase = true
 opt.smartcase = true
 opt.signcolumn = "yes"
