@@ -630,13 +630,13 @@ local function collect_all_tasks(dap_ok)
   return results
 end
 
--- Prewarm task cache after first buffer opens so <leader>dd feels instant
+-- Prewarm task cache right after startup so <leader>dd feels instant
 local prewarm_group = vim.api.nvim_create_augroup("TaskPrewarm", { clear = true })
-vim.api.nvim_create_autocmd("BufReadPost", {
+vim.api.nvim_create_autocmd("UIEnter", {
   group = prewarm_group,
   once = true,
   callback = function()
-    vim.defer_fn(function()
+    vim.schedule(function()
       local key = cache_key()
       if not cache_get(key) then
         local dap_ok = false
@@ -646,7 +646,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
         end
         cache_set(key, collect_all_tasks(dap_ok))
       end
-    end, 3000)
+    end)
   end,
 })
 
