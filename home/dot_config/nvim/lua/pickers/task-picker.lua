@@ -56,9 +56,11 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = {
     "package.json",
     "mise.toml",
+    "mise.lock",
     ".vscode/tasks.json",
     ".vscode/launch.json",
     ".zed/debug.json",
+    "~/.config/nvim/tasks/*.json",
   },
   callback = invalidate_task_caches,
 })
