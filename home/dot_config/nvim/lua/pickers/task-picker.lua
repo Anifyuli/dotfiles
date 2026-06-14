@@ -101,6 +101,8 @@ local function ensure_tmux_session()
   vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
   if vim.v.shell_error ~= 0 then
     vim.fn.system({ "tmux", "new-session", "-d", "-s", TASKS_SESSION })
+    -- Kill default window (index 0) so only task windows exist
+    vim.fn.system({ "tmux", "kill-window", "-t", TASKS_SESSION .. ":0" })
   end
 end
 
