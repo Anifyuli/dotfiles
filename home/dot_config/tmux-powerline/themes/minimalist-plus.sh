@@ -34,7 +34,7 @@ TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR="$FG"
 # Window status current (active window)
 TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
     "#[bg=${BG_WIN},fg=${FG}]"
-    " #I#F  #W "
+    " #I#F #{b:window_name} "
     "#[bg=default,fg=${FG}]"
     " "
 )
@@ -47,7 +47,7 @@ TMUX_POWERLINE_WINDOW_STATUS_STYLE=(
 # Window format
 TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
     "#[bg=${BG_WIN},fg=${FG}]"
-    " #I#{?window_flags,#F, }  #W "
+    " #I#{?window_flags,#F, } #{b:window_name} "
 )
 
 # Left side: session, pwd, branch
