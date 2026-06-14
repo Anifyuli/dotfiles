@@ -185,10 +185,10 @@ return {
           show_close_icon = false,
           separator_style = "thin",
           always_show_bufferline = true,
-          close_command = function()
+          close_command = function(id)
             local listed = vim.tbl_filter(function(b) return vim.bo[b].buflisted end, vim.api.nvim_list_bufs())
             local is_last = #listed <= 1
-            pcall(require("mini.bufremove").delete, 0, false)
+            pcall(require("mini.bufremove").delete, id, false)
             if is_last then
               vim.schedule(function()
                 pcall(function() require("snacks").dashboard() end)
