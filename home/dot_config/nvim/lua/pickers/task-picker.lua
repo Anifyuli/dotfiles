@@ -17,6 +17,7 @@ load_task_mode()
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object (neovim mode)
 local last_tmux_task = nil -- last task tag for <leader>dD in tmux mode
+local shared_tmux_term = nil -- single Snacks terminal for all tmux tasks
 
 -- cache
 local picker_cache = {}
@@ -132,13 +133,6 @@ local function run_in_term(cmd, cwd, task_id)
   local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
 
   if M.task_mode == "tmux" then
-    -- Kill old Snacks terminal for this task (if any)
-    local old_term = task_terms[task_id]
-    if old_term then
-      stop_task_term(old_term)
-      task_terms[task_id] = nil
-    end
-
     ensure_tmux_session()
     stop_tmux_task(tag)
 
@@ -163,24 +157,28 @@ local function run_in_term(cmd, cwd, task_id)
       vim.fn.system(tmux_args)
     end
 
+    -- Switch tmux session to the task window
     if is_in_tmux() then
       vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
     end
 
-    -- Open a Snacks terminal attached to the tmux session/window
-    -- This way F7 toggles it and edgy shows the hide button
-    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. tag .. " #" .. tag
-    local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-      interactive = true,
-      win = { position = "bottom", height = 0.3 },
-    })
-    if term then
-      term:show():focus()
+    -- Single shared Snacks terminal for all tmux tasks
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
+    if shared_tmux_term then
+      -- Just show+fokus existing terminal; tmux already switched window
+      shared_tmux_term:show():focus()
+    else
+      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+        interactive = true,
+        win = { position = "bottom", height = 0.3 },
+      })
+      if shared_tmux_term then
+        shared_tmux_term:show():focus()
+      end
     end
 
     if task_id then
       last_tmux_task = tag
-      task_terms[task_id] = term
     end
     return
   end
@@ -740,28 +738,22 @@ function M.reopen_task_terminal()
       last_tmux_task = tag
     end
 
-    -- Check for existing valid Snacks terminal
-    local existing = task_terms[tag]
-    if existing then
-      local buf = (type(existing) == "table" and existing.buf) or existing
-      if buf and vim.api.nvim_buf_is_valid(buf) then
-        if type(existing) == "table" and existing.show then
-          existing:show():focus()
-        end
-        return
-      end
-    end
+    -- Switch tmux to the target window
+    vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
 
-    -- Re-create a Snacks terminal attached to the tmux window
-    local shell = vim.o.shell or "sh"
-    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " \\; select-window -t " .. tag .. " #" .. tag
-    local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-      interactive = true,
-      win = { position = "bottom", height = 0.3 },
-    })
-    if term then
-      term:show():focus()
-      task_terms[last_tmux_task] = term
+    -- Reuse shared Snacks terminal or create one
+    if shared_tmux_term then
+      shared_tmux_term:show():focus()
+    else
+      local shell = vim.o.shell or "sh"
+      local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " #" .. tag
+      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+        interactive = true,
+        win = { position = "bottom", height = 0.3 },
+      })
+      if shared_tmux_term then
+        shared_tmux_term:show():focus()
+      end
     end
     return
   end
