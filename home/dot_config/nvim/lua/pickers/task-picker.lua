@@ -94,10 +94,6 @@ end
 
 local TASKS_SESSION = "nvim-tasks"
 
-local function is_in_tmux()
-  return vim.env.TMUX ~= nil
-end
-
 local function ensure_tmux_session()
   vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
   if vim.v.shell_error ~= 0 then
@@ -138,28 +134,21 @@ local function run_in_term(cmd, cwd, task_id)
 
     local shell = vim.o.shell or "sh"
 
+    -- Always use project root as cwd, so mise/npm tasks work regardless of tmux default dir
+    local task_cwd = (cwd and cwd ~= "" and cwd ~= ".") and cwd or vim.fn.getcwd()
+
     -- Reuse placeholder window `_` if it exists (avoid extra window on fresh session)
     local has_placeholder = vim.fn.system({ "tmux", "list-windows", "-t", TASKS_SESSION, "-F", "#{window_name}" })
     local reuse = vim.tbl_contains(vim.split(vim.trim(has_placeholder), "\n"), "_")
     if reuse then
-      local cd_prefix = (cwd and cwd ~= "" and cwd ~= ".") and "cd " .. vim.fn.shellescape(cwd) .. " && " or ""
       vim.fn.system({ "tmux", "rename-window", "-t", TASKS_SESSION .. ":0", tag })
-      vim.fn.system({ "tmux", "send-keys", "-t", TASKS_SESSION .. ":" .. tag, cd_prefix .. cmd, "Enter" })
+      vim.fn.system({ "tmux", "send-keys", "-t", TASKS_SESSION .. ":" .. tag, "cd " .. vim.fn.shellescape(task_cwd) .. " && " .. cmd, "Enter" })
     else
-      local tmux_args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
-      if cwd and cwd ~= "" and cwd ~= "." then
-        table.insert(tmux_args, "-c")
-        table.insert(tmux_args, cwd)
-      end
+      local tmux_args = { "tmux", "new-window", "-c", task_cwd, "-t", TASKS_SESSION, "-n", tag }
       table.insert(tmux_args, shell)
       table.insert(tmux_args, "-c")
       table.insert(tmux_args, cmd)
       vim.fn.system(tmux_args)
-    end
-
-    -- Switch tmux session to the task window
-    if is_in_tmux() then
-      vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
     end
 
     -- Switch the shared Snacks terminal window to the task's window
@@ -171,7 +160,12 @@ local function run_in_term(cmd, cwd, task_id)
       return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
     end)
     if ok and existing then
-      shared_tmux_term:show():focus()
+      local win = shared_tmux_term.win
+      if win and vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_set_current_win(win)
+      else
+        shared_tmux_term:show():focus()
+      end
     else
       -- Kill dead terminal reference, create fresh one
       if shared_tmux_term then
@@ -753,10 +747,15 @@ function M.reopen_task_terminal()
 
     -- Reuse shared Snacks terminal or create one
     if shared_tmux_term then
-      shared_tmux_term:show():focus()
+      local win = shared_tmux_term.win
+      if win and vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_set_current_win(win)
+      else
+        shared_tmux_term:show():focus()
+      end
     else
       local shell = vim.o.shell or "sh"
-      local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. " #" .. tag
+      local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
       shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
         interactive = true,
         win = { position = "bottom", height = 0.3 },
