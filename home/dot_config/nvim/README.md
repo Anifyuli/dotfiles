@@ -207,5 +207,5 @@ Core: gruvbox, which-key, snacks.nvim, neo-tree, bufferline, treesitter, nvim-cm
 - DAP UI opens on debug start, closes on termination
 - The `q` key closes special buffers (help, LSP info, quickfix, etc.)
 - Task mode persists across Neovim restarts via `~/.local/state/nvim/task_mode`
-- `snacks.image` is DISABLED — Konsole (KDE) lacks Kitty Graphics Protocol (only Sixel)
+- `snacks.image` requires a terminal that supports the **Kitty Graphics Protocol** (Kitty, WezTerm, Ghostty). Konsole (KDE) only supports Sixel — images won't display.
 - When running inside Neovim's built-in terminal, `Ctrl-\ Ctrl-n` exits to normal mode
