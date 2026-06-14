@@ -162,12 +162,22 @@ local function run_in_term(cmd, cwd, task_id)
       vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
     end
 
+    -- Switch the shared Snacks terminal window to the task's window
+    vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
+
     -- Single shared Snacks terminal for all tmux tasks
     local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
-    if shared_tmux_term then
-      -- Just show+fokus existing terminal; tmux already switched window
+    local ok, existing = pcall(function()
+      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
+    end)
+    if ok and existing then
       shared_tmux_term:show():focus()
     else
+      -- Kill dead terminal reference, create fresh one
+      if shared_tmux_term then
+        pcall(shared_tmux_term.close, shared_tmux_term)
+        shared_tmux_term = nil
+      end
       shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
         interactive = true,
         win = { position = "bottom", height = 0.3 },
