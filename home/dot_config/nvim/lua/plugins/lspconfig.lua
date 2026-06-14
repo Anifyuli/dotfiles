@@ -234,4 +234,14 @@ return {
       })
     end,
   },
+  {
+    -- Auto update imports when renaming/moving files (works with Neo-tree)
+    "antosha417/nvim-lsp-file-operations",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-neo-tree/neo-tree.nvim",
+    },
+    event = "VeryLazy",
+    opts = {},
+  },
 }
