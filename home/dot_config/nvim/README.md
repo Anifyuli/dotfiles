@@ -7,8 +7,13 @@ This config lives inside a [Chezmoi](https://chezmoi.io) dotfiles repo at [githu
 ## Preview
 
 ![Neovim dashboard](../../../assets/nvim_dashboard.png)
+*Doom-style dashboard with startup stats*
+
 ![Neovim opened buffer init.lua, config can changed](../../../assets/nvim_opened_buffer.png)
+*Editing init.lua with LSP diagnostics and bufferline*
+
 ![Task picker](../../../assets/nvim_task_picker.png)
+*Universal task picker showing mise tasks*
 
 ## Requirements
 
