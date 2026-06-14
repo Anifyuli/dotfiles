@@ -51,6 +51,8 @@ return {
         { "<leader>gd", desc = "Toggle deleted" },
         -- [B]uffers
         { "<leader>b", group = "󰈙 [B]uffers" },
+        { "<leader>b<", desc = "Move buffer left" },
+        { "<leader>b>", desc = "Move buffer right" },
         { "<leader>bd", desc = "Delete" },
         { "<leader>bD", desc = "Delete (force)" },
         -- [C]ode

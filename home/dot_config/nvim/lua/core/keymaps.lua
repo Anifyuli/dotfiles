@@ -41,8 +41,9 @@ map({ "n", "t" }, "<F7>", function()
   local terms = snacks.terminal.list()
   -- If any terminal is visible, hide it
   for _, term in ipairs(terms) do
-    if vim.fn.bufwinnr(term.buf) ~= -1 then
-      vim.api.nvim_win_close(vim.fn.bufwinnr(term.buf), true)
+    local wins = vim.api.nvim_win_find_buf(term.buf)
+    if #wins > 0 then
+      vim.api.nvim_win_close(wins[1], true)
       return
     end
   end
@@ -233,5 +234,13 @@ end, { desc = 'Toggle task mode (neovim/tmux)' })
 map('n', '<leader>dD', function()
   require('pickers.task-picker').reopen_task_terminal()
 end, { desc = 'Debug: reopen task terminal' })
+
+-- Buffer reorder (bufferline)
+map('n', '<leader>b<', function()
+  require("bufferline").move(-1)
+end, { desc = 'Move buffer left' })
+map('n', '<leader>b>', function()
+  require("bufferline").move(1)
+end, { desc = 'Move buffer right' })
 
 -- vim: ts=2 sts=2 sw=2 et
