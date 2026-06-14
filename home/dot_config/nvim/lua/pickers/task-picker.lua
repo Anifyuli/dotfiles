@@ -630,33 +630,23 @@ local function collect_all_tasks(dap_ok)
   return results
 end
 
--- Prewarm task cache right after startup so <leader>dd feels instant
-local prewarm_group = vim.api.nvim_create_augroup("TaskPrewarm", { clear = true })
-vim.api.nvim_create_autocmd("UIEnter", {
-  group = prewarm_group,
-  once = true,
-  callback = function()
-    vim.schedule(function()
-      local key = cache_key()
-      if not cache_get(key) then
-        local dap_ok = false
-        if package.loaded.dap then
-          local dap = require("dap")
-          dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
-        end
-        cache_set(key, collect_all_tasks(dap_ok))
-      end
-    end)
-  end,
-})
+-- Prewarm task cache immediately so <leader>dd feels instant
+local prewarm_done = false
+local function dap_available()
+  if not package.loaded.dap then return false end
+  local dap = require("dap")
+  return dap.adapters and dap.adapters["pwa-node"] ~= nil
+end
+vim.schedule(function()
+  local key = cache_key()
+  if not cache_get(key) then
+    cache_set(key, collect_all_tasks(dap_available()))
+  end
+  prewarm_done = true
+end)
 
 function M.pick_and_run()
-  local dap_ok = false
-  if package.loaded.dap then
-    local dap = require("dap")
-    dap_ok = dap.adapters and dap.adapters["pwa-node"] ~= nil
-  end
-
+  local dap_ok = dap_available()
   local key = cache_key()
   local cached = cache_get(key)
   if cached then
@@ -670,8 +660,25 @@ function M.pick_and_run()
     return
   end
 
-  local results = collect_all_tasks(dap_ok)
+  -- Cache not ready yet: wait for prewarm
+  if not prewarm_done then
+    vim.notify("Loading tasks...", vim.log.levels.INFO, { timeout = 2000 })
+    vim.defer_fn(function()
+      local r = cache_get(cache_key())
+      if r then
+        M.pick_and_run()
+      else
+        -- Fallback: collect synchronously
+        local results = collect_all_tasks(dap_ok)
+        cache_set(key, results)
+        show_picker(results)
+      end
+    end, 100)
+    return
+  end
 
+  -- Cache expired, collect fresh
+  local results = collect_all_tasks(dap_ok)
   cache_set(key, results)
   show_picker(results)
 end
