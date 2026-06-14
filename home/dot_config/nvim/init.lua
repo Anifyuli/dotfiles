@@ -2,11 +2,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Add luarocks path for magick rock
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua"
-package.cpath = package.cpath .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/lib/lua/5.1/?.so"
-
 -- Lazy.nvim bootstraping
 require("core/lazy")
 

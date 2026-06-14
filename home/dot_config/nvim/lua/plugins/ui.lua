@@ -191,7 +191,16 @@ return {
             pcall(require("mini.bufremove").delete, id, false)
             if is_last then
               vim.schedule(function()
-                pcall(function() require("snacks").dashboard() end)
+                local cur_win = vim.api.nvim_get_current_win()
+                if cur_win and vim.api.nvim_win_is_valid(cur_win) then
+                  local opts = { win = cur_win }
+                  if vim.api.nvim_buf_is_valid(1) and vim.fn.bufname(1) == "" and not vim.bo[1].modified then
+                    opts.buf = 1
+                  end
+                  require("snacks.dashboard").open(opts)
+                else
+                  require("snacks").dashboard()
+                end
               end)
             end
           end,
