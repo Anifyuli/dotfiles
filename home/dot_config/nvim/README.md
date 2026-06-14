@@ -13,7 +13,7 @@ This config lives inside a [Chezmoi](https://chezmoi.io) dotfiles repo at [githu
 *Editing init.lua with LSP diagnostics and bufferline*
 
 ![Task picker](../../../assets/nvim_task_picker.png)
-*Universal task picker showing mise tasks*
+*Task picker showing `~/.config/nvim/tasks/` entries alongside mise, npm, VSCode/Zed. Runs in tmux (persistent) or Neovim terminal.*
 
 ## Requirements
 
