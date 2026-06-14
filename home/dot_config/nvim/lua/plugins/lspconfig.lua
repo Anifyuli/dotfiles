@@ -243,5 +243,10 @@ return {
     },
     event = "VeryLazy",
     opts = {},
+    config = function(_, opts)
+      -- Patch deprecated API (plugin not yet updated for Neovim 0.12)
+      vim.lsp.get_active_clients = vim.lsp.get_clients
+      require("lsp-file-operations").setup(opts)
+    end,
   },
 }
