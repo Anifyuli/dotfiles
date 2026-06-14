@@ -20,10 +20,10 @@ local last_tmux_task = nil -- last task tag for <leader>dD in tmux mode
 
 -- cache
 local picker_cache = {}
-local PICKER_CACHE_TTL_MS = 30000
+local PICKER_CACHE_TTL_MS = 300000
 local mise_cache = nil
 local mise_cache_time = 0
-local MISE_CACHE_TTL_MS = 300000
+local MISE_CACHE_TTL_MS = 600000
 
 local function cache_key()
   return vim.fn.getcwd()
