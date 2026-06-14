@@ -101,8 +101,8 @@ local function ensure_tmux_session()
   vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
   if vim.v.shell_error ~= 0 then
     vim.fn.system({ "tmux", "new-session", "-d", "-s", TASKS_SESSION })
-    -- Kill default window (index 0) so only task windows exist
-    vim.fn.system({ "tmux", "kill-window", "-t", TASKS_SESSION .. ":0" })
+    -- Rename default window so it can be reused later
+    vim.fn.system({ "tmux", "rename-window", "-t", TASKS_SESSION .. ":0", "_" })
   end
 end
 
@@ -144,16 +144,24 @@ local function run_in_term(cmd, cwd, task_id)
 
     local shell = vim.o.shell or "sh"
 
-    -- Create tmux window for the task
-    local tmux_args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
-    if cwd and cwd ~= "" and cwd ~= "." then
+    -- Reuse placeholder window `_` if it exists (avoid extra window on fresh session)
+    local has_placeholder = vim.fn.system({ "tmux", "list-windows", "-t", TASKS_SESSION, "-F", "#{window_name}" })
+    local reuse = vim.tbl_contains(vim.split(vim.trim(has_placeholder), "\n"), "_")
+    if reuse then
+      local cd_prefix = (cwd and cwd ~= "" and cwd ~= ".") and "cd " .. vim.fn.shellescape(cwd) .. " && " or ""
+      vim.fn.system({ "tmux", "rename-window", "-t", TASKS_SESSION .. ":0", tag })
+      vim.fn.system({ "tmux", "send-keys", "-t", TASKS_SESSION .. ":" .. tag, cd_prefix .. cmd, "Enter" })
+    else
+      local tmux_args = { "tmux", "new-window", "-t", TASKS_SESSION, "-n", tag }
+      if cwd and cwd ~= "" and cwd ~= "." then
+        table.insert(tmux_args, "-c")
+        table.insert(tmux_args, cwd)
+      end
+      table.insert(tmux_args, shell)
       table.insert(tmux_args, "-c")
-      table.insert(tmux_args, cwd)
+      table.insert(tmux_args, cmd)
+      vim.fn.system(tmux_args)
     end
-    table.insert(tmux_args, shell)
-    table.insert(tmux_args, "-c")
-    table.insert(tmux_args, cmd)
-    vim.fn.system(tmux_args)
 
     if is_in_tmux() then
       vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
