@@ -41,7 +41,9 @@ map({ "n", "t" }, "<F7>", function()
   local terms = snacks.terminal.list()
   -- If any terminal is visible, hide it
   for _, term in ipairs(terms) do
-    local wins = vim.fn.win_find_buf(term.buf)
+    local wins = vim.tbl_filter(function(w)
+      return vim.api.nvim_win_get_buf(w) == term.buf
+    end, vim.api.nvim_list_wins())
     if #wins > 0 then
       vim.api.nvim_win_close(wins[1], true)
       return
