@@ -14,6 +14,22 @@ end
 M.task_mode = "neovim" -- "neovim" | "tmux"; toggle via <leader>dt
 load_task_mode()
 
+local LAST_TASK_STATE_FILE = vim.fn.stdpath("state") .. "/last_tmux_task"
+local function load_last_tmux_task()
+  local f = io.open(LAST_TASK_STATE_FILE, "r")
+  if f then
+    local tag = f:read("*l")
+    f:close()
+    return (tag and tag ~= "") and tag or nil
+  end
+  return nil
+end
+local function save_last_tmux_task(tag)
+  if not tag then return end
+  local f = io.open(LAST_TASK_STATE_FILE, "w")
+  if f then f:write(tag .. "\n"); f:close() end
+end
+
 local exclude_labels = { "install", "deploy" }
 local task_terms = {} -- task_id -> Snacks terminal object (neovim mode)
 local last_tmux_task = nil -- last task tag for <leader>dD in tmux mode
@@ -184,6 +200,7 @@ local function run_in_term(cmd, cwd, task_id)
 
     if task_id then
       last_tmux_task = tag
+      save_last_tmux_task(tag)
     end
     return
   end
@@ -660,6 +677,32 @@ vim.schedule(function()
   prewarm_done = true
 end)
 
+-- Restore tmux session + shared terminal if Neovim was restarted
+-- while tasks were still running in the nvim-tasks tmux session.
+-- This ensures tasks survive Neovim crashes/OOM and can be reattached.
+local function restore_tmux_session()
+  if vim.fn.executable("tmux") ~= 1 then return end
+  if M.task_mode ~= "tmux" then return end
+  vim.fn.system({ "tmux", "has-session", "-t", TASKS_SESSION })
+  if vim.v.shell_error ~= 0 then return end
+
+  last_tmux_task = load_last_tmux_task()
+  if not last_tmux_task then
+    last_tmux_task = last_tmux_window()
+  end
+
+  local shell = vim.o.shell or "sh"
+  local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
+  shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+    interactive = true,
+    win = { position = "bottom", height = 0.3 },
+  })
+  if shared_tmux_term then
+    shared_tmux_term:hide()
+  end
+end
+vim.schedule(restore_tmux_session)
+
 function M.pick_and_run()
   local dap_ok = dap_available()
   local key = cache_key()
@@ -741,6 +784,7 @@ function M.reopen_task_terminal()
         return
       end
       last_tmux_task = tag
+      save_last_tmux_task(tag)
     end
 
     -- Switch tmux to the target window
