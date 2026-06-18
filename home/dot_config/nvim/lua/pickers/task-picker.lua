@@ -153,12 +153,14 @@ local function run_in_term(cmd, cwd, task_id)
     -- Always use project root as cwd, so mise/npm tasks work regardless of tmux default dir
     local task_cwd = (cwd and cwd ~= "" and cwd ~= ".") and cwd or vim.fn.getcwd()
 
-    -- Reuse placeholder window `_` if it exists (avoid extra window on fresh session)
+    -- Reuse placeholder window `_` if it exists (avoid killing the only window).
+    -- For mise tasks, mise -C handles the correct dir. For other tasks, the
+    -- placeholder's cwd matches project root (where Neovim started tmux).
     local has_placeholder = vim.fn.system({ "tmux", "list-windows", "-t", TASKS_SESSION, "-F", "#{window_name}" })
     local reuse = vim.tbl_contains(vim.split(vim.trim(has_placeholder), "\n"), "_")
     if reuse then
       vim.fn.system({ "tmux", "rename-window", "-t", TASKS_SESSION .. ":0", tag })
-      vim.fn.system({ "tmux", "send-keys", "-t", TASKS_SESSION .. ":" .. tag, "cd " .. vim.fn.shellescape(task_cwd) .. " && " .. cmd, "Enter" })
+      vim.fn.system({ "tmux", "send-keys", "-t", TASKS_SESSION .. ":" .. tag, cmd, "Enter" })
     else
       local tmux_args = { "tmux", "new-window", "-c", task_cwd, "-t", TASKS_SESSION, "-n", tag }
       table.insert(tmux_args, shell)
