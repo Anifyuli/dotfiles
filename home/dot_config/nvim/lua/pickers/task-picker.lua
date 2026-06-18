@@ -296,7 +296,7 @@ local function collect_mise_tasks()
 
   for _, dir in ipairs(dirs) do
     if dir ~= "" then
-      local h = io.popen("cd " .. vim.fn.shellescape(dir) .. " && mise tasks ls --json 2>/dev/null")
+      local h = io.popen("mise -C " .. vim.fn.shellescape(dir) .. " tasks ls --json 2>/dev/null")
       if h then
         local output = h:read("*a")
         h:close()
@@ -546,8 +546,11 @@ local function collect_all_tasks(dap_ok)
   for _, task in ipairs(collect_mise_tasks()) do
     local dir = task.dir
     task.run = function()
-      local cwd = (dir and dir ~= ".") and (vim.fn.getcwd() .. "/" .. dir) or nil
-      run_in_term("mise run " .. task.label, cwd, task.label)
+      local cmd = "mise run " .. task.label
+      if dir and dir ~= "." then
+        cmd = "mise -C " .. vim.fn.shellescape(dir) .. " run " .. task.label
+      end
+      run_in_term(cmd, nil, task.label)
     end
     table.insert(results, task)
   end
