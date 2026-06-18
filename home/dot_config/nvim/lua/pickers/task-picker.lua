@@ -280,6 +280,8 @@ local function collect_mise_tasks()
   if handle then
     for line in handle:lines() do
       if line ~= "" then
+        -- Strip leading ./ so paths are clean (apps/admin not ./apps/admin)
+        if line:sub(1, 2) == "./" then line = line:sub(3) end
         table.insert(dirs, line)
       end
     end
