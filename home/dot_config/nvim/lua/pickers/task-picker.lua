@@ -174,7 +174,7 @@ local function run_in_term(cmd, cwd, task_id)
     vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
 
     -- Single shared Snacks terminal for all tmux tasks
-    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
     local ok, existing = pcall(function()
       return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
     end)
@@ -699,7 +699,7 @@ local function restore_tmux_session()
   end
 
   local shell = vim.o.shell or "sh"
-  local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
+  local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
   shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
     interactive = true,
     win = { position = "bottom", height = 0.3 },
@@ -807,7 +807,7 @@ function M.reopen_task_terminal()
       end
     else
       local shell = vim.o.shell or "sh"
-      local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION
+    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
       shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
         interactive = true,
         win = { position = "bottom", height = 0.3 },
