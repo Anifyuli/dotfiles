@@ -7,11 +7,9 @@ usage  = "latest"
 uv     = "latest"
 
 # npm packages
-"npm:@kilocode/cli"             = "latest"
 "npm:@mistweaverco/kulala-ls"   = "latest"
 "npm:@mistweaverco/kulala-fmt"  = "latest"
 "npm:@nestjs/cli"               = "latest"
-"npm:@qwen-code/qwen-code"      = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
