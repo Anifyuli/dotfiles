@@ -134,6 +134,13 @@ return {
 
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
+        cmd = {
+          "node",
+          "--max-old-space-size=1024",
+          vim.fn.stdpath("data")
+            .. "/mason/packages/typescript-language-server/node_modules/typescript-language-server/lib/cli.mjs",
+          "--stdio",
+        },
         settings = {
           typescript = {
             suggest = {
@@ -144,8 +151,14 @@ return {
               completeFunctionCalls = true,
             },
             preferences = {
-              includePackageJsonAutoImports = "auto",
-              autoImportFileExcludePatterns = {},
+              includePackageJsonAutoImports = "off",
+              autoImportFileExcludePatterns = {
+                "**/node_modules/**",
+                "**/dist/**",
+                "**/.expo/**",
+                "**/*.test.ts",
+                "**/*.spec.ts",
+              },
             },
           },
           javascript = {
@@ -157,8 +170,14 @@ return {
               completeFunctionCalls = true,
             },
             preferences = {
-              includePackageJsonAutoImports = "auto",
-              autoImportFileExcludePatterns = {},
+              includePackageJsonAutoImports = "off",
+              autoImportFileExcludePatterns = {
+                "**/node_modules/**",
+                "**/dist/**",
+                "**/.expo/**",
+                "**/*.test.ts",
+                "**/*.spec.ts",
+              },
             },
           },
         },

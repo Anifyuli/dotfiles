@@ -13,7 +13,7 @@ uv     = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
-"npm:opencode-ai"               = "latest"
+"npm:opencode-ai"               = { version = "latest", npm_args = "--ignore-scripts=false" }
 
 [settings]
 experimental = true
