@@ -31,33 +31,28 @@ end, { desc = " Terminal vertical" })
 map("n", "<leader>Tf", function()
   require("snacks").terminal.toggle(shell_cmd("f"), { win = { position = "float" } })
 end, { desc = " Terminal float" })
+map("n", "<leader>Tn", function()
+  require("pickers.task-picker").new_terminal_tab()
+end, { desc = "New terminal tab" })
 map({ "n", "t" }, "<F7>", function()
-  local snacks = require("snacks")
+  local task = require("pickers.task-picker")
   -- If already in a terminal buffer, close window (keeps process alive)
   if vim.bo.buftype == "terminal" then
     vim.cmd("close")
     return
   end
-  local terms = snacks.terminal.list()
-  -- If any terminal is visible, hide it
-  for _, term in ipairs(terms) do
-    local wins = vim.tbl_filter(function(w)
-      return vim.api.nvim_win_get_buf(w) == term.buf
-    end, vim.api.nvim_list_wins())
-    if #wins > 0 then
-      vim.api.nvim_win_close(wins[1], true)
-      return
-    end
+  -- Check if shared task panel is visible → close it
+  if task.term_panel.win and vim.api.nvim_win_is_valid(task.term_panel.win) then
+    vim.api.nvim_win_close(task.term_panel.win, true)
+    return
   end
-  -- No visible terminal: show a hidden one
-  for _, term in ipairs(terms) do
-    if vim.fn.bufwinnr(term.buf) == -1 then
-      term:show():focus()
-      return
-    end
+  -- Check if shared task panel has any tabs → show it
+  if #task.terminal_tabs > 0 then
+    task.reopen_task_terminal()
+    return
   end
-  -- No hidden terminal found, create new default
-  snacks.terminal.toggle()
+  -- Fallback: snacks terminal toggle (manual terminal)
+  require("snacks").terminal.toggle()
 end, { desc = "Toggle terminal" })
 
 -- Terminal picker: reopen hidden terminals (e.g. after edgy close)

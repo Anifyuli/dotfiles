@@ -31,9 +31,12 @@ local function save_last_tmux_task(tag)
 end
 
 local exclude_labels = { "install", "deploy" }
-local task_terms = {} -- task_id -> Snacks terminal object (neovim mode)
+local task_terms = {} -- task_id -> buffer ID (neovim mode)
 local last_tmux_task = nil -- last task tag for <leader>dD in tmux mode
 local shared_tmux_term = nil -- single Snacks terminal for all tmux tasks
+---@type {label: string, buf: number, id: string?}[]
+local terminal_tabs = {} -- tab list for neovim mode (tabbed terminal panel)
+local term_panel = { win = nil } -- single Neovim terminal window (neovim mode)
 
 -- cache
 local picker_cache = {}
@@ -128,8 +131,7 @@ local function stop_tmux_task(tag)
 end
 
 ---Stop and delete a task terminal cleanly, without triggering exit notifications.
-local function stop_task_term(term)
-  local buf = (type(term) == "table" and term.buf) or (type(term) == "number" and term)
+local function stop_task_term(buf)
   if not (buf and vim.api.nvim_buf_is_valid(buf)) then
     return
   end
@@ -141,6 +143,126 @@ local function stop_task_term(term)
   end
   pcall(vim.api.nvim_buf_delete, buf, { force = true })
 end
+
+---█ Shared terminal panel (Neovim mode) ──────────────────────────────
+
+vim.api.nvim_set_hl(0, "TermTabActive", { link = "Title" })
+vim.api.nvim_set_hl(0, "TermTabNew", { link = "String" })
+
+local function __ensure_term_panel()
+  if term_panel.win and vim.api.nvim_win_is_valid(term_panel.win) then
+    return term_panel.win
+  end
+  vim.api.nvim_command("botright 12split")
+  term_panel.win = vim.api.nvim_get_current_win()
+  vim.wo[term_panel.win].winbar = ""
+  vim.wo[term_panel.win].winhighlight = "Normal:Terminal"
+  return term_panel.win
+end
+
+local function __open_term_buf_in_shared(cmd_list, label, task_id, cwd)
+  local win = __ensure_term_panel()
+  vim.api.nvim_set_current_win(win)
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_win_set_buf(win, buf)
+  vim.bo[buf].filetype = "terminal"
+
+  if cmd_list then
+    local opts = {
+      on_open = function() vim.cmd("stopinsert") end,
+    }
+    if cwd then opts.cwd = cwd end
+    vim.fn.termopen(cmd_list, opts)
+  end
+
+  table.insert(terminal_tabs, { label = label, buf = buf, id = task_id })
+  __refresh_winbar()
+  return buf
+end
+
+local function __build_tab_label(idx, tab)
+  local icon = "    "
+  local label = tab.label:len() > 18 and tab.label:sub(1, 15) .. "…" or tab.label
+  local close = "%" .. (1000 + idx) .. "@TerminalTabHandler@ × %X"
+  local tab_sw = "%" .. idx .. "@TerminalTabHandler@ " .. icon .. " " .. label .. " %X"
+  return "%*TermTabActive*" .. close .. tab_sw .. "%*"
+end
+
+local function __build_winbar()
+  local parts = {}
+  for i, tab in ipairs(terminal_tabs) do
+    table.insert(parts, __build_tab_label(i, tab))
+  end
+  table.insert(parts, " %*TermTabNew*%2000@TerminalTabHandler@ + %X%*")
+  return table.concat(parts, "  ")
+end
+
+local function __refresh_winbar()
+  local w = term_panel.win
+  if w and vim.api.nvim_win_is_valid(w) then
+    vim.wo[w].winbar = __build_winbar()
+  end
+end
+
+local function __open_blank_term()
+  __open_term_buf_in_shared({ vim.o.shell or "sh" }, "term", nil, vim.fn.getcwd())
+end
+
+local function __close_term_tab(idx)
+  local tab = terminal_tabs[idx]
+  if not tab then return end
+  if tab.id and task_terms[tab.id] then
+    stop_task_term(task_terms[tab.id])
+    task_terms[tab.id] = nil
+  else
+    stop_task_term(tab.buf)
+  end
+  table.remove(terminal_tabs, idx)
+
+  -- Show another tab or clear the shared window
+  local win = term_panel.win
+  if win and vim.api.nvim_win_is_valid(win) then
+    local next_tab = terminal_tabs[math.min(idx, #terminal_tabs)]
+    if next_tab and vim.api.nvim_buf_is_valid(next_tab.buf) then
+      vim.api.nvim_win_set_buf(win, next_tab.buf)
+    else
+      vim.api.nvim_win_close(win, true)
+      term_panel.win = nil
+    end
+  end
+  __refresh_winbar()
+end
+
+local function __switch_term_tab(idx)
+  local tab = terminal_tabs[idx]
+  if not tab then return end
+  local win = term_panel.win
+  if not (win and vim.api.nvim_win_is_valid(win)) then
+    win = __ensure_term_panel()
+    vim.wo[win].winbar = ""
+    vim.wo[win].winhighlight = "Normal:Terminal"
+  end
+  if vim.api.nvim_buf_is_valid(tab.buf) then
+    vim.api.nvim_win_set_buf(win, tab.buf)
+    vim.api.nvim_set_current_win(win)
+  end
+end
+
+function _G.TerminalTabHandler(minwid, clicks, button, mods)
+  if button ~= 1 then return end
+  vim.schedule(function()
+    if minwid >= 2000 then
+      __open_blank_term()
+    elseif minwid >= 1000 then
+      __close_term_tab(minwid - 1000)
+    else
+      __switch_term_tab(minwid)
+    end
+  end)
+end
+
+---█ ────────────────────────────────────────────────────────────────────
 
 local function run_in_term(cmd, cwd, task_id)
   local tag = task_id or tostring((vim.uv or vim.loop).hrtime())
@@ -205,41 +327,20 @@ local function run_in_term(cmd, cwd, task_id)
     return
   end
 
-  -- Neovim mode (Snacks terminal)
-  local buf = nil
+  -- Neovim mode (shared terminal panel)
   if task_id and task_terms[task_id] then
-    buf = (type(task_terms[task_id]) == "table" and task_terms[task_id].buf) or task_terms[task_id]
-  end
-
-  if buf and vim.api.nvim_buf_is_valid(buf) then
-    -- always kill and recreate, regardless of window visibility
-    stop_task_term(task_terms[task_id])
+    local old_buf = task_terms[task_id]
+    if old_buf and vim.api.nvim_buf_is_valid(old_buf) then
+      stop_task_term(old_buf)
+    end
     task_terms[task_id] = nil
   end
 
   local shell = vim.o.shell or "sh"
-
-  local opts = {
-    -- `interactive = false`:
-    --   • Opens in normal mode (scroll/copy without <C-\><C-n>)
-    --   • Suppresses Snacks' "Terminal exited with code -1" notification on kill
-    --     (the job exit is visible in the terminal buffer output instead)
-    interactive = false,
-    win = { position = "bottom", height = 0.3 },
-  }
-  if cwd and cwd ~= "" and cwd ~= "." then
-    opts.cwd = cwd -- Snacks sets initial directory via termopen; no "cd &&" prefix needed
-  end
-
-  -- The `#tag` suffix is a shell comment: it makes each run's command string
-  -- unique so Snacks.terminal.get() always creates a fresh terminal instance
-  -- instead of returning a cached one from a previous run.
-  local term = Snacks.terminal.get({ shell, "-c", cmd .. " #" .. tag }, opts)
-  if term then
-    term:show():focus()
-    if task_id then
-      task_terms[task_id] = term
-    end
+  local tab_label = task_id or "task"
+  local buf = __open_term_buf_in_shared({ shell, "-c", cmd .. " #" .. tag }, tab_label, task_id)
+  if buf and task_id then
+    task_terms[task_id] = buf
   end
 end
 
@@ -817,16 +918,17 @@ function M.reopen_task_terminal()
     return
   end
 
-  for _, term in pairs(task_terms) do
-    local buf = (type(term) == "table" and term.buf) or term
-    if buf and vim.api.nvim_buf_is_valid(buf) then
-      if type(term) == "table" and term.show then
-        term:show():focus()
-      end
+  for i, tab in ipairs(terminal_tabs) do
+    if tab.buf and vim.api.nvim_buf_is_valid(tab.buf) then
+      __switch_term_tab(i)
       return
     end
   end
   vim.notify("No running task terminal", vim.log.levels.INFO)
 end
+
+M.term_panel = term_panel
+M.terminal_tabs = terminal_tabs
+M.new_terminal_tab = __open_blank_term
 
 return M
