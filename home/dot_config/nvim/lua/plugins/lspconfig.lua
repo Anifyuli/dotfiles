@@ -132,15 +132,16 @@ return {
         filetypes = { "rpm_spec", "spec" },
       }
 
+      -- Disable semantic tokens for ts_ls to prevent overriding treesitter highlights
+      local ts_ls_attach = function(client, bufnr)
+        if client.server_capabilities.semanticTokensProvider then
+          client.server_capabilities.semanticTokensProvider = nil
+        end
+      end
+
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
-        handlers = {
-          ["textDocument/semanticTokens/full"] = function(_, _, ctx)
-            -- Disable semantic tokens from ts_ls to prevent overriding treesitter highlights
-          end,
-          ["textDocument/semanticTokens/full/delta"] = vim.empty_func,
-          ["textDocument/semanticTokens/range"] = vim.empty_func,
-        },
+        on_attach = ts_ls_attach,
         cmd = {
           "node",
           "--max-old-space-size=2048",
