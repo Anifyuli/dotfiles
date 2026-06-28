@@ -143,7 +143,7 @@ return {
         },
         cmd = {
           "node",
-          "--max-old-space-size=512",
+          "--max-old-space-size=2048",
           vim.fn.stdpath("data")
             .. "/mason/packages/typescript-language-server/node_modules/typescript-language-server/lib/cli.mjs",
           "--stdio",
