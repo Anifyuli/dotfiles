@@ -7,46 +7,41 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   build = ':TSUpdate',
   config = function()
-    -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
-    vim.defer_fn(function()
-      require('nvim-treesitter').setup {
-        -- Add languages to be installed here that you want installed for treesitter
-        ensure_installed = {
-          'bash',
-          'css',
-          'html',
-          'javascript',
-          'json',
-          'lua',
-          'markdown',
-          'markdown_inline',
-          'php',
-          'regex',
-          'toml',
-          'tsx',
-          'typescript',
-          'vim',
-          'vimdoc',
-          'vue',
-          'yaml',
-          'vimdoc',
-          'vue',
-          'yaml',
-        },
+    require('nvim-treesitter').setup {
+      -- Add languages to be installed here that you want installed for treesitter
+      ensure_installed = {
+        'bash',
+        'css',
+        'html',
+        'javascript',
+        'json',
+        'lua',
+        'markdown',
+        'markdown_inline',
+        'php',
+        'regex',
+        'toml',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'vue',
+        'yaml',
+      },
 
-        -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-        auto_install = true,
-        -- Install languages synchronously (only applied to `ensure_installed`)
-        sync_install = true,
-        -- List of parsers to ignore installing
-        ignore_install = {},
-        -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
-        modules = {},
-        highlight = { enable = true },
-        indent = {
-          enable = true,
-          disable = { 'html' },
-        },
+      -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+      auto_install = true,
+      -- Install languages synchronously (only applied to `ensure_installed`)
+      sync_install = true,
+      -- List of parsers to ignore installing
+      ignore_install = {},
+      -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
+      modules = {},
+      highlight = { enable = true },
+      indent = {
+        enable = true,
+        disable = { 'html' },
+      },
         incremental_selection = {
           enable = true,
           keymaps = {

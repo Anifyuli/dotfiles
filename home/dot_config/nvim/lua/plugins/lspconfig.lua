@@ -134,6 +134,13 @@ return {
 
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
+        handlers = {
+          ["textDocument/semanticTokens/full"] = function(_, _, ctx)
+            -- Disable semantic tokens from ts_ls to prevent overriding treesitter highlights
+          end,
+          ["textDocument/semanticTokens/full/delta"] = vim.empty_func,
+          ["textDocument/semanticTokens/range"] = vim.empty_func,
+        },
         cmd = {
           "node",
           "--max-old-space-size=512",
