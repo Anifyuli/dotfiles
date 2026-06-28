@@ -65,6 +65,7 @@ end
 local function invalidate_task_caches()
   picker_cache = {}
   mise_cache = nil
+  mise_cache_time = 0
 end
 
 local cache_augroup = vim.api.nvim_create_augroup("TaskPickerCache", { clear = true })
