@@ -898,7 +898,10 @@ function M.reopen_task_terminal()
     vim.fn.system({ "tmux", "select-window", "-t", TASKS_SESSION .. ":" .. tag })
 
     -- Reuse shared Snacks terminal or create one
-    if shared_tmux_term then
+    local ok, existing = pcall(function()
+      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
+    end)
+    if ok and existing then
       local win = shared_tmux_term.win
       if win and vim.api.nvim_win_is_valid(win) then
         vim.api.nvim_set_current_win(win)
@@ -906,8 +909,12 @@ function M.reopen_task_terminal()
         shared_tmux_term:show():focus()
       end
     else
+      if shared_tmux_term then
+        pcall(shared_tmux_term.close, shared_tmux_term)
+        shared_tmux_term = nil
+      end
       local shell = vim.o.shell or "sh"
-    local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
+      local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
       shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
         interactive = true,
         win = { position = "bottom", height = 0.3 },
