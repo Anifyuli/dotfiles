@@ -36,23 +36,11 @@ map("n", "<leader>Tn", function()
 end, { desc = "New terminal tab" })
 map({ "n", "t" }, "<F7>", function()
   local task = require("pickers.task-picker")
-  -- If already in a terminal buffer, close window (keeps process alive)
   if vim.bo.buftype == "terminal" then
     vim.cmd("close")
     return
   end
-  -- Check if shared task panel is visible → close it
-  if task.term_panel.win and vim.api.nvim_win_is_valid(task.term_panel.win) then
-    vim.api.nvim_win_close(task.term_panel.win, true)
-    return
-  end
-  -- Check if shared task panel has any tabs → show it
-  if #task.terminal_tabs > 0 then
-    task.reopen_task_terminal()
-    return
-  end
-  -- Fallback: snacks terminal toggle (manual terminal)
-  require("snacks").terminal.toggle()
+  task.reopen_task_terminal()
 end, { desc = "Toggle terminal" })
 
 -- Terminal picker: reopen hidden terminals (e.g. after edgy close)

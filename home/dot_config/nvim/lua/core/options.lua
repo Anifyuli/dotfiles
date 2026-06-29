@@ -41,7 +41,15 @@ opt.foldlevelstart = 99
 opt.foldenable = true
 vim.opt.fillchars:append({ foldopen = "▾", foldclose = "▸", fold = " ", foldsep = "│" })
 
--- Auto adjust window size
-opt.equalalways = true
+-- Let edgy handle window sizing (equalalways conflicts with edgy proportions)
+opt.equalalways = false
+-- Must be set BEFORE any windows are created, otherwise window-local
+-- statusline rows become dead space when switching from laststatus=2 to 3
+opt.laststatus = 3
+opt.splitkeep = "screen"
+-- Allow windows to fully reclaim statusline rows (prevents dead space)
+opt.winminheight = 0
+-- Hide cmdline until needed (gives content windows full height)
+opt.cmdheight = 0
 
 -- vim: ts=2 sts=2 sw=2 et

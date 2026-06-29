@@ -293,7 +293,6 @@ return {
               "snacks_picker_input",
               "snacks_picker_list",
               "snacks_picker_preview",
-              "neo-tree",
             },
           },
         },
@@ -301,12 +300,46 @@ return {
           lualine_a = { { "mode", icon = "" } },
           lualine_b = { lsp_status },
           lualine_c = { { "filename", icon = "󰈮" } },
+          lualine_x = {
+            {
+              function() return '' end,
+              __wakatime_statusline = true,
+            },
+            {
+              function()
+                local ok, text = pcall(function()
+                  return require('wakatime').statusline()
+                end)
+                if ok and text and text ~= '' then return '󱑁 ' .. text end
+                return ''
+              end,
+            },
+            { "encoding" },
+            { "fileformat" },
+            { "filetype" },
+          },
           lualine_z = { sexy_location },
         },
         inactive_sections = {
           lualine_x = { sexy_location },
         },
-        extensions = { "lazy", "mason", "nvim-tree", "nvim-dap-ui" },
+        extensions = {
+          "lazy",
+          "mason",
+          "nvim-tree",
+          "nvim-dap-ui",
+          {
+            filetypes = { "neo-tree" },
+            sections = {
+              lualine_a = {},
+              lualine_b = {},
+              lualine_c = { { "filename" } },
+              lualine_x = {},
+              lualine_y = {},
+              lualine_z = {},
+            },
+          },
+        },
       })
     end,
   },
@@ -371,10 +404,6 @@ return {
     -- Edgy: predictable window layout
     "folke/edgy.nvim",
     event = "VeryLazy",
-    init = function()
-      vim.opt.laststatus = 3
-      vim.opt.splitkeep = "screen"
-    end,
     opts = function()
       local function term_item(pos, size)
         return {

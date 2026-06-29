@@ -144,4 +144,16 @@ autocmd("CursorHold", {
     })
   end,
 })
+
+-- Force edgy to recalculate when terminal window is resized
+autocmd("VimResized", {
+  group = augroup("edgy_resize"),
+  callback = function()
+    if package.loaded["edgy"] then
+      vim.schedule(function()
+        pcall(require("edgy").refresh)
+      end)
+    end
+  end,
+})
 -- vim: ts=2 sts=2 sw=2 et
