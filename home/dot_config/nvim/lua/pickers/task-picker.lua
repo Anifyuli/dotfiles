@@ -155,7 +155,7 @@ local function __ensure_term_panel()
   end
   vim.api.nvim_command("botright 12split")
   term_panel.win = vim.api.nvim_get_current_win()
-  vim.wo[term_panel.win].winbar = ""
+  vim.wo[term_panel.win].statusline = "%="
   vim.wo[term_panel.win].winhighlight = "Normal:Terminal"
   return term_panel.win
 end
@@ -205,7 +205,7 @@ end
 local function __refresh_winbar()
   local w = term_panel.win
   if w and vim.api.nvim_win_is_valid(w) then
-    vim.wo[w].winbar = __build_winbar()
+    vim.wo[w].statusline = __build_winbar()
   end
 end
 
@@ -244,13 +244,29 @@ local function __switch_term_tab(idx)
   local win = term_panel.win
   if not (win and vim.api.nvim_win_is_valid(win)) then
     win = __ensure_term_panel()
-    vim.wo[win].winbar = ""
-    vim.wo[win].winhighlight = "Normal:Terminal"
   end
   if vim.api.nvim_buf_is_valid(tab.buf) then
     vim.api.nvim_win_set_buf(win, tab.buf)
     vim.api.nvim_set_current_win(win)
   end
+end
+
+local function __create_or_show_tmux_term()
+  local shell = vim.o.shell or "sh"
+  local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
+  local term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+    interactive = true,
+    win = { position = "bottom", height = 0.3 },
+  })
+  if term then
+    term:show():focus()
+    vim.schedule(function()
+      if term.win and vim.api.nvim_win_is_valid(term.win) then
+        vim.wo[term.win].statusline = " tmux mode %= scroll: Ctrl+b [ "
+      end
+    end)
+  end
+  return term
 end
 
 function _G.TerminalTabHandler(minwid, clicks, button, mods)
@@ -315,10 +331,7 @@ local function run_in_term(cmd, cwd, task_id)
         pcall(shared_tmux_term.close, shared_tmux_term)
         shared_tmux_term = nil
       end
-      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-        interactive = true,
-        win = { position = "bottom", height = 0.3 },
-      })
+      shared_tmux_term = __create_or_show_tmux_term()
       if shared_tmux_term then
         shared_tmux_term:show():focus()
       end
@@ -803,13 +816,7 @@ local function restore_tmux_session()
 
   local shell = vim.o.shell or "sh"
   local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
-      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-        interactive = true,
-        win = { position = "bottom", height = 0.3, wo = { winbar = " tmux mode │ scroll: Ctrl+b [" } },
-      })
-      if shared_tmux_term then
-        shared_tmux_term:show():focus()
-      end
+      shared_tmux_term = __create_or_show_tmux_term()
 end
 vim.schedule(restore_tmux_session)
 
@@ -918,10 +925,7 @@ function M.reopen_task_terminal()
       end
       local shell = vim.o.shell or "sh"
       local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
-      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-        interactive = true,
-        win = { position = "bottom", height = 0.3 },
-      })
+      shared_tmux_term = __create_or_show_tmux_term()
       if shared_tmux_term then
         shared_tmux_term:show():focus()
       end
