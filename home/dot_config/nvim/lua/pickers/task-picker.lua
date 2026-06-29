@@ -167,6 +167,7 @@ local function __open_term_buf_in_shared(cmd_list, label, task_id, cwd)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_win_set_buf(win, buf)
   vim.bo[buf].filetype = "terminal"
+  vim.bo[buf].scrollback = 50000
 
   if cmd_list then
     local opts = {
