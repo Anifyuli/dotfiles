@@ -300,7 +300,7 @@ local function run_in_term(cmd, cwd, task_id)
     -- Single shared Snacks terminal for all tmux tasks
     local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
     local ok, existing = pcall(function()
-      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
+      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf) and vim.bo[shared_tmux_term.buf].channel > 0
     end)
     if ok and existing then
       local win = shared_tmux_term.win
@@ -803,13 +803,13 @@ local function restore_tmux_session()
 
   local shell = vim.o.shell or "sh"
   local attach_cmd = "tmux attach-session -t " .. TASKS_SESSION .. "; true"
-  shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
-    interactive = true,
-    win = { position = "bottom", height = 0.3 },
-  })
-  if shared_tmux_term then
-    shared_tmux_term:hide()
-  end
+      shared_tmux_term = Snacks.terminal.get({ shell, "-c", attach_cmd }, {
+        interactive = true,
+        win = { position = "bottom", height = 0.3, wo = { winbar = " tmux mode │ scroll: Ctrl+b [" } },
+      })
+      if shared_tmux_term then
+        shared_tmux_term:show():focus()
+      end
 end
 vim.schedule(restore_tmux_session)
 
@@ -902,7 +902,7 @@ function M.reopen_task_terminal()
 
     -- Reuse shared Snacks terminal or create one
     local ok, existing = pcall(function()
-      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf)
+      return shared_tmux_term and shared_tmux_term.buf and vim.api.nvim_buf_is_valid(shared_tmux_term.buf) and vim.bo[shared_tmux_term.buf].channel > 0
     end)
     if ok and existing then
       local win = shared_tmux_term.win
