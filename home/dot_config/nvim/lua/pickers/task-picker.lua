@@ -170,11 +170,14 @@ local function __open_term_buf_in_shared(cmd_list, label, task_id, cwd)
   vim.bo[buf].scrollback = 50000
 
   if cmd_list then
-    local opts = {
-      on_open = function() vim.cmd("stopinsert") end,
-    }
+    local opts = {}
     if cwd then opts.cwd = cwd end
     vim.fn.termopen(cmd_list, opts)
+    vim.schedule(function()
+      pcall(vim.api.nvim_buf_call, buf, function()
+        vim.cmd("stopinsert")
+      end)
+    end)
   end
 
   table.insert(terminal_tabs, { label = label, buf = buf, id = task_id })
