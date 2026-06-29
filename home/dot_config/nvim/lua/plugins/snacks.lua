@@ -152,7 +152,7 @@ return {
     vim.api.nvim_set_hl(0, "SnacksDashboardFooter", { link = "Normal" })
   end,
   keys = {
-    { "<leader>gl",      function() Snacks.lazygit() end, desc = "LazyGit" },
+    { "<leader>gl",      function() Snacks.lazygit({ win = { position = "float" } }) end, desc = "LazyGit" },
     { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
     { "<leader>,",       function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>/",       function() Snacks.picker.grep() end, desc = "Grep" },
