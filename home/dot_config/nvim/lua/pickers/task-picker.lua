@@ -37,6 +37,7 @@ local shared_tmux_term = nil -- single Snacks terminal for all tmux tasks
 ---@type {label: string, buf: number, id: string?}[]
 local terminal_tabs = {} -- tab list for neovim mode (tabbed terminal panel)
 local term_panel = { win = nil } -- single Neovim terminal window (neovim mode)
+local _saved_tab_opts = {} -- original showtabline/tabline before we override
 
 -- cache
 local picker_cache = {}
@@ -155,8 +156,8 @@ local function __ensure_term_panel()
   end
   vim.api.nvim_command("botright 12split")
   term_panel.win = vim.api.nvim_get_current_win()
-  vim.wo[term_panel.win].statusline = "%="
   vim.wo[term_panel.win].winhighlight = "Normal:Terminal"
+  __set_tabline()
   return term_panel.win
 end
 
@@ -193,20 +194,29 @@ local function __build_tab_label(idx, tab)
   return "%*TermTabActive*" .. close .. tab_sw .. "%*"
 end
 
-local function __build_winbar()
+local function __set_tabline()
+  if #terminal_tabs == 0 then
+    if next(_saved_tab_opts) then
+      vim.o.showtabline = _saved_tab_opts.showtabline
+      vim.o.tabline = _saved_tab_opts.tabline
+      _saved_tab_opts = {}
+    end
+    return
+  end
+  if not _saved_tab_opts.showtabline then
+    _saved_tab_opts = { showtabline = vim.o.showtabline, tabline = vim.o.tabline }
+  end
+  vim.o.showtabline = 2
   local parts = {}
   for i, tab in ipairs(terminal_tabs) do
     table.insert(parts, __build_tab_label(i, tab))
   end
   table.insert(parts, " %*TermTabNew*%2000@TerminalTabHandler@ + %X%*")
-  return table.concat(parts, "  ")
+  vim.o.tabline = table.concat(parts, "  ")
 end
 
 local function __refresh_winbar()
-  local w = term_panel.win
-  if w and vim.api.nvim_win_is_valid(w) then
-    vim.wo[w].statusline = __build_winbar()
-  end
+  __set_tabline()
 end
 
 local function __open_blank_term()
