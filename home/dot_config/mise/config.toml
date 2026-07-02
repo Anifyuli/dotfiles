@@ -1,3 +1,6 @@
+[env]
+OPENCODE_DISABLE_FFF=1
+
 [tools]
 gradle = "latest"
 node   = "latest"
@@ -13,7 +16,7 @@ uv     = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
-"npm:opencode-ai"               = { version = "1.16.2", npm_args = "--ignore-scripts=false --allow-scripts=opencode-ai" }
+"npm:opencode-ai"               = { version = "latest", npm_args = "--ignore-scripts=false --allow-scripts=opencode-ai" }
 
 [settings]
 experimental = true

@@ -10,10 +10,10 @@ return {
   {
     "mistweaverco/kulala.nvim",
     keys = {
-      { "<leader>Rs", desc = "Send request" },
-      { "<leader>Ra", desc = "Send all requests" },
-      { "<leader>Rd", desc = "Send request (debug)" },
-      { "<leader>Rb", desc = "Open scratchpad" },
+      { "<leader>Rs", function() require("kulala").run() end, desc = "Send request" },
+      { "<leader>Ra", function() require("kulala").run_all() end, desc = "Send all requests" },
+      { "<leader>Rd", function() require("kulala").replay() end, desc = "Replay last request" },
+      { "<leader>Rb", function() require("kulala").scratchpad() end, desc = "Open scratchpad" },
     },
     ft = { "http", "rest" },
     opts = {
