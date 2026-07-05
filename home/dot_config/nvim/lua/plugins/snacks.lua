@@ -3,7 +3,11 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
-    bigfile = { enabled = true },
+    bigfile = {
+      enabled = true,
+      filesize = 2,        -- MB, jangan nonaktifkan sebelum 2MB
+      lines = 15000,       -- atau 15k baris
+    },
     dashboard = {
       enabled = true,
       preset = {

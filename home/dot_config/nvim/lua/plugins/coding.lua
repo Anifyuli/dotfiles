@@ -13,34 +13,7 @@ return {
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', event = { "BufReadPre", "BufNewFile" } },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    event = "VeryLazy",
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = 'ibl',
-    opts = {
-      indent = {
-        char = '│',
-        tab_char = '│',
-      },
-      scope = { enabled = false },
-      exclude = {
-        filetypes = {
-          'help',
-          'dashboard',
-          'Trouble',
-          'trouble',
-          'lazy',
-          'mason',
-          'toggleterm',
-          'snacks_terminal',
-          'neo-tree',
-        },
-      },
-    },
-  },
+
   {
     -- Seamless navigation between Neovim windows & tmux panes
     'christoomey/vim-tmux-navigator',

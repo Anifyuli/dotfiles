@@ -43,11 +43,11 @@ return {
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            vim.api.nvim_create_autocmd("CursorHold", {
               buffer = event.buf,
               callback = vim.lsp.buf.document_highlight,
             })
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+            vim.api.nvim_create_autocmd("CursorMoved", {
               buffer = event.buf,
               callback = vim.lsp.buf.clear_references,
             })
@@ -144,10 +144,13 @@ return {
         on_attach = ts_ls_attach,
         cmd = {
           "node",
-          "--max-old-space-size=2048",
+          "--max-old-space-size=4096",
           vim.fn.stdpath("data")
             .. "/mason/packages/typescript-language-server/node_modules/typescript-language-server/lib/cli.mjs",
           "--stdio",
+        },
+        init_options = {
+          maxTsServerMemory = 4096,
         },
         settings = {
           typescript = {
