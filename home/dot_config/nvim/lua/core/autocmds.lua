@@ -79,7 +79,7 @@ autocmd("BufWritePre", {
     local clients = vim.lsp.get_clients({ bufnr = 0 })
     for _, client in ipairs(clients) do
       if client.name == "null-ls" then
-        vim.lsp.buf.format({ async = false, name = "null-ls" })
+        vim.lsp.buf.format({ async = true, name = "null-ls" })
         return
       end
     end

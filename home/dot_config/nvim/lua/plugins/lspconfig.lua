@@ -251,6 +251,7 @@ return {
       })
       local nls = require("null-ls")
       nls.setup({
+        timeout = 15000,
         sources = {
           nls.builtins.formatting.prettier.with({
             filetypes = {
