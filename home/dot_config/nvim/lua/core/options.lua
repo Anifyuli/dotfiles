@@ -47,9 +47,6 @@ opt.equalalways = false
 -- statusline rows become dead space when switching from laststatus=2 to 3
 opt.laststatus = 3
 opt.splitkeep = "screen"
--- Allow windows to fully reclaim statusline rows (prevents dead space)
-opt.winminheight = 0
--- Hide cmdline until needed (gives content windows full height)
-opt.cmdheight = 0
+opt.winminheight = 1
 
 -- vim: ts=2 sts=2 sw=2 et

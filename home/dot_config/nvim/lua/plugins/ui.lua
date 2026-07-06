@@ -318,7 +318,14 @@ return {
             { "fileformat" },
             { "filetype" },
           },
-          lualine_z = { sexy_location },
+          lualine_z = {
+            {
+              sexy_location,
+              cond = function()
+                return vim.bo.filetype ~= "neo-tree"
+              end,
+            },
+          },
         },
         inactive_sections = {
           lualine_x = { sexy_location },

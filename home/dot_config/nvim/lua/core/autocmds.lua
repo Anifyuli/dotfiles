@@ -126,7 +126,7 @@ local function update_fold_sign()
     })
   end
 end
-autocmd({ "CursorMoved", "CursorMovedI" }, {
+autocmd("CursorMoved", {
   group = augroup("fold_sign"),
   callback = update_fold_sign,
 })
