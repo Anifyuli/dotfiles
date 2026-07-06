@@ -32,9 +32,7 @@ opt.wrap = true
 
 opt.fillchars:append({ eob = " " })
 
--- Code folding with tree-sitter
-opt.foldmethod = "expr"
-opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Code folding with tree-sitter (only for filetypes that benefit)
 opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99

@@ -97,6 +97,24 @@ autocmd("TermOpen", {
   end,
 })
 
+-- Filetype-specific folding: treesitter untuk code, indent untuk config/data
+autocmd("FileType", {
+  group = augroup("folding"),
+  callback = function()
+    local ts_ft = {
+      "lua", "javascript", "typescript", "typescriptreact", "javascriptreact",
+      "tsx", "jsx", "python", "rust", "go", "java", "c", "cpp", "zig",
+      "ruby", "php", "vue", "svelte", "astro",
+    }
+    if vim.tbl_contains(ts_ft, vim.bo.filetype) then
+      vim.opt_local.foldmethod = "expr"
+      vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    else
+      vim.opt_local.foldmethod = "indent"
+    end
+  end,
+})
+
 -- JSX/TSX commentstring biar mini.comment pake {/**/}
 autocmd("FileType", {
   group = augroup("jsx_comment"),

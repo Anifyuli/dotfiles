@@ -144,7 +144,7 @@ return {
     quickfile = { enabled = true },
     scroll = { enabled = false },
     statuscolumn = { enabled = true },
-    words = { enabled = true },
+    words = { enabled = false },
   },
   config = function(_, opts)
     require("snacks").setup(opts)
