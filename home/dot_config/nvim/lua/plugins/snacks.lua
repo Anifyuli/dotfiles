@@ -40,7 +40,7 @@ return {
           align = "center",
           padding = 1,
           text = {
-            { " Neovim ", hl = "footer" },
+            { "󰋼 v", hl = "footer" },
             { vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch, hl = "Special" },
           },
         },
