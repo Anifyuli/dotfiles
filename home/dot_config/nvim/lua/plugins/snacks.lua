@@ -36,6 +36,14 @@ return {
       },
       sections = {
         { section = "header" },
+        {
+          align = "center",
+          padding = 1,
+          text = {
+            { " Neovim ", hl = "footer" },
+            { vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch, hl = "Special" },
+          },
+        },
         { section = "keys", gap = 1, padding = 1 },
         function()
           local stats = require("lazy").stats()
@@ -161,7 +169,7 @@ return {
     { "<leader>,",       function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>/",       function() Snacks.picker.grep() end, desc = "Grep" },
     { "<leader>:",       function() Snacks.picker.command_history() end, desc = "Command History" },
-    { "<leader>e",       "<cmd>Neotree toggle<cr>", desc = "File Explorer (Neo-tree)" },
+    { "<leader>e",       "<cmd>NvimTreeToggle<cr>", desc = "File Explorer" },
     { "<leader>ff",      function() Snacks.picker.files() end, desc = "Find Files" },
     { "<leader>fg",      function() Snacks.picker.git_files() end, desc = "Find Git Files" },
     { "<leader>fr",      function() Snacks.picker.recent() end, desc = "Recent" },

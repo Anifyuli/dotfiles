@@ -171,7 +171,7 @@ return {
           mode = "buffers",
           offsets = {
             {
-              filetype = "neo-tree",
+              filetype = "NvimTree",
               text = get_offset_text,
               text_align = "left",
               highlight = "Directory",
@@ -322,7 +322,7 @@ return {
             {
               sexy_location,
               cond = function()
-                return vim.bo.filetype ~= "neo-tree"
+                return vim.bo.filetype ~= "NvimTree"
               end,
             },
           },
@@ -336,7 +336,7 @@ return {
           "nvim-tree",
           "nvim-dap-ui",
           {
-            filetypes = { "neo-tree" },
+            filetypes = { "NvimTree" },
             sections = {
               lualine_a = {},
               lualine_b = {},
@@ -351,57 +351,36 @@ return {
     end,
   },
   {
-    -- Neo-tree: persistent file explorer
-    "nvim-neo-tree/neo-tree.nvim",
+    -- nvim-tree: file explorer
+    "nvim-tree/nvim-tree.lua",
     event = "VeryLazy",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-    },
-    cmd = "Neotree",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
     config = function()
-      vim.fn.sign_define("NeotreeGitAdded", { text = " ", texthl = "NeotreeGitAdded" })
-      vim.fn.sign_define("NeotreeGitModified", { text = " ", texthl = "NeotreeGitModified" })
-      vim.fn.sign_define("NeotreeGitDeleted", { text = " ", texthl = "NeotreeGitDeleted" })
-      vim.fn.sign_define("NeotreeGitUntracked", { text = " ", texthl = "NeotreeGitUntracked" })
-      vim.fn.sign_define("NeotreeGitIgnored", { text = " ", texthl = "NeotreeGitIgnored" })
-      vim.fn.sign_define("NeotreeGitConflict", { text = " ", texthl = "NeotreeGitConflict" })
-
-      require("neo-tree").setup({
-        close_if_last_window = true,
-        enable_git_status = true,
-        enable_diagnostics = true,
-        default_source = "filesystem",
-        sources = { "filesystem", "buffers", "git_status" },
-        filesystem = {
-          filtered_items = {
-            visible = true,
-            hide_dotfiles = false,
-            hide_gitignored = false,
-          },
-          follow_current_file = { enabled = true, leave_dirs_open = false },
-          use_libuv_file_watcher = true,
+      require("nvim-tree").setup({
+        disable_netrw = true,
+        hijack_netrw = true,
+        update_focused_file = { enable = true, update_cwd = false },
+        git = { enable = true },
+        diagnostics = { enable = true },
+        filters = {
+          dotfiles = false,
+          git_ignored = false,
+          custom = { "node_modules", ".git", ".next", ".nuxt", "dist", "target", "build" },
         },
-        window = {
-          position = "left",
+        view = {
           width = 30,
-          mappings = {
-            ["<space>"] = "none",
-            ["l"] = "open",
-            ["h"] = "close_node",
-            ["<cr>"] = "open",
-            ["o"] = "open",
-            ["-"] = "navigate_up",
-            ["."] = "set_root",
-            ["z"] = "close_all_nodes",
-            ["S"] = "open_split",
-            ["s"] = "open_vsplit",
-            ["t"] = "open_tabnew",
-            ["w"] = "open_with_window_picker",
-            ["P"] = "toggle_preview",
-            ["q"] = "close_window",
+          side = "left",
+          signcolumn = "yes",
+        },
+        renderer = {
+          group_empty = true,
+          icons = { git_placement = "signcolumn" },
+        },
+        actions = {
+          open_file = {
+            quit_on_open = false,
+            resize_window = false,
           },
         },
       })
@@ -442,9 +421,9 @@ return {
         left = {
           {
             title = "󰙅 File Explorer",
-            ft = "neo-tree",
+            ft = "NvimTree",
             filter = function(buf)
-              return vim.b[buf].neo_tree_source == "filesystem"
+              return vim.b[buf].nvim_tree_explorer == 1
             end,
             size = { width = 30 },
           },

@@ -270,7 +270,7 @@ return {
     "antosha417/nvim-lsp-file-operations",
     dependencies = {
       "neovim/nvim-lspconfig",
-      "nvim-neo-tree/neo-tree.nvim",
+      "nvim-tree/nvim-tree.lua",
     },
     event = "VeryLazy",
     opts = {},
