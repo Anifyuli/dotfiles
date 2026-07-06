@@ -40,8 +40,8 @@ return {
           align = "center",
           padding = 1,
           text = {
-            { "󰋼 v", hl = "SnacksDashboardIcon" },
-            { vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch, hl = "SnacksDashboardDesc" },
+            { "󰋼 ", hl = "SnacksDashboardIcon" },
+            { "v" .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch, hl = "SnacksDashboardDesc" },
           },
         },
         { section = "keys", gap = 1, padding = 1 },
