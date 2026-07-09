@@ -21,4 +21,7 @@ for dir in \
     end
 end
 
+# Abbrs
+abbr --add cle clear
+
 mise activate fish | source
