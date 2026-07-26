@@ -250,21 +250,24 @@ return {
         },
       })
       local nls = require("null-ls")
+      local sources = {
+        nls.builtins.formatting.prettier.with({
+          filetypes = {
+            "html", "css", "scss", "less",
+            "javascript", "javascriptreact", "typescript", "typescriptreact",
+            "json", "jsonc", "yaml", "markdown", "graphql",
+          },
+        }),
+        nls.builtins.formatting.goimports,
+        nls.builtins.formatting.gofumpt,
+        nls.builtins.diagnostics.markdownlint,
+      }
+      if vim.fn.executable("php-cs-fixer") == 1 then
+        table.insert(sources, nls.builtins.formatting.php_cs_fixer)
+      end
       nls.setup({
         timeout = 15000,
-        sources = {
-          nls.builtins.formatting.prettier.with({
-            filetypes = {
-              "html", "css", "scss", "less",
-              "javascript", "javascriptreact", "typescript", "typescriptreact",
-              "json", "jsonc", "yaml", "markdown", "graphql",
-            },
-          }),
-          nls.builtins.formatting.goimports,
-          nls.builtins.formatting.gofumpt,
-          nls.builtins.formatting.php_cs_fixer,
-          nls.builtins.diagnostics.markdownlint,
-        },
+        sources = sources,
       })
     end,
   },

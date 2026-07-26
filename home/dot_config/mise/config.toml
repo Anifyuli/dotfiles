@@ -1,5 +1,28 @@
 [env]
+GOBIN = "{{env.HOME}}/.local/bin"
 OPENCODE_DISABLE_FFF=1
+
+[bootstrap.hooks.pre-packages]
+run = [
+  "mise-ensure-repo remi",
+  "mise-ensure-repo remi-module:remi-8.2",
+  "mise-ensure-repo terra",
+]
+
+[bootstrap.packages]
+"dnf:composer" = "latest"
+"dnf:php" = "latest"
+"dnf:php-cli" = "latest"
+"dnf:php-fpm" = "latest"
+"dnf:php-mbstring" = "latest"
+"dnf:php-xml" = "latest"
+"dnf:php-mysqlnd" = "latest"
+"dnf:php-pgsql" = "latest"
+"dnf:php-gd" = "latest"
+"dnf:php-bcmath" = "latest"
+"dnf:php-pecl-zip" = "latest"
+"dnf:php-opcache" = "latest"
+"dnf:nginx" = "latest"
 
 [tools]
 flutter = "latest"
@@ -19,6 +42,9 @@ uv     = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
+
+# Github backend
+"github:phpactor/phpactor" = "latest"
 
 [settings]
 experimental = true
