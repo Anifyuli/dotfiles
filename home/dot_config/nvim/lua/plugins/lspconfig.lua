@@ -126,6 +126,17 @@ return {
         filetypes = { "rpm_spec", "spec" },
       }
 
+      local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+      local taplo_bin = mason_bin .. "/taplo"
+      if vim.fn.filereadable(taplo_bin) == 1 then
+        vim.lsp.config.taplo = {
+          capabilities = capabilities,
+          cmd = { taplo_bin, "lsp" },
+          filetypes = { "toml" },
+        }
+        vim.lsp.enable("taplo")
+      end
+
       -- Disable semantic tokens for ts_ls to prevent overriding treesitter highlights
       local ts_ls_attach = function(client, bufnr)
         if client.server_capabilities.semanticTokensProvider then
