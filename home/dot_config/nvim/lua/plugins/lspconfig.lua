@@ -131,7 +131,7 @@ return {
       if vim.fn.filereadable(taplo_bin) == 1 then
         vim.lsp.config("taplo", {
           capabilities = capabilities,
-          cmd = { taplo_bin, "lsp" },
+          cmd = { taplo_bin, "lsp", "stdio" },
           filetypes = { "toml" },
         })
       end
