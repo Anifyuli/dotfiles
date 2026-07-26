@@ -2,6 +2,8 @@
 OPENCODE_DISABLE_FFF=1
 
 [tools]
+flutter = "latest"
+go      = "latest"
 gradle = "latest"
 node   = "latest"
 opencode = "latest"
@@ -11,7 +13,6 @@ usage  = "latest"
 uv     = "latest"
 
 # npm packages
-"npm:9router"                   = { version = "latest", npm_args = "--ignore-scripts=false --allow-scripts=9router" }
 "npm:@mistweaverco/kulala-ls"   = "latest"
 "npm:@mistweaverco/kulala-fmt"  = "latest"
 "npm:@nestjs/cli"               = "latest"

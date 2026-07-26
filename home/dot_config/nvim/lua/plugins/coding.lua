@@ -13,7 +13,6 @@ return {
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', event = { "BufReadPre", "BufNewFile" } },
 
-
   {
     -- Seamless navigation between Neovim windows & tmux panes
     'christoomey/vim-tmux-navigator',

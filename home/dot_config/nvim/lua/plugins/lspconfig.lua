@@ -221,11 +221,14 @@ return {
         ensure_installed = {
           "cssls",
           "eslint",
+          "gopls",
           "html",
           "lua_ls",
           "marksman",
+          "phpactor",
           "rpmspec",
           "tailwindcss",
+          "taplo",
           "ts_ls",
         },
       })
@@ -244,7 +247,10 @@ return {
         automatic_installation = true,
         ensure_installed = {
           "eslint_d",
+          "goimports",
+          "gofumpt",
           "markdownlint",
+          "php-cs-fixer",
           "prettier",
           "stylua",
         },
@@ -260,6 +266,9 @@ return {
               "json", "jsonc", "yaml", "markdown", "graphql",
             },
           }),
+          nls.builtins.formatting.goimports,
+          nls.builtins.formatting.gofumpt,
+          nls.builtins.formatting.php_cs_fixer,
           nls.builtins.diagnostics.markdownlint,
         },
       })
