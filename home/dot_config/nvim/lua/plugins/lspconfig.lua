@@ -73,7 +73,7 @@ return {
       })
 
       -- LSP configs with custom settings
-      vim.lsp.config.cssls = {
+      vim.lsp.config("cssls", {
         capabilities = capabilities,
         filetypes = { "css", "scss", "html", "less" },
         settings = {
@@ -83,9 +83,9 @@ return {
             },
           },
         },
-      }
+      })
 
-      vim.lsp.config.eslint = {
+      vim.lsp.config("eslint", {
         capabilities = capabilities,
         filetypes = {
           "html",
@@ -100,15 +100,15 @@ return {
           "astro",
         },
         settings = {},
-      }
+      })
 
-      vim.lsp.config.html = {
+      vim.lsp.config("html", {
         capabilities = capabilities,
         filetypes = { "html", "twig", "hbs", "php" },
         settings = {},
-      }
+      })
 
-      vim.lsp.config.lua_ls = {
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -119,22 +119,21 @@ return {
             telemetry = { enable = false },
           },
         },
-      }
+      })
 
-      vim.lsp.config.rpmspec = {
+      vim.lsp.config("rpmspec", {
         capabilities = capabilities,
         filetypes = { "rpm_spec", "spec" },
-      }
+      })
 
       local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
       local taplo_bin = mason_bin .. "/taplo"
       if vim.fn.filereadable(taplo_bin) == 1 then
-        vim.lsp.config.taplo = {
+        vim.lsp.config("taplo", {
           capabilities = capabilities,
           cmd = { taplo_bin, "lsp" },
           filetypes = { "toml" },
-        }
-        vim.lsp.enable("taplo")
+        })
       end
 
       -- Disable semantic tokens for ts_ls to prevent overriding treesitter highlights
@@ -198,6 +197,12 @@ return {
           },
         },
       })
+      vim.lsp.enable("cssls")
+      vim.lsp.enable("eslint")
+      vim.lsp.enable("html")
+      vim.lsp.enable("lua_ls")
+      vim.lsp.enable("rpmspec")
+      vim.lsp.enable("taplo")
       vim.lsp.enable("ts_ls")
 
       -- Filetype detection for RPM spec files
