@@ -210,6 +210,7 @@ return {
 
       -- Mason
       require("mason").setup()
+      vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin:" .. vim.env.PATH
 
       require("mason-lspconfig").setup({
         ensure_installed = {
@@ -262,7 +263,7 @@ return {
         nls.builtins.formatting.gofumpt,
         nls.builtins.diagnostics.markdownlint,
       }
-      if vim.fn.executable("php-cs-fixer") == 1 then
+      if vim.fn.executable("php-cs-fixer") == 1 or vim.fn.filereadable(vim.fn.stdpath("data") .. "/mason/bin/php-cs-fixer") == 1 then
         table.insert(sources, nls.builtins.formatting.php_cs_fixer)
       end
       nls.setup({

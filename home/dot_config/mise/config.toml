@@ -35,6 +35,12 @@ yarn   = "latest"
 usage  = "latest"
 uv     = "latest"
 
+# Github backend
+"github:phpactor/phpactor" = "latest"
+
+# Go backend
+"go:golang.org/x/tools/gopls" = "latest"
+
 # npm packages
 "npm:@mistweaverco/kulala-ls"   = "latest"
 "npm:@mistweaverco/kulala-fmt"  = "latest"
@@ -42,9 +48,6 @@ uv     = "latest"
 "npm:prettier"                  = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
-
-# Github backend
-"github:phpactor/phpactor" = "latest"
 
 [settings]
 experimental = true
