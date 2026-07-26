@@ -72,16 +72,20 @@ autocmd({ "ColorScheme", "VimEnter" }, {
   end
 })
 
--- Format on save via null-ls only (avoids LSP progress noise from tsserver)
+-- Format on save: try null-ls first, then any LSP with formatting
 autocmd("BufWritePre", {
   group = augroup("format_on_save"),
   callback = function()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    local bufnr = vim.api.nvim_get_current_buf()
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/formatting" })
     for _, client in ipairs(clients) do
       if client.name == "null-ls" then
         vim.lsp.buf.format({ async = true, name = "null-ls" })
         return
       end
+    end
+    if #clients > 0 then
+      vim.lsp.buf.format({ async = true })
     end
   end
 })
