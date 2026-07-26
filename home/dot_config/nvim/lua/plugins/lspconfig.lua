@@ -85,12 +85,6 @@ return {
         },
       }
 
-      vim.lsp.config.tailwindcss = {
-        capabilities = capabilities,
-        filetypes = { "css", "scss", "html", "less", "javascript", "javascriptreact", "typescript", "typescriptreact" },
-        settings = {},
-      }
-
       vim.lsp.config.eslint = {
         capabilities = capabilities,
         filetypes = {

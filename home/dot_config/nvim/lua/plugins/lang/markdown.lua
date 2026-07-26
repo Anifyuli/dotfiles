@@ -1,4 +1,4 @@
- return {
+return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -9,26 +9,20 @@
   },
   {
     "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        marksman = {},
-      },
-    },
+    config = function()
+      vim.lsp.config("marksman", {})
+      vim.lsp.enable("marksman")
+    end,
   },
-
-  -- Inline markdown rendering
   {
     "MeanderingProgrammer/render-markdown.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     ft = { "markdown", "norg", "rmd", "org" },
     opts = {
-      heading = {
-        backgrounds = {},
-      },
+      heading = { backgrounds = {} },
     },
     keys = {
       { "<leader>cp", "<cmd>RenderMarkdown toggle<cr>", desc = "Toggle Markdown Render", ft = "markdown" },
     },
   },
-
 }
