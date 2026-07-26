@@ -210,7 +210,6 @@ return {
 
       -- Mason
       require("mason").setup()
-      vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin:" .. vim.env.PATH
 
       require("mason-lspconfig").setup({
         ensure_installed = {
@@ -251,6 +250,7 @@ return {
         },
       })
       local nls = require("null-ls")
+      local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
       local sources = {
         nls.builtins.formatting.prettier.with({
           filetypes = {
@@ -263,8 +263,13 @@ return {
         nls.builtins.formatting.gofumpt,
         nls.builtins.diagnostics.markdownlint,
       }
-      if vim.fn.executable("php-cs-fixer") == 1 or vim.fn.filereadable(vim.fn.stdpath("data") .. "/mason/bin/php-cs-fixer") == 1 then
-        table.insert(sources, nls.builtins.formatting.php_cs_fixer)
+      -- php-cs-fixer: custom source with Mason full path
+      local php_cs_fixer_bin = mason_bin .. "/php-cs-fixer"
+      if vim.fn.filereadable(php_cs_fixer_bin) == 1 then
+        table.insert(sources, nls.builtins.formatting.php_cs_fixer.with({
+          command = php_cs_fixer_bin,
+          args = { "fix", "$FILENAME", "--using-cache=no", "--no-interaction" },
+        }))
       end
       nls.setup({
         timeout = 15000,
