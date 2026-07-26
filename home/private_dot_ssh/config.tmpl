@@ -1,3 +1,7 @@
+Host *
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+
 Host github.com
   IdentityFile ~/.ssh/github
   AddKeysToAgent yes
@@ -12,5 +16,12 @@ Host {{ .sirojulanam_server_ip }}
   Port {{ .sirojulanam_server_port }}
   User sirojulanam
   IdentityFile ~/.ssh/id_rsa
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+
+Host {{ .dakhilgate_server_ip }}
+  HostName {{ .dakhilgate_server_ip }}
+  User dkgate
+  IdentityFile ~/.ssh/dakhilgate.pem
   ServerAliveInterval 60
   ServerAliveCountMax 3
