@@ -266,9 +266,8 @@ return {
       -- php-cs-fixer: custom source with Mason full path
       local php_cs_fixer_bin = mason_bin .. "/php-cs-fixer"
       if vim.fn.filereadable(php_cs_fixer_bin) == 1 then
-        table.insert(sources, nls.builtins.formatting.php_cs_fixer.with({
+        table.insert(sources, nls.builtins.formatting.phpcsfixer.with({
           command = php_cs_fixer_bin,
-          args = { "fix", "$FILENAME", "--using-cache=no", "--no-interaction" },
         }))
       end
       nls.setup({
