@@ -1,3 +1,8 @@
-# Server IPs — hanya dipakai di SSH config untuk X280
-# Jika perlu update, edit langsung di private_dot_ssh/config.tmpl
+{{- $dakhilGate := promptStringOnce . "dakhilgate_server_ip" "DakhilGate server IP" -}}
+{{- $serverIp := promptStringOnce . "sirojulanam_server_ip" "Sirojulanam server IP" -}}
+{{- $serverPort := promptIntOnce . "sirojulanam_server_port" "Sirojulanam server SSH port" -}}
 
+[data]
+    dakhilgate_server_ip = {{ $dakhilGate | quote }}
+    sirojulanam_server_ip = {{ $serverIp | quote }}
+    sirojulanam_server_port = {{ $serverPort }}

@@ -12,16 +12,16 @@ Host gitlab.com
   IdentityFile ~/.ssh/gitlab_sirojulanam
 
 {{ if eq .chezmoi.hostname "ThinkPad-X280" }}
-Host 103.87.67.155
-  HostName 103.87.67.155
-  Port 2200
+Host {{ .sirojulanam_server_ip }}
+  HostName {{ .sirojulanam_server_ip }}
+  Port {{ .sirojulanam_server_port }}
   User sirojulanam
   IdentityFile ~/.ssh/id_rsa
   ServerAliveInterval 60
   ServerAliveCountMax 3
 
-Host 103.150.227.134
-  HostName 103.150.227.134
+Host {{ .dakhilgate_server_ip }}
+  HostName {{ .dakhilgate_server_ip }}
   User dkgate
   IdentityFile ~/.ssh/dakhilgate.pem
   ServerAliveInterval 60
