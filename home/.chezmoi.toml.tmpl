@@ -1,3 +1,8 @@
+encryption = "age"
+[age]
+    identity = "~/.config/chezmoi/key.txt"
+    recipient = "age1n43w7jgw9dsur9sdtkmnpuplwxv33nz0gnhupxdz8nfsacudyfsse73nn8"
+
 [data]
     dakhilgate_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "dakhilgate_server_ip" "DakhilGate server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
     sirojulanam_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "sirojulanam_server_ip" "Sirojulanam server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
