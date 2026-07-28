@@ -1,7 +1,8 @@
 [env]
-GOBIN = "{{env.HOME}}/.local/bin"
+GOBIN = "{{ env "HOME" }}/.local/bin"
 OPENCODE_DISABLE_FFF=1
 
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 [bootstrap.hooks.pre-packages]
 run = [
   "mise-ensure-repo remi",
@@ -23,6 +24,12 @@ run = [
 "dnf:php-pecl-zip" = "latest"
 "dnf:php-opcache" = "latest"
 "dnf:nginx" = "latest"
+{{ else }}
+[bootstrap.hooks.pre-packages]
+run = [
+  "mise-ensure-repo terra",
+]
+{{ end }}
 
 [tools]
 flutter = "latest"
@@ -35,8 +42,10 @@ yarn   = "latest"
 usage  = "latest"
 uv     = "latest"
 
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 # Github backend
 "github:phpactor/phpactor" = "latest"
+{{ end }}
 
 # Go backend
 "go:golang.org/x/tools/gopls" = "latest"
