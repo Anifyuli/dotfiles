@@ -1,8 +1,4 @@
-{{- $dakhilGate := promptStringOnce . "dakhilgate_server_ip" "DakhilGate server IP" -}}
-{{- $serverIp := promptStringOnce . "sirojulanam_server_ip" "Sirojulanam server IP" -}}
-{{- $serverPort := promptIntOnce . "sirojulanam_server_port" "Sirojulanam server SSH port" -}}
-
 [data]
-    dakhilgate_server_ip = {{ $dakhilGate | quote }}
-    sirojulanam_server_ip = {{ $serverIp | quote }}
-    sirojulanam_server_port = {{ $serverPort }}
+    dakhilgate_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "dakhilgate_server_ip" "DakhilGate server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
+    sirojulanam_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "sirojulanam_server_ip" "Sirojulanam server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
+    sirojulanam_server_port = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptIntOnce . "sirojulanam_server_port" "Sirojulanam server SSH port" }}{{ else }}{{ 0 }}{{ end }}
