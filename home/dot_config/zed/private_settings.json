@@ -244,7 +244,6 @@
     },
     "jdtls": {
       "settings": {
-        // "java_home": "/usr/lib/jvm/java-21",
         "lombok_support": true,
         "initialization_options": {
           "settings": {
