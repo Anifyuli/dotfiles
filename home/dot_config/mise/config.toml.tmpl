@@ -1,5 +1,6 @@
 [env]
 GOBIN = "{{ env "HOME" }}/.local/bin"
+GOPATH = "{{ env "HOME" }}/.go"
 OPENCODE_DISABLE_FFF=1
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
