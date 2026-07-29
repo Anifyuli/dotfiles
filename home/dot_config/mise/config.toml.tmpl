@@ -6,6 +6,7 @@ OPENCODE_DISABLE_FFF=1
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 [bootstrap.hooks.pre-packages]
 run = [
+  "chmod +x ~/.local/bin/mise-ensure-repo",
   "mise-ensure-repo remi",
   "mise-ensure-repo remi-module:remi-8.3",
   "mise-ensure-repo terra",
@@ -43,6 +44,7 @@ run = [
 {{ else }}
 [bootstrap.hooks.pre-packages]
 run = [
+  "chmod +x ~/.local/bin/mise-ensure-repo",
   "mise-ensure-repo terra",
 ]
 {{ end }}
