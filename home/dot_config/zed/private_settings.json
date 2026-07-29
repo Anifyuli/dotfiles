@@ -244,12 +244,23 @@
     },
     "jdtls": {
       "settings": {
-        "lombok_support": true,
         "initialization_options": {
           "settings": {
             "java": {
               "autobuild": {
                 "enabled": false,
+              },
+              "import": {
+                "gradle": {
+                  "enabled": true,
+                },
+                "exclusions": [
+                  "**/node_modules/**",
+                  "**/.metadata/**",
+                  "**/archetype-resources/**",
+                  "**/META-INF/maven/**",
+                  "/**/test/**",
+                ],
               },
               "referencesCodeLens": {
                 "enabled": false,
@@ -259,18 +270,6 @@
               },
               "implementationCodeLens": {
                 "enabled": false,
-              },
-              "import": {
-                "exclusions": [
-                  "**/node_modules/**",
-                  "**/.metadata/**",
-                  "**/archetype-resources/**",
-                  "**/META-INF/maven/**",
-                  "/**/test/**",
-                ],
-              },
-              "completion": {
-                "favoriteStaticMembers": [],
               },
             },
           },
