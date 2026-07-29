@@ -67,7 +67,7 @@
     "shell": {
       "with_arguments": {
         "program": "/usr/bin/fish",
-        "args": ["-c", "tmux new-session -A -s \"$(basename \"$PWD\")\""],
+        "args": ["-c", "tmux new-session -s \"$(basename \"$PWD\")-$$\""],
       },
     },
   },
