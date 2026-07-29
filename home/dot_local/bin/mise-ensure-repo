@@ -21,8 +21,10 @@ case "$repo" in
         --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" terra-release
     ;;
   docker-ce)
-    grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null || \
-      sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+    grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null && exit 0
+    sudo curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
+    sudo sed -i '/autorefresh/d' /tmp/docker-ce.repo
+    sudo mv /tmp/docker-ce.repo /etc/yum.repos.d/
     ;;
   copr:*)
     name="${repo#copr:}"
