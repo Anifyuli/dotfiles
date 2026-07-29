@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo="$1"
+
+case "$repo" in
+  remi)
+    rpm -q remi-release >/dev/null 2>&1 || \
+      sudo dnf install -y "https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm"
+    ;;
+  remi-module:*)
+    stream="${repo#remi-module:}"
+    dnf module list --enabled php 2>/dev/null | grep -q "$stream" || {
+      sudo dnf module reset php -y || true
+      sudo dnf module enable "php:$stream" -y
+    }
+    ;;
+  terra)
+    rpm -q terra-release >/dev/null 2>&1 || \
+      sudo dnf install -y --nogpgcheck \
+        --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" terra-release
+    ;;
+  docker-ce)
+    grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null || \
+      sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+    ;;
+  copr:*)
+    name="${repo#copr:}"
+    dnf copr list 2>/dev/null | grep -q "$name" || sudo dnf copr enable -y "$name"
+    ;;
+  *)
+    echo "mise-ensure-repo: unknown repo spec '$repo'" >&2
+    exit 1
+    ;;
+esac

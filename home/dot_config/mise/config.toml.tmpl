@@ -9,10 +9,16 @@ run = [
   "mise-ensure-repo remi",
   "mise-ensure-repo remi-module:remi-8.3",
   "mise-ensure-repo terra",
+  "mise-ensure-repo docker-ce",
 ]
 
 [bootstrap.packages]
 "dnf:composer" = "latest"
+"dnf:containerd.io" = "latest"
+"dnf:docker-buildx-plugin" = "latest"
+"dnf:docker-ce" = "latest"
+"dnf:docker-ce-cli" = "latest"
+"dnf:docker-compose-plugin" = "latest"
 "dnf:php" = "latest"
 "dnf:php-cli" = "latest"
 "dnf:php-fpm" = "latest"
@@ -27,6 +33,12 @@ run = [
 "dnf:nginx" = "latest"
 "dnf:postgresql" = "latest"
 "dnf:postgresql-server" = "latest"
+
+[bootstrap.hooks.post-packages]
+run = [
+  "sudo systemctl daemon-reload",
+  "sudo systemctl enable --now docker",
+]
 {{ else }}
 [bootstrap.hooks.pre-packages]
 run = [
