@@ -242,6 +242,42 @@
         "arguments": ["--stdio"],
       },
     },
+    "jdtls": {
+      "settings": {
+        // "java_home": "/usr/lib/jvm/java-21",
+        "lombok_support": true,
+        "initialization_options": {
+          "settings": {
+            "java": {
+              "autobuild": {
+                "enabled": false,
+              },
+              "referencesCodeLens": {
+                "enabled": false,
+              },
+              "signatureHelp": {
+                "enabled": false,
+              },
+              "implementationCodeLens": {
+                "enabled": false,
+              },
+              "import": {
+                "exclusions": [
+                  "**/node_modules/**",
+                  "**/.metadata/**",
+                  "**/archetype-resources/**",
+                  "**/META-INF/maven/**",
+                  "/**/test/**",
+                ],
+              },
+              "completion": {
+                "favoriteStaticMembers": [],
+              },
+            },
+          },
+        },
+      },
+    },
   },
 
   // EXTENSIONS & MISC
