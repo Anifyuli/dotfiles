@@ -1,2 +1,6 @@
 # Device-specific configs are handled via templates with .chezmoi.hostname
 # No files need to be skipped - template conditionals handle it
+
+# WakaTime config contains the API key; never track it
+.wakatime.cfg
+.wakatime/
