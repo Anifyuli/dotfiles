@@ -282,6 +282,7 @@
   "auto_install_extensions": {
     "dart": true,
     "dockerfile": true,
+    "docker-compose": true,
     "editorconfig": true,
     "emmet": true,
     "gruvbox-material": true,
