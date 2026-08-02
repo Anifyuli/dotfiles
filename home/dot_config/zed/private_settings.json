@@ -86,9 +86,9 @@
     "enabled": true,
     "default_profile": "ask",
     "default_model": {
-      "provider": "mistral",
-      "model": "mistral-medium-3.5",
-      "enable_thinking": true,
+      "provider": "opencode",
+      "model": "free/big-pickle",
+      "enable_thinking": false,
     },
     "inline_assistant_model": {
       "provider": "mistral",

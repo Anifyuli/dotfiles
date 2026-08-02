@@ -9,7 +9,7 @@ Host github.com
 Host gitlab.com
   HostName gitlab.com
   User git
-  IdentityFile ~/.ssh/gitlab_sirojulanam
+  IdentityFile ~/.ssh/gitlab
 
 {{ if eq .chezmoi.hostname "ThinkPad-X280" }}
 Host {{ .sirojulanam_server_ip }}
@@ -26,4 +26,9 @@ Host {{ .dakhilgate_server_ip }}
   IdentityFile ~/.ssh/dakhilgate.pem
   ServerAliveInterval 60
   ServerAliveCountMax 3
+
+Host gitlab-sirojulanam
+  HostName gitlab.com
+  User git
+  IdentifyFile ~/.ssh/gitlab_sirojulanam
 {{ end }}
