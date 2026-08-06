@@ -151,9 +151,22 @@
       "format_on_save": "on",
     },
     "PHP": {
-      "language_servers": ["eslint", "phpactor", "vscode-html-languageservice"],
+      "language_servers": ["laravel", "phpactor", "eslint", "vscode-html-languageservice"],
       "formatter": "language_server",
       "format_on_save": "off",
+    },
+    "Blade": {
+      "language_servers": ["laravel", "tailwindcss-language-server"],
+    },
+    "Go": {
+      "language_servers": ["gopls"],
+      "formatter": "language_server",
+      "format_on_save": "on",
+    },
+    "Dart": {
+      "language_servers": ["dart"],
+      "formatter": "language_server",
+      "format_on_save": "on",
     },
     "kulala-http": {
       "language_servers": ["kulala-ls"],
@@ -165,6 +178,11 @@
         },
       },
     },
+  },
+
+  // FILE TYPES
+  "file_types": {
+    "Blade": ["*.blade.php"],
   },
 
   // LSP
@@ -214,6 +232,10 @@
     },
     "tailwindcss-language-server": {
       "settings": {
+        "includeLanguages": {
+          "php": "html",
+          "blade": "html",
+        },
         "experimental": {
           "classRegex": [
             "\\.className\\s*[+]?=\\s*['\"]([^'\"]*)['\"]",
@@ -241,6 +263,37 @@
         "path": "kulala-ls",
         "arguments": ["--stdio"],
       },
+    },
+    "gopls": {
+      "initialization_options": {
+        "gofumpt": true,
+        "usePlaceholders": true,
+        "completeUnimported": true,
+        "hints": {
+          "assignVariableTypes": true,
+          "compositeLiteralFields": true,
+          "compositeLiteralTypes": true,
+          "constantValues": true,
+          "functionTypeParameters": true,
+          "parameterNames": true,
+          "rangeVariableTypes": true,
+        },
+        "analyses": {
+          "unusedparams": true,
+          "shadow": true,
+        },
+        "codelenses": {
+          "test": true,
+          "generate": true,
+          "tidy": true,
+          "upgrade_dependency": true,
+          "vendor": true,
+          "regenerate_cgo": true,
+        },
+      },
+    },
+    "laravel": {
+      "initialization_options": {},
     },
     "jdtls": {
       "settings": {
@@ -280,6 +333,7 @@
 
   // EXTENSIONS & MISC
   "auto_install_extensions": {
+    "blade": true,
     "dart": true,
     "dockerfile": true,
     "docker-compose": true,
@@ -289,6 +343,7 @@
     "html": true,
     "java": true,
     "kulala-http": true,
+    "laravel-official": true,
     "modern-icons": true,
     "php": true,
     "react-type-kit-snippets": true,
