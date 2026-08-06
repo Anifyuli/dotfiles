@@ -30,6 +30,12 @@
   "linked_edits": true,
   "show_completions_on_input": true,
   "show_completion_documentation": true,
+  "completions": {
+    "words": "enabled",
+    "words_min_length": 2,
+    "lsp": true,
+  },
+  "snippet_sort_order": "top",
   "show_edit_predictions": true,
   "indent_guides": {
     "enabled": true,
