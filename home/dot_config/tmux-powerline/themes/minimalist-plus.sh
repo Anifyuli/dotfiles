@@ -20,34 +20,31 @@ GR_BG0="#282828"
 
 if grep -qi "LookAndFeelPackage.*light\|ColorScheme.*Light" ~/.config/kdeglobals 2>/dev/null; then
   # --- LIGHT MODE ---
-  BG_WIN="#d5c4a1"
-  FG="#3c3836"
+  FG="#3c3836"        # dark text on light bg
+  FG_DIM="#7c6f64"    # inactive window numbers (darker = lebih terang di bg terang)
+  ACTIVE_BG="#d65d0e" # accent bg for active window
+  ACTIVE_FG="#fbf1c7" # bright text on accent
 else
   # --- DARK MODE ---
-  BG_WIN="#504945"
   FG="#ebdbb2"
+  FG_DIM="#bdae93"
+  ACTIVE_BG="#d65d0e"
+  ACTIVE_FG="#fbf1c7"
 fi
 
 TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR='default'
 TMUX_POWERLINE_DEFAULT_FOREGROUND_COLOR="$FG"
 
-# Window status current (active window)
+# Window status current (active window) — accent bg, bold, padded
 TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-    "#[bg=${BG_WIN},fg=${FG}]"
-    " #I#F #{b:window_name:10} "
-    "#[bg=default,fg=${FG}]"
-    " "
+    "#[bg=${ACTIVE_BG},fg=${ACTIVE_FG},bold]"
+    " #I "
 )
 
-# Window status style
-TMUX_POWERLINE_WINDOW_STATUS_STYLE=(
-    "bg=${BG_WIN},fg=${FG}"
-)
-
-# Window format
+# Window status format (inactive windows) — transparent bg, dimmed number, padded
 TMUX_POWERLINE_WINDOW_STATUS_FORMAT=(
-    "#[bg=${BG_WIN},fg=${FG}]"
-    " #I#{?window_flags,#F, } #{b:window_name:10} "
+    "#[bg=default,fg=${FG_DIM}]"
+    " #I#{?window_zoomed_flag,Z,}#{?window_bell_flag,!,}#{?window_activity_flag,#,}#{?window_silence_flag,~,} "
 )
 
 # Left side: session, pwd, branch
