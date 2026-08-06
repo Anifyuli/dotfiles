@@ -11,19 +11,19 @@ Host gitlab.com
   User git
   IdentityFile ~/.ssh/gitlab
 
+Host {{ .dakhilgate_server_ip }}
+  HostName {{ .dakhilgate_server_ip }}
+  User dkgate
+  IdentityFile ~/.ssh/dakhilgate.pem
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+
 {{ if eq .chezmoi.hostname "ThinkPad-X280" }}
 Host {{ .sirojulanam_server_ip }}
   HostName {{ .sirojulanam_server_ip }}
   Port {{ .sirojulanam_server_port }}
   User sirojulanam
   IdentityFile ~/.ssh/id_rsa
-  ServerAliveInterval 60
-  ServerAliveCountMax 3
-
-Host {{ .dakhilgate_server_ip }}
-  HostName {{ .dakhilgate_server_ip }}
-  User dkgate
-  IdentityFile ~/.ssh/dakhilgate.pem
   ServerAliveInterval 60
   ServerAliveCountMax 3
 

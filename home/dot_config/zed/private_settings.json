@@ -293,6 +293,8 @@
     "php": true,
     "react-type-kit-snippets": true,
     "sql": true,
+    "toml": true,
+    "tombi": true,
     "wakatime": true,
     "zed-react-snippets": true,
   },
