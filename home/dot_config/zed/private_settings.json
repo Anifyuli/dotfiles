@@ -1,5 +1,7 @@
 // APPEARANCE
 {
+  "cli_default_open_behavior": "existing_window",
+  "proxy": "",
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light Soft",
