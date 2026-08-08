@@ -7,7 +7,8 @@ if not contains -- $HOME/.local/bin $PATH
     set -gx PATH $HOME/.local/bin $HOME/bin $PATH
 end
 
-# Android SDK configuration
+# Android SDK configuration (only on hosts with Android SDK installed)
+{{- if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 set -gx ANDROID_HOME $HOME/.android/sdk
 set -gx ANDROID_AVD_HOME $HOME/.android/avd
 set -gx ANDROID_SDK_ROOT $ANDROID_HOME
@@ -20,6 +21,7 @@ for dir in \
         set -gx PATH $PATH $dir
     end
 end
+{{- end }}
 
 # Abbrs
 abbr --add cle clear

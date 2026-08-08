@@ -1,6 +1,11 @@
 # Device-specific configs are handled via templates with .chezmoi.hostname
 # No files need to be skipped - template conditionals handle it
 
+# Zed is only used on hosts where it's installed
+{{ if eq .chezmoi.hostname "ThinkPad-X280" }}
+.config/zed/
+{{ end }}
+
 # WakaTime config contains the API key; never track it
 .wakatime.cfg
 .wakatime/
