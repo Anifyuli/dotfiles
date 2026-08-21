@@ -53,7 +53,9 @@ run = [
 flutter = "latest"
 go      = "latest"
 gradle = "latest"
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 java   = "openjdk-21"
+{{ end }}
 node   = "latest"
 opencode = "latest"
 pnpm   = "latest"
@@ -64,11 +66,11 @@ uv     = "latest"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 # Github backend
 "github:phpactor/phpactor" = "latest"
-{{ end }}
 
 # Go backend
 "go:golang.org/x/tools/gopls" = "latest"
 "go:mvdan.cc/gofumpt"          = "latest"
+{{ end }}
 
 # npm packages
 "npm:@mistweaverco/kulala-ls"   = "latest"
