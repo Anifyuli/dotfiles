@@ -5,12 +5,12 @@
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light Soft",
-    "dark": "Gruvbox Dark",
+    "dark": "Gruvbox Dark"
   },
   "icon_theme": {
     "mode": "system",
     "dark": "Modern Icons (Dark)",
-    "light": "Modern Icons (Light)",
+    "light": "Modern Icons (Light)"
   },
   "buffer_font_family": "BlexMono Nerd Font",
   "buffer_font_features": { "calt": true },
@@ -35,38 +35,38 @@
   "completions": {
     "words": "enabled",
     "words_min_length": 2,
-    "lsp": true,
+    "lsp": true
   },
   "snippet_sort_order": "top",
   "show_edit_predictions": true,
   "indent_guides": {
     "enabled": true,
-    "coloring": "indent_aware",
+    "coloring": "indent_aware"
   },
   "inlay_hints": {
-    "enabled": true,
+    "enabled": true
   },
   "gutter": {
     "line_numbers": true,
-    "folds": true,
+    "folds": true
   },
 
   // VIM
   "vim_mode": true,
   "vim": {
-    "use_system_clipboard": "on_yank",
+    "use_system_clipboard": "on_yank"
   },
   "which_key": {
     "enabled": true,
-    "delay_ms": 0,
+    "delay_ms": 0
   },
 
   // GIT
   "git": {
     "inline_blame": {
       "enabled": true,
-      "delay_ms": 500,
-    },
+      "delay_ms": 500
+    }
   },
 
   // TERMINAL
@@ -75,9 +75,9 @@
     "shell": {
       "with_arguments": {
         "program": "/usr/bin/fish",
-        "args": ["-c", "tmux new-session -A -s \"$(basename \"$PWD\")\""],
-      },
-    },
+        "args": ["-c", "tmux new-session -A -s \"$(basename \"$PWD\")\""]
+      }
+    }
   },
 
   // AI / AGENT
@@ -86,8 +86,8 @@
     "provider": "codestral",
     "codestral": {
       "model": "codestral-latest",
-      "api_url": "https://codestral.mistral.ai/v1/fim/completions",
-    },
+      "api_url": "https://codestral.mistral.ai/v1/fim/completions"
+    }
   },
   "agent": {
     "dock": "right",
@@ -96,12 +96,12 @@
     "default_model": {
       "provider": "opencode",
       "model": "free/big-pickle",
-      "enable_thinking": false,
+      "enable_thinking": false
     },
     "inline_assistant_model": {
       "provider": "mistral",
-      "model": "codestral-latest",
-    },
+      "model": "codestral-latest"
+    }
   },
   "language_models": {},
   "agent_servers": {
@@ -109,7 +109,7 @@
     "gemini": { "type": "registry" },
     "opencode": { "type": "registry" },
     "mistral-vibe": { "type": "registry" },
-    "qwen-code": { "type": "registry" },
+    "qwen-code": { "type": "registry" }
   },
 
   // PANELS & LAYOUT
@@ -120,19 +120,19 @@
   "collaboration_panel": { "dock": "right" },
   "title_bar": {
     "show_menus": true,
-    "show_branch_status_icon": true,
+    "show_branch_status_icon": true
   },
   "tab_bar": {
-    "show": true,
+    "show": true
   },
   "tabs": {
     "file_icons": true,
     "git_status": true,
     "show_diagnostics": "errors",
-    "show_close_button": "always",
+    "show_close_button": "always"
   },
   "file_finder": {
-    "file_icons": true,
+    "file_icons": true
   },
 
   // LANGUAGES
@@ -140,41 +140,46 @@
     "CSS": {
       "language_servers": [
         "tailwindcss-intellisense-css",
-        "!vscode-css-language-server",
-      ],
+        "!vscode-css-language-server"
+      ]
     },
     "HTML": {
-      "formatter": "auto",
+      "formatter": "auto"
     },
     "JavaScript": {
       "language_servers": ["vtsls"],
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
     "TypeScript": {
       "language_servers": ["vtsls"],
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
     "TSX": {
       "language_servers": ["eslint", "tailwindcss-intellisense-css", "vtsls"],
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
     "PHP": {
-      "language_servers": ["laravel", "phpactor", "eslint", "vscode-html-languageservice"],
+      "language_servers": [
+        "laravel",
+        "phpactor",
+        "eslint",
+        "vscode-html-languageservice"
+      ],
       "formatter": "language_server",
-      "format_on_save": "off",
+      "format_on_save": "off"
     },
     "Blade": {
-      "language_servers": ["laravel", "tailwindcss-language-server"],
+      "language_servers": ["laravel", "tailwindcss-language-server"]
     },
     "Go": {
       "language_servers": ["gopls"],
       "formatter": "language_server",
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
     "Dart": {
       "language_servers": ["dart"],
       "formatter": "language_server",
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
     "kulala-http": {
       "language_servers": ["kulala-ls"],
@@ -182,15 +187,15 @@
       "formatter": {
         "external": {
           "command": "kulala-fmt",
-          "arguments": ["format", "--stdin", "{buffer_path}"],
-        },
-      },
-    },
+          "arguments": ["format", "--stdin", "{buffer_path}"]
+        }
+      }
+    }
   },
 
   // FILE TYPES
   "file_types": {
-    "Blade": ["*.blade.php"],
+    "Blade": ["*.blade.php"]
   },
 
   // LSP
@@ -201,48 +206,48 @@
           "inlayHints": {
             "parameterNames": {
               "enabled": "all",
-              "suppressWhenArgumentMatchesName": false,
+              "suppressWhenArgumentMatchesName": false
             },
             "parameterTypes": { "enabled": true },
             "variableTypes": {
               "enabled": true,
-              "suppressWhenTypeMatchesName": true,
+              "suppressWhenTypeMatchesName": true
             },
             "propertyDeclarationTypes": { "enabled": true },
             "functionLikeReturnTypes": { "enabled": true },
-            "enumMemberValues": { "enabled": true },
-          },
+            "enumMemberValues": { "enabled": true }
+          }
         },
         "typescript": {
           "inlayHints": {
             "parameterNames": {
               "enabled": "all",
-              "suppressWhenArgumentMatchesName": false,
+              "suppressWhenArgumentMatchesName": false
             },
             "parameterTypes": { "enabled": true },
             "variableTypes": {
               "enabled": true,
-              "suppressWhenTypeMatchesName": true,
+              "suppressWhenTypeMatchesName": true
             },
             "propertyDeclarationTypes": { "enabled": true },
             "functionLikeReturnTypes": { "enabled": true },
-            "enumMemberValues": { "enabled": true },
-          },
-        },
-      },
+            "enumMemberValues": { "enabled": true }
+          }
+        }
+      }
     },
     "eslint": {
       "settings": {
         "codeActionOnSave": {
-          "rules": ["import/order"],
-        },
-      },
+          "rules": ["import/order"]
+        }
+      }
     },
     "tailwindcss-language-server": {
       "settings": {
         "includeLanguages": {
           "php": "html",
-          "blade": "html",
+          "blade": "html"
         },
         "experimental": {
           "classRegex": [
@@ -254,23 +259,23 @@
             "\\.classList\\.toggle\\(['\"]([^'\"]*)['\"]",
             "\\.classList\\.contains\\(['\"]([^'\"]*)['\"]",
             "\\.classList\\.replace\\(\\s*['\"]([^'\"]*)['\"]",
-            "\\.classList\\.replace\\([^,)]+,\\s*['\"]([^'\"]*)['\"]",
-          ],
-        },
-      },
+            "\\.classList\\.replace\\([^,)]+,\\s*['\"]([^'\"]*)['\"]"
+          ]
+        }
+      }
     },
     "vscode-html-language-server": {
       "settings": {
         "format": {
-          "contentUnformatted": ["svg", "script"],
-        },
-      },
+          "contentUnformatted": ["svg", "script"]
+        }
+      }
     },
     "kulala-http": {
       "binary": {
         "path": "kulala-ls",
-        "arguments": ["--stdio"],
-      },
+        "arguments": ["--stdio"]
+      }
     },
     "gopls": {
       "initialization_options": {
@@ -284,11 +289,11 @@
           "constantValues": true,
           "functionTypeParameters": true,
           "parameterNames": true,
-          "rangeVariableTypes": true,
+          "rangeVariableTypes": true
         },
         "analyses": {
           "unusedparams": true,
-          "shadow": true,
+          "shadow": true
         },
         "codelenses": {
           "test": true,
@@ -296,12 +301,12 @@
           "tidy": true,
           "upgrade_dependency": true,
           "vendor": true,
-          "regenerate_cgo": true,
-        },
-      },
+          "regenerate_cgo": true
+        }
+      }
     },
     "laravel": {
-      "initialization_options": {},
+      "initialization_options": {}
     },
     "jdtls": {
       "settings": {
@@ -309,34 +314,34 @@
           "settings": {
             "java": {
               "autobuild": {
-                "enabled": false,
+                "enabled": false
               },
               "import": {
                 "gradle": {
-                  "enabled": true,
+                  "enabled": true
                 },
                 "exclusions": [
                   "**/node_modules/**",
                   "**/.metadata/**",
                   "**/archetype-resources/**",
                   "**/META-INF/maven/**",
-                  "/**/test/**",
-                ],
+                  "/**/test/**"
+                ]
               },
               "referencesCodeLens": {
-                "enabled": false,
+                "enabled": false
               },
               "signatureHelp": {
-                "enabled": false,
+                "enabled": false
               },
               "implementationCodeLens": {
-                "enabled": false,
-              },
-            },
-          },
-        },
-      },
-    },
+                "enabled": false
+              }
+            }
+          }
+        }
+      }
+    }
   },
 
   // EXTENSIONS & MISC
@@ -352,6 +357,7 @@
     "java": true,
     "kulala-http": true,
     "laravel-official": true,
+    "make": true,
     "modern-icons": true,
     "php": true,
     "react-type-kit-snippets": true,
@@ -359,13 +365,13 @@
     "toml": true,
     "tombi": true,
     "wakatime": true,
-    "zed-react-snippets": true,
+    "zed-react-snippets": true
   },
   "auto_update": false,
   "confirm_quit": true,
   "restore_on_startup": "last_workspace",
   "session": {
-    "trust_all_worktrees": true,
+    "trust_all_worktrees": true
   },
   "profiles": {},
   "file_scan_exclusions": [
@@ -380,6 +386,6 @@
     "**/Thumbs.db",
     "**/.classpath",
     "**/.settings",
-    "**/node_modules",
-  ],
+    "**/node_modules"
+  ]
 }
