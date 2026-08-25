@@ -23,6 +23,7 @@ return {
         'markdown',
         'markdown_inline',
         'php',
+        'python',
         'regex',
         'toml',
         'tsx',

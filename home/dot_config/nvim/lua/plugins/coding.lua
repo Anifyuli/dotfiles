@@ -315,10 +315,14 @@ return {
       { "<leader>zs", function() require("neotest").summary.toggle() end,            desc = "Toggle summary" },
       { "<leader>zo", function() require("neotest").output.open({ enter = true }) end, desc = "Show output" },
     },
-    config = function()
-      require("neotest").setup({
-        adapters = { require("neotest-plenary") },
-      })
+    config = function(_, opts)
+      require("neotest").setup(opts)
+    end,
+    opts = function(_, opts)
+      opts = opts or {}
+      opts.adapters = opts.adapters or {}
+      table.insert(opts.adapters, require("neotest-plenary"))
+      return opts
     end,
   },
 }

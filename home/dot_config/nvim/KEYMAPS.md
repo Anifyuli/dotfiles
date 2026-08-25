@@ -146,6 +146,15 @@
 | `Space+z s` | Toggle summary |
 | `Space+z o` | Show output |
 
+## Python (UV)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `Space+P R` | Normal (file .py) | Run file dengan `uv run python` (terminal) |
+| (auto) | - | LSP pyright & ruff format otomatis pakai `.venv` project |
+| (auto) | - | Neotest (`Space+z*`) menjalankan pytest via venv project |
+| F5 | Normal (file .py) | Debug dengan debugpy (program pakai interpreter `.venv`) |
+
 ## Quick Jump (Flash)
 
 | Key | Mode | Action |

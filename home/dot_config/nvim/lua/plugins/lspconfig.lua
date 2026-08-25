@@ -13,7 +13,7 @@ return {
         opts = {},
       },
     },
-    config = function()
+    config = function(_, opts)
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
         callback = function(event)
@@ -42,6 +42,12 @@ return {
           map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          -- Ruff: biarkan hover ditangani pyright
+          if client and client.name == "ruff" then
+            client.server_capabilities.hoverProvider = false
+          end
+
           if client and client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd("CursorHold", {
               buffer = event.buf,
@@ -72,9 +78,60 @@ return {
         { "gD", desc = "LSP: Declaration" },
       })
 
-      -- LSP configs with custom settings
-      vim.lsp.config("cssls", {
-        capabilities = capabilities,
+      -- Terapkan config per-server dari opts.servers (diisi oleh fragment opts
+      -- di file ini dan plugins/lang/*.lua; lazy.nvim men-chaining opts functions),
+      -- lalu enable semuanya
+      for server, server_opts in pairs(opts.servers or {}) do
+        server_opts.capabilities = vim.tbl_deep_extend("force", capabilities, server_opts.capabilities or {})
+        vim.lsp.config(server, server_opts)
+        vim.lsp.enable(server)
+      end
+
+      -- Filetype detection for RPM spec files
+      vim.filetype.add({
+        extension = {
+          spec = "rpm_spec",
+        },
+      })
+
+      -- Register rpmspec treesitter parser for spec files
+      vim.treesitter.language.register("rpmspec", { "rpm_spec" })
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "rpm_spec" },
+        callback = function(args)
+          vim.treesitter.start(args.buf, "rpmspec")
+          vim.bo[args.buf].commentstring = "# %s"
+          vim.bo[args.buf].comments = "b:#"
+        end,
+      })
+
+      -- Mason
+      require("mason").setup()
+
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "cssls",
+          "eslint",
+          "gopls",
+          "html",
+          "lua_ls",
+          "marksman",
+          "phpactor",
+          "pyright",
+          "ruff",
+          "rpmspec",
+          "tailwindcss",
+          "taplo",
+          "ts_ls",
+        },
+      })
+    end,
+    opts = function(_, opts)
+      opts = opts or {}
+      opts.servers = opts.servers or {}
+
+      opts.servers.cssls = {
         filetypes = { "css", "scss", "html", "less" },
         settings = {
           css = {
@@ -83,10 +140,9 @@ return {
             },
           },
         },
-      })
+      }
 
-      vim.lsp.config("eslint", {
-        capabilities = capabilities,
+      opts.servers.eslint = {
         filetypes = {
           "html",
           "javascript",
@@ -100,16 +156,14 @@ return {
           "astro",
         },
         settings = {},
-      })
+      }
 
-      vim.lsp.config("html", {
-        capabilities = capabilities,
+      opts.servers.html = {
         filetypes = { "html", "twig", "hbs", "php" },
         settings = {},
-      })
+      }
 
-      vim.lsp.config("lua_ls", {
-        capabilities = capabilities,
+      opts.servers.lua_ls = {
         settings = {
           Lua = {
             workspace = {
@@ -119,33 +173,47 @@ return {
             telemetry = { enable = false },
           },
         },
-      })
+      }
 
-      vim.lsp.config("rpmspec", {
-        capabilities = capabilities,
+      -- Python: pyright, interpreter di-resolve dari venv UV per project
+      local python_utils = require("utils.python")
+      opts.servers.pyright = {
+        before_init = function(_, config)
+          config.settings = config.settings or {}
+          config.settings.python = config.settings.python or {}
+          config.settings.python.pythonPath = python_utils.get_python_path(config.root_dir)
+        end,
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+              typeCheckingMode = "basic",
+            },
+          },
+        },
+      }
+
+      opts.servers.rpmspec = {
         filetypes = { "rpm_spec", "spec" },
-      })
+      }
 
       local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
-      local taplo_bin = mason_bin .. "/taplo"
-      if vim.fn.filereadable(taplo_bin) == 1 then
-        vim.lsp.config("taplo", {
-          capabilities = capabilities,
-          cmd = { taplo_bin, "lsp", "stdio" },
+      if vim.fn.filereadable(mason_bin .. "/taplo") == 1 then
+        opts.servers.taplo = {
+          cmd = { mason_bin .. "/taplo", "lsp", "stdio" },
           filetypes = { "toml" },
-        })
+        }
       end
 
       -- Disable semantic tokens for ts_ls to prevent overriding treesitter highlights
-      local ts_ls_attach = function(client, bufnr)
-        if client.server_capabilities.semanticTokensProvider then
-          client.server_capabilities.semanticTokensProvider = nil
-        end
-      end
-
-      vim.lsp.config("ts_ls", {
-        capabilities = capabilities,
-        on_attach = ts_ls_attach,
+      opts.servers.ts_ls = {
+        on_attach = function(client, _bufnr)
+          if client.server_capabilities.semanticTokensProvider then
+            client.server_capabilities.semanticTokensProvider = nil
+          end
+        end,
         cmd = {
           "node",
           "--max-old-space-size=4096",
@@ -196,52 +264,9 @@ return {
             },
           },
         },
-      })
-      vim.lsp.enable("cssls")
-      vim.lsp.enable("eslint")
-      vim.lsp.enable("html")
-      vim.lsp.enable("lua_ls")
-      vim.lsp.enable("rpmspec")
-      vim.lsp.enable("taplo")
-      vim.lsp.enable("ts_ls")
+      }
 
-      -- Filetype detection for RPM spec files
-      vim.filetype.add({
-        extension = {
-          spec = "rpm_spec",
-        },
-      })
-
-      -- Register rpmspec treesitter parser for spec files
-      vim.treesitter.language.register("rpmspec", { "rpm_spec" })
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "rpm_spec" },
-        callback = function(args)
-          vim.treesitter.start(args.buf, "rpmspec")
-          vim.bo[args.buf].commentstring = "# %s"
-          vim.bo[args.buf].comments = "b:#"
-        end,
-      })
-
-      -- Mason
-      require("mason").setup()
-
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "cssls",
-          "eslint",
-          "gopls",
-          "html",
-          "lua_ls",
-          "marksman",
-          "phpactor",
-          "rpmspec",
-          "tailwindcss",
-          "taplo",
-          "ts_ls",
-        },
-      })
+      return opts
     end,
   },
   {

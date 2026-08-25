@@ -53,7 +53,9 @@ run = [
 flutter = "latest"
 go      = "latest"
 gradle = "latest"
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 java   = "openjdk-21"
+{{ end }}
 node   = "latest"
 opencode = "latest"
 pnpm   = "latest"
@@ -67,12 +69,16 @@ uv     = "latest"
 {{ end }}
 
 # Go backend
-"go:github.com/ffuf/ffuf/v2"      = "latest"
-"go:golang.org/x/tools/gopls"     = "latest"
-"go:mvdan.cc/gofumpt"             = "latest"
+"go:golang.org/x/tools/gopls" = "latest"
+"go:mvdan.cc/gofumpt"         = "latest"
+
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
+# Go pentest tools
+"go:github.com/ffuf/ffuf/v2"                                      = "latest"
 "go:github.com/projectdiscovery/interactsh/cmd/interactsh-client" = "latest"
 "go:github.com/projectdiscovery/nuclei/v3/cmd/nuclei"             = "latest"
 "go:github.com/projectdiscovery/subfinder/v2/cmd/subfinder"       = "latest"
+{{ end }}
 
 # npm packages
 "npm:@mistweaverco/kulala-ls"   = "latest"

@@ -9,9 +9,10 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    config = function()
-      vim.lsp.config("marksman", {})
-      vim.lsp.enable("marksman")
+    opts = function(_, opts)
+      opts.servers = opts.servers or {}
+      opts.servers.marksman = {}
+      return opts
     end,
   },
   {
