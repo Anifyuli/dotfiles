@@ -7,6 +7,7 @@ OPENCODE_DISABLE_FFF=1
 run = [
   "chmod +x ~/.local/bin/mise-ensure-repo",
   "mise-ensure-repo terra",
+  "mise-ensure-repo copr:jdxcode/mise",
   "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo",
   "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flatpark https://dl.flatpark.org/flatpark.flatpakrepo",
   "mise-ensure-repo gh-rpm:alexandrehtrb/Pororoca",
@@ -18,6 +19,7 @@ run = [
 ]
 
 [bootstrap.packages]
+"dnf:mise" = "latest"
 "dnf:neovim" = "latest"
 "dnf:tmux"  = "latest"
 "dnf:kitty" = "latest"
