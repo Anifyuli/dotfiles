@@ -3,17 +3,28 @@ GOBIN = "{{ env "HOME" }}/.local/bin"
 GOPATH = "{{ env "HOME" }}/.go"
 OPENCODE_DISABLE_FFF=1
 
-{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 [bootstrap.hooks.pre-packages]
 run = [
   "chmod +x ~/.local/bin/mise-ensure-repo",
+  "mise-ensure-repo terra",
+  "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo",
+  "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flatpark https://dl.flatpark.org/flatpark.flatpakrepo",
+  "mise-ensure-repo gh-rpm:alexandrehtrb/Pororoca",
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
   "mise-ensure-repo remi",
   "mise-ensure-repo remi-module:remi-8.3",
-  "mise-ensure-repo terra",
   "mise-ensure-repo docker-ce",
+{{ end }}
 ]
 
 [bootstrap.packages]
+"dnf:nvim"  = "latest"
+"dnf:tmux"  = "latest"
+"dnf:kitty" = "latest"
+"dnf:zed-preview" = "latest"
+"flatpak:cc.arduino.IDE2" = "latest"
+"flatpak:com.dbxio.dbx"   = "latest"
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 "dnf:composer" = "latest"
 "dnf:containerd.io" = "latest"
 "dnf:docker-buildx-plugin" = "latest"
@@ -35,17 +46,12 @@ run = [
 "dnf:nginx" = "latest"
 "dnf:postgresql" = "latest"
 "dnf:postgresql-server" = "latest"
+"dnf:android-studio-stable" = "latest"
 
 [bootstrap.hooks.post-packages]
 run = [
   "sudo systemctl daemon-reload",
   "sudo systemctl enable --now docker",
-]
-{{ else }}
-[bootstrap.hooks.pre-packages]
-run = [
-  "chmod +x ~/.local/bin/mise-ensure-repo",
-  "mise-ensure-repo terra",
 ]
 {{ end }}
 

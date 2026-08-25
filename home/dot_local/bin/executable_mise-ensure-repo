@@ -21,10 +21,33 @@ case "$repo" in
         --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" terra-release
     ;;
   docker-ce)
-    grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null && exit 0
-    sudo curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
-    sudo sed -i '/autorefresh/d' /tmp/docker-ce.repo
-    sudo mv /tmp/docker-ce.repo /etc/yum.repos.d/
+    if ! grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null; then
+      curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
+      sudo sed -i '/autorefresh/d' /tmp/docker-ce.repo
+      sudo mv /tmp/docker-ce.repo /etc/yum.repos.d/
+    fi
+    ;;
+  gh-rpm:*)
+    spec="${repo#gh-rpm:}"
+    slug="${spec%%:*}"
+    rest="${spec#*:}"
+    if [ "$rest" = "$spec" ]; then
+      pattern='*RHEL*x86_64*.rpm'
+    else
+      pattern="$rest"
+    fi
+    asset=""
+    while IFS= read -r url; do
+      case "$url" in
+        $pattern) asset="$url"; break ;;
+      esac
+    done < <(curl -fsSL "https://api.github.com/repos/$slug/releases/latest" |
+      grep -oP '"browser_download_url":\s*"\K[^"]+')
+    if [ -z "$asset" ]; then
+      echo "mise-ensure-repo: no release asset matching '$pattern' for $slug" >&2
+      exit 1
+    fi
+    sudo dnf install -y "$asset"
     ;;
   copr:*)
     name="${repo#copr:}"
