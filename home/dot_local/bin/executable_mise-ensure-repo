@@ -36,16 +36,27 @@ case "$repo" in
     else
       pattern="$rest"
     fi
+    json="$(curl -fsSL "https://api.github.com/repos/$slug/releases/latest")"
+    tag="$(printf '%s' "$json" | grep -oP '"tag_name":\s*"\K[^"]+' | head -n1)"
+    tag="${tag#v}"
     asset=""
     while IFS= read -r url; do
       case "$url" in
         $pattern) asset="$url"; break ;;
       esac
-    done < <(curl -fsSL "https://api.github.com/repos/$slug/releases/latest" |
-      grep -oP '"browser_download_url":\s*"\K[^"]+')
+    done < <(printf '%s' "$json" | grep -oP '"browser_download_url":\s*"\K[^"]+')
     if [ -z "$asset" ]; then
       echo "mise-ensure-repo: no release asset matching '$pattern' for $slug" >&2
       exit 1
+    fi
+    fname="${asset##*/}"
+    stem="${fname%.rpm}"
+    stem="${stem%.*}"
+    [[ "$stem" =~ \.[A-Za-z]+$ ]] && stem="${stem%.*}"
+    name="${stem%%-*}"
+    cur="$(rpm -q --queryformat '%{VERSION}' "$name" 2>/dev/null || true)"
+    if [ -n "$cur" ] && [ "$cur" = "$tag" ]; then
+      exit 0
     fi
     sudo dnf install -y "$asset"
     ;;
