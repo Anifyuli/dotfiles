@@ -107,7 +107,10 @@
   "agent_servers": {
     "kilo": { "type": "registry" },
     "gemini": { "type": "registry" },
-    "opencode": { "type": "registry" },
+    "opencode": { "default_config_options": {
+                        "mode": "build"
+                  },
+                  "type": "registry" },
     "mistral-vibe": { "type": "registry" },
     "qwen-code": { "type": "registry" }
   },

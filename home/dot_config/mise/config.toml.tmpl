@@ -61,6 +61,7 @@ run = [
 flutter = "latest"
 go      = "latest"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
+claude-code = "latest"
 gradle = "latest"
 java   = "openjdk-21"
 {{ end }}
@@ -90,10 +91,12 @@ uv     = "latest"
 
 # npm packages
 "npm:freebuff"                  = "latest"
+"npm:@caveman-ai/cli"           = "latest"
 "npm:@mistweaverco/kulala-ls"   = "latest"
 "npm:@mistweaverco/kulala-fmt"  = "latest"
 "npm:@nestjs/cli"               = "latest"
 "npm:prettier"                  = "latest"
+"npm:skills"                    = "latest"
 "npm:httpyac"                   = "latest"
 "npm:eas-cli"                   = "latest"
 
