@@ -1,0 +1,7 @@
+packages:
+  dnf:
+    - btop
+    - fastfetch
+    - glow
+    - kitty
+    - tmux

@@ -1,0 +1,36 @@
+# Soar package manager configuration
+# Managed by chezmoi - see ~/.local/share/chezmoi/home/dot_config/soar/config.toml
+
+default_profile = "default"
+
+parallel = true
+parallel_limit = 4
+ghcr_concurrency = 8
+search_limit = 20
+cross_repo_updates = false
+
+signature_verification = true
+desktop_integration = true
+
+sync_interval = "3h"
+
+completions = ["fish"]
+
+portable_dirs = "$HOME/AppImages"
+
+[display]
+progress_style = "modern"
+icons = true
+spinners = true
+
+[profile.default]
+root_path = "~/.local/share/soar"
+
+[[repositories]]
+name = "soarpkgs"
+url = "https://github.com/pkgforge/soarpkgs/releases/latest/download/metadata-x86_64-linux.sdb.zstd"
+pubkey = "RWQ109gKujRqohsA7RERlXFfeJi23EcHN3Dz8TxyPAywa5mLw/fbcbU4"
+desktop_integration = true
+enabled = true
+signature_verification = true
+sync_interval = "3h"

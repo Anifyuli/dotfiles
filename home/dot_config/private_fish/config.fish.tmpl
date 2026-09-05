@@ -7,6 +7,11 @@ if not contains -- $HOME/.local/bin $PATH
     set -gx PATH $HOME/.local/bin $HOME/bin $PATH
 end
 
+# Soar package binaries
+if not contains -- $HOME/.local/share/soar/bin $PATH
+    set -gx PATH $PATH $HOME/.local/share/soar/bin
+end
+
 # Android SDK configuration (only on hosts with Android SDK installed)
 {{- if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 set -gx ANDROID_HOME $HOME/.android/sdk

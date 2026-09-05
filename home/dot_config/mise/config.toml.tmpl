@@ -5,24 +5,13 @@ OPENCODE_DISABLE_FFF=1
 
 [bootstrap.hooks.pre-packages]
 run = [
-  "chmod +x ~/.local/bin/mise-ensure-repo",
-  "mise-ensure-repo terra",
-  "mise-ensure-repo copr:jdxcode/mise",
   "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo",
   "command -v flatpak >/dev/null && sudo flatpak remote-add --system --if-not-exists flatpark https://dl.flatpark.org/flatpark.flatpakrepo",
-  "mise-ensure-repo gh-rpm:alexandrehtrb/Pororoca",
-{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-  "mise-ensure-repo remi",
-  "mise-ensure-repo remi-module:remi-8.3",
-  "mise-ensure-repo docker-ce",
-{{ end }}
 ]
 
 [bootstrap.packages]
 "dnf:mise" = "latest"
 "dnf:neovim" = "latest"
-"dnf:tmux"  = "latest"
-"dnf:kitty" = "latest"
 "dnf:zed-preview" = "latest"
 "flatpak:cc.arduino.IDE2" = "latest"
 "flatpak:com.dbxio.dbx"   = "latest"
@@ -60,6 +49,7 @@ run = [
 [tools]
 flutter = "latest"
 go      = "latest"
+lazygit = "latest"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 claude-code = "latest"
 gradle = "latest"

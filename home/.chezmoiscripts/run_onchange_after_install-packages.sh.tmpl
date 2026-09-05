@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Install packages declared in .chezmoidata/packages.yaml.
+# Declarative: re-runs only when the package list changes (run_onchange)
+# renders this file; each body is idempotent via rpm -q.
+{{ if eq .chezmoi.os "linux" }}
+for pkg in \
+{{ range .packages.dnf -}}
+  {{ . | quote }} \
+{{ end -}}
+; do
+  if ! rpm -q "$pkg" >/dev/null 2>&1; then
+    echo "Installing $pkg..."
+    sudo dnf install -y "$pkg"
+  fi
+done
+{{ end }}

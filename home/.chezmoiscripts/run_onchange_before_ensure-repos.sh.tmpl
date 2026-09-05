@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# dnf repo ensure - controlled by chezmoi (run_onchange_before)
+# Re-runs when content changes; idempotent per repo via rpm -q / grep guards.
+# mise config hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+
+ensure_remi() {
+  rpm -q remi-release >/dev/null 2>&1 || \
+    sudo dnf install -y "https://rpms.remirepo.net/fedora/remi-release-$(rpm -E %fedora).rpm"
+}
+
+ensure_remi_module() {
+  local stream="$1"
+  dnf module list --enabled php 2>/dev/null | grep -q "$stream" || {
+    sudo dnf module reset php -y || true
+    sudo dnf module enable "php:$stream" -y
+  }
+}
+
+ensure_terra() {
+  rpm -q terra-release >/dev/null 2>&1 || \
+    sudo dnf install -y --nogpgcheck \
+      --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" terra-release
+}
+
+ensure_docker_ce() {
+  if ! grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null; then
+    curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
+    sudo sed -i '/autorefresh/d' /tmp/docker-ce.repo
+    sudo mv /tmp/docker-ce.repo /etc/yum.repos.d/
+  fi
+}
+
+ensure_gh_rpm() {
+  local spec="$1" slug rest pattern json tag asset url fname stem name cur
+  slug="${spec%%:*}"
+  rest="${spec#*:}"
+  if [ "$rest" = "$spec" ]; then
+    pattern='*RHEL*x86_64*.rpm'
+  else
+    pattern="$rest"
+  fi
+  json="$(curl -fsSL "https://api.github.com/repos/$slug/releases/latest")"
+  tag="$(printf '%s' "$json" | grep -oP '"tag_name":\s*"\K[^"]+' | head -n1)"
+  tag="${tag#v}"
+  asset=""
+  while IFS= read -r url; do
+    case "$url" in
+      $pattern) asset="$url"; break ;;
+    esac
+  done < <(printf '%s' "$json" | grep -oP '"browser_download_url":\s*"\K[^"]+')
+  if [ -z "$asset" ]; then
+    echo "ensure-repos: no release asset matching '$pattern' for $slug" >&2
+    exit 1
+  fi
+  fname="${asset##*/}"
+  stem="${fname%.rpm}"
+  stem="${stem%.*}"
+  [[ "$stem" =~ \.[A-Za-z]+$ ]] && stem="${stem%.*}"
+  name="${stem%%-*}"
+  cur="$(rpm -q --queryformat '%{VERSION}' "$name" 2>/dev/null || true)"
+  if [ -n "$cur" ] && [ "$cur" = "$tag" ]; then
+    return 0
+  fi
+  sudo dnf install -y "$asset"
+}
+
+ensure_copr() {
+  local name="$1"
+  dnf copr list 2>/dev/null | grep -q "$name" || sudo dnf copr enable -y "$name"
+}
+
+ensure_remi
+ensure_terra
+ensure_copr jdxcode/mise
+ensure_gh_rpm alexandrehtrb/Pororoca
+
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
+ensure_remi_module remi-8.3
+ensure_docker_ce
+{{ end }}
