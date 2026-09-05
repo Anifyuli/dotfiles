@@ -5,3 +5,6 @@ packages:
     - glow
     - kitty
     - tmux
+    - ibm-plex-fonts-all
+    - ibmplexmono-nerd-fonts
+    - nerdfontssymbolsonly-nerd-fonts
