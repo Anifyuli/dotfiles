@@ -105,6 +105,12 @@
   },
   "language_models": {},
   "agent_servers": {
+    "claude-acp": {
+      "default_config_options": {
+        "mode": "plan"
+      },
+      "type": "registry"
+    },
     "kilo": { "type": "registry" },
     "gemini": { "type": "registry" },
     "opencode": { "default_config_options": {
