@@ -9,7 +9,6 @@ ghcr_concurrency = 8
 search_limit = 20
 cross_repo_updates = false
 
-signature_verification = true
 desktop_integration = true
 
 sync_interval = "3h"
@@ -34,3 +33,27 @@ desktop_integration = true
 enabled = true
 signature_verification = true
 sync_interval = "3h"
+
+[[repositories]]
+name = "ivan-hc-am"
+url = "https://meta.pkgforge.dev/external/am/x86_64-Linux.json.zstd"
+desktop_integration = true
+enabled = true
+signature_verification = false
+sync_interval = "1d"
+
+[[repositories]]
+name = "appimagehub"
+url = "https://meta.pkgforge.dev/external/appimagehub/x86_64-Linux.json.zstd"
+desktop_integration = true
+enabled = true
+signature_verification = false
+sync_interval = "1d"
+
+[[repositories]]
+name = "appimage-github-io"
+url = "https://meta.pkgforge.dev/external/appimage.github.io/x86_64-Linux.json.zstd"
+desktop_integration = true
+enabled = true
+signature_verification = false
+sync_interval = "1d"
