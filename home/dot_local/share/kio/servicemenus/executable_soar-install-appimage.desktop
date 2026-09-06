@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Service
+Name=Install with Soar
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/octet-stream;application/x-executable;application/x-iso9660-image;
+Actions=InstallWithSoar
+X-KDE-Priority=TopLevel
+Icon=system-software-install
+
+[Desktop Action InstallWithSoar]
+Name=Install with Soar
+Icon=system-software-install
+Exec=/home/anifyuli/.local/bin/soar-install-appimage.sh %F
