@@ -15,7 +15,7 @@ sync_interval = "3h"
 
 completions = ["fish"]
 
-portable_dirs = "$HOME/AppImages"
+portable_dirs = "~/.local/share/soar/portable-dirs"
 
 [display]
 progress_style = "modern"
