@@ -87,25 +87,6 @@ return {
         vim.lsp.enable(server)
       end
 
-      -- Filetype detection for RPM spec files
-      vim.filetype.add({
-        extension = {
-          spec = "rpm_spec",
-        },
-      })
-
-      -- Register rpmspec treesitter parser for spec files
-      vim.treesitter.language.register("rpmspec", { "rpm_spec" })
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "rpm_spec" },
-        callback = function(args)
-          vim.treesitter.start(args.buf, "rpmspec")
-          vim.bo[args.buf].commentstring = "# %s"
-          vim.bo[args.buf].comments = "b:#"
-        end,
-      })
-
       -- Mason
       require("mason").setup()
 
@@ -196,7 +177,7 @@ return {
       }
 
       opts.servers.rpmspec = {
-        filetypes = { "rpm_spec", "spec" },
+        filetypes = { "spec" },
       }
 
       local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
