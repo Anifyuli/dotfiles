@@ -6,7 +6,6 @@ packages:
     - jdxcode/mise
     - taw/joplin
     - whitehara/kernel-tkg-zen2-preempt
-    - zstud/reef
   dnf:
     - btop
     - fastfetch
@@ -16,5 +15,3 @@ packages:
     - ibm-plex-fonts-all
     - ibmplexmono-nerd-fonts
     - nerdfontssymbolsonly-nerd-fonts
-    - reef
-    - reef-tools
