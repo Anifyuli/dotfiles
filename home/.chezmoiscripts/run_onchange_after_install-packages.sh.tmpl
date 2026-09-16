@@ -14,4 +14,11 @@ for pkg in \
     sudo dnf install -y "$pkg"
   fi
 done
+
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
+if ! rpm -q --last kernel 2>/dev/null | head -n1 | grep -q tkg_zen2_preempt; then
+  echo "Installing TKG zen2-preempt kernel..."
+  sudo dnf install -y kernel kernel-devel kernel-modules-extra
+fi
+{{ end }}
 {{ end }}
