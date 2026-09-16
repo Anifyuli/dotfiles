@@ -6,9 +6,9 @@ function glow --wraps glow --description 'glow, but pick gruvbox-dark/light by c
         set -l r (math "0x"(string sub -l 2 $bg))
         set -l g (math "0x"(string sub -s 3 -l 2 $bg))
         set -l b (math "0x"(string sub -s 5 -l 2 $bg))
-        set -l lum (math "0.299*$r + 0.587*$g + 0.114*$b")
+        set -l lum (math --scale=0 "0.299*$r + 0.587*$g + 0.114*$b")
 
-        if test (math "$lum > 140") = 1
+        if test "$lum" -gt 140
             set style ~/.config/glow/themes/gruvbox-light.json
         else
             set style ~/.config/glow/themes/gruvbox-dark.json
