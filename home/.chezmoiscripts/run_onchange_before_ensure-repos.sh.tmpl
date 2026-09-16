@@ -72,7 +72,9 @@ ensure_copr() {
 
 ensure_remi
 ensure_terra
-ensure_copr jdxcode/mise
+{{ range .packages.copr -}}
+ensure_copr {{ . | quote }}
+{{ end -}}
 ensure_gh_rpm alexandrehtrb/Pororoca
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}

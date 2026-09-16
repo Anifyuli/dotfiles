@@ -1,4 +1,6 @@
 packages:
+  copr:
+    - jdxcode/mise
   dnf:
     - btop
     - fastfetch
