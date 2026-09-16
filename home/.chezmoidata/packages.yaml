@@ -1,6 +1,12 @@
 packages:
   copr:
+    - anifyuliansyah/ab-download-manager
+    - anifyuliansyah/thinkpad-l15g2a-suspend-fix
+    - birkch/QDiskInfo
     - jdxcode/mise
+    - taw/joplin
+    - whitehara/kernel-tkg-zen2-preempt
+    - zstud/reef
   dnf:
     - btop
     - fastfetch
@@ -10,3 +16,5 @@ packages:
     - ibm-plex-fonts-all
     - ibmplexmono-nerd-fonts
     - nerdfontssymbolsonly-nerd-fonts
+    - reef
+    - reef-tools
