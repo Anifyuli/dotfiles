@@ -72,11 +72,22 @@ uv     = "latest"
 "go:mvdan.cc/gofumpt"         = "latest"
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-# Go pentest tools
+# Go testing tools
 "go:github.com/ffuf/ffuf/v2"                                      = "latest"
+"go:github.com/projectdiscovery/httpx/cmd/httpx"                  = "latest"
 "go:github.com/projectdiscovery/interactsh/cmd/interactsh-client" = "latest"
 "go:github.com/projectdiscovery/nuclei/v3/cmd/nuclei"             = "latest"
 "go:github.com/projectdiscovery/subfinder/v2/cmd/subfinder"       = "latest"
+"go:github.com/zricethezav/gitleaks/v8"                           = "latest"
+
+# Python testing tools
+"pypi:locust"       = "latest"
+"pypi:frida-tools"  = "latest"
+"pypi:objection"    = "latest"
+"pypi:sqlmap"       = "latest"
+
+# Complementary testing tools
+trivy     = "latest"
 {{ end }}
 
 # npm packages
