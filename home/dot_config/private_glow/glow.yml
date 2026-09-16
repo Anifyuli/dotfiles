@@ -1,10 +1,8 @@
 # style name or JSON path (default "auto")
-style: "/home/anifyuli/.config/glow/themes/gruvbox-dark.json"
+style: "/home/anifyuli/.config/glow/themes/gruvbox-light.json"
 # mouse support (TUI-mode only)
 mouse: true
 # use pager to display markdown
 pager: false
-# word-wrap at width
-width: 60
 # show all files, including hidden and ignored.
 all: true
