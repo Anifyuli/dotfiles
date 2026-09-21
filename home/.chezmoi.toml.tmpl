@@ -4,6 +4,6 @@ encryption = "age"
     recipient = "age1n43w7jgw9dsur9sdtkmnpuplwxv33nz0gnhupxdz8nfsacudyfsse73nn8"
 
 [data]
-    dakhilgate_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "dakhilgate_server_ip" "DakhilGate server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
+    myvps_ip = {{ promptStringOnce . "myvps_ip" "MyVPS server IP" | quote }}
     sirojulanam_server_ip = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptStringOnce . "sirojulanam_server_ip" "Sirojulanam server IP" | quote }}{{ else }}{{ "" | quote }}{{ end }}
     sirojulanam_server_port = {{ if eq .chezmoi.hostname "ThinkPad-X280" }}{{ promptIntOnce . "sirojulanam_server_port" "Sirojulanam server SSH port" }}{{ else }}{{ 0 }}{{ end }}
