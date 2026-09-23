@@ -5,7 +5,10 @@ set -euo pipefail
 # renders this file; each body is idempotent via rpm -q.
 {{ if eq .chezmoi.os "linux" }}
 for pkg in \
-{{ range .packages.dnf -}}
+{{ range .packages.dnf_common -}}
+  {{ . | quote }} \
+{{ end -}}
+{{ range (index .packages.dnf .chezmoi.hostname) -}}
   {{ . | quote }} \
 {{ end -}}
 ; do
@@ -15,9 +18,12 @@ for pkg in \
   fi
 done
 
-{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-if ! rpm -q --last kernel 2>/dev/null | head -n1 | grep -q tkg_zen2_preempt; then
-  echo "Installing TKG zen2-preempt kernel..."
+{{ with index .packages.kernel_copr .chezmoi.hostname }}
+kernel_repo={{ . | quote }}
+kernel_tag="${kernel_repo#*/kernel-}"
+kernel_tag="${kernel_tag//-/_}"
+if ! rpm -q --last kernel 2>/dev/null | head -n1 | grep -q "$kernel_tag"; then
+  echo "Installing kernel from $kernel_repo..."
   sudo dnf install -y kernel kernel-devel kernel-modules-extra
 fi
 {{ end }}
