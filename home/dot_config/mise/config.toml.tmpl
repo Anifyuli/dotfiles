@@ -10,35 +10,42 @@ run = [
 ]
 
 [bootstrap.packages]
-"dnf:mise" = "latest"
-"dnf:neovim" = "latest"
-"dnf:zed-preview" = "latest"
-"flatpak:cc.arduino.IDE2" = "latest"
-"flatpak:com.dbxio.dbx"   = "latest"
+"dnf:mise"                  = "latest"
+"dnf:neovim"                = "latest"
+"dnf:zed-preview"           = "latest"
+"flatpak:cc.arduino.IDE2"   = "latest"
+"flatpak:com.dbxio.dbx"     = "latest"
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-"dnf:composer" = "latest"
-"dnf:containerd.io" = "latest"
-"dnf:docker-buildx-plugin" = "latest"
-"dnf:docker-ce" = "latest"
-"dnf:docker-ce-cli" = "latest"
+# Docker
+"dnf:containerd.io"         = "latest"
+"dnf:docker-buildx-plugin"  = "latest"
+"dnf:docker-ce"             = "latest"
+"dnf:docker-ce-cli"         = "latest"
 "dnf:docker-compose-plugin" = "latest"
-"dnf:php" = "latest"
-"dnf:php-cli" = "latest"
-"dnf:php-fpm" = "latest"
-"dnf:php-mbstring" = "latest"
-"dnf:php-xml" = "latest"
-"dnf:php-mysqlnd" = "latest"
-"dnf:php-pgsql" = "latest"
-"dnf:php-gd" = "latest"
-"dnf:php-bcmath" = "latest"
-"dnf:php-pecl-zip" = "latest"
-"dnf:php-opcache" = "latest"
-"dnf:php-sodium" = "latest"
-"dnf:nginx" = "latest"
-"dnf:postgresql" = "latest"
-"dnf:postgresql-server" = "latest"
-"dnf:android-studio" = "latest"
+
+# PHP stack
+"dnf:composer"              = "latest"
+"dnf:php"                   = "latest"
+"dnf:php-cli"               = "latest"
+"dnf:php-fpm"               = "latest"
+"dnf:php-mbstring"          = "latest"
+"dnf:php-xml"               = "latest"
+"dnf:php-mysqlnd"           = "latest"
+"dnf:php-pgsql"             = "latest"
+"dnf:php-gd"                = "latest"
+"dnf:php-bcmath"            = "latest"
+"dnf:php-pecl-zip"          = "latest"
+"dnf:php-opcache"           = "latest"
+"dnf:php-sodium"            = "latest"
+
+# Web/DB
+"dnf:nginx"                 = "latest"
+"dnf:postgresql"            = "latest"
+"dnf:postgresql-server"     = "latest"
+
+# Android
+"dnf:android-studio"        = "latest"
 
 [bootstrap.hooks.post-packages]
 run = [
@@ -48,6 +55,7 @@ run = [
 {{ end }}
 
 [tools]
+# Core tools
 flutter     = "latest"
 go          = "latest"
 lazygit     = "latest"
@@ -88,7 +96,7 @@ uv          = "latest"
 "pypi:sqlmap"       = "latest"
 
 # Complementary testing tools
-trivy     = "latest"
+trivy = "latest"
 {{ end }}
 
 # npm packages
