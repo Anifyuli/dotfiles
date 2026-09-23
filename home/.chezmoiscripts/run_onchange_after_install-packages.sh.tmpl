@@ -12,19 +12,18 @@ for pkg in \
   {{ . | quote }} \
 {{ end -}}
 ; do
-  if ! rpm -q "$pkg" >/dev/null 2>&1; then
+  if [[ "$pkg" == *:* ]]; then
+    repo_tag="${pkg%%:*}"
+    repo_tag="${repo_tag#kernel-}"
+    repo_tag="${repo_tag//-/_}"
+    name="${pkg#*:}"
+    if ! rpm -q --last "$name" 2>/dev/null | head -n1 | grep -q "$repo_tag"; then
+      echo "Installing $name (from ${pkg%%:*})..."
+      sudo dnf install -y "$name"
+    fi
+  elif ! rpm -q "$pkg" >/dev/null 2>&1; then
     echo "Installing $pkg..."
     sudo dnf install -y "$pkg"
   fi
 done
-
-{{ with index .packages.kernel_copr .chezmoi.hostname }}
-kernel_repo={{ . | quote }}
-kernel_tag="${kernel_repo#*/kernel-}"
-kernel_tag="${kernel_tag//-/_}"
-if ! rpm -q --last kernel 2>/dev/null | head -n1 | grep -q "$kernel_tag"; then
-  echo "Installing kernel from $kernel_repo..."
-  sudo dnf install -y kernel kernel-devel kernel-modules-extra
-fi
-{{ end }}
 {{ end }}

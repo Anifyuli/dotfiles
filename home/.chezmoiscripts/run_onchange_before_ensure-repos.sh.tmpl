@@ -78,9 +78,6 @@ ensure_copr {{ . | quote }}
 {{ range (index .packages.copr .chezmoi.hostname) -}}
 ensure_copr {{ . | quote }}
 {{ end -}}
-{{ with index .packages.kernel_copr .chezmoi.hostname -}}
-ensure_copr {{ . | quote }}
-{{ end -}}
 ensure_gh_rpm alexandrehtrb/Pororoca
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}

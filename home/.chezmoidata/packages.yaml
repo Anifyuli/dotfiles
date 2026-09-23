@@ -7,15 +7,10 @@ packages:
   copr:
     ThinkPad-L15G2a:
       - anifyuliansyah/thinkpad-l15g2a-suspend-fix
+      - whitehara/kernel-tkg-zen2-preempt
     ThinkPad-X280:
       - bieszczaders/kernel-cachyos
-  # Copr repos whose "kernel" package replaces the stock kernel (same
-  # package name as Fedora/updates), one per host. Installed separately
-  # from `copr` above since the generic dnf loop's `rpm -q kernel` guard
-  # can't detect a repo switch on a package that's always already present.
-  kernel_copr:
-    ThinkPad-L15G2a: whitehara/kernel-tkg-zen2-preempt
-    ThinkPad-X280: whitehara/kernel-cachyos-preempt
+      - whitehara/kernel-cachyos-preempt
   dnf_common:
     - btop
     - fastfetch
@@ -25,9 +20,19 @@ packages:
     - ibm-plex-fonts-all
     - ibmplexmono-nerd-fonts
     - nerdfontssymbolsonly-nerd-fonts
+  # A "repo:package" entry installs `package` only once the installed
+  # package's release matches a tag derived from `repo` (strip a leading
+  # "kernel-" and turn "-" into "_"), instead of the plain rpm -q guard —
+  # for packages whose name doesn't change when sourced from a Copr repo.
   dnf:
-    ThinkPad-L15G2a: []
+    ThinkPad-L15G2a:
+      - kernel-tkg-zen2-preempt:kernel
+      - kernel-tkg-zen2-preempt:kernel-devel
+      - kernel-tkg-zen2-preempt:kernel-modules-extra
     ThinkPad-X280:
       - kernel-cachyos
       - kernel-cachyos-core
       - kernel-cachyos-devel-matched
+      - kernel-cachyos-preempt:kernel
+      - kernel-cachyos-preempt:kernel-devel
+      - kernel-cachyos-preempt:kernel-modules-extra
