@@ -10,11 +10,14 @@ ensure_remi() {
 }
 
 ensure_remi_module() {
-  local stream="$1"
-  dnf module list --enabled php 2>/dev/null | grep -q "$stream" || {
-    sudo dnf module reset php -y || true
-    sudo dnf module enable "php:$stream" -y
-  }
+  local target="$1" cur
+  cur="$(dnf module list --enabled php --cacheonly 2>/dev/null | awk '$1=="php" && $2 ~ /^remi-/{print $2; exit}' || true)"
+  [ "$cur" = "$target" ] && return 0
+  sudo dnf module reset php -y || true
+  sudo dnf module enable "php:$target" -y
+  if rpm -q php >/dev/null 2>&1; then
+    sudo dnf distro-sync -y
+  fi
 }
 
 ensure_terra() {
@@ -28,6 +31,22 @@ ensure_docker_ce() {
     curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
     sudo sed -i '/autorefresh/d' /tmp/docker-ce.repo
     sudo mv /tmp/docker-ce.repo /etc/yum.repos.d/
+  fi
+}
+
+ensure_vscode() {
+  if ! grep -q 'packages.microsoft.com/yumrepos/vscode' /etc/yum.repos.d/vscode.repo 2>/dev/null; then
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
   fi
 }
 
@@ -83,4 +102,10 @@ ensure_gh_rpm alexandrehtrb/Pororoca
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 ensure_remi_module remi-8.3
 ensure_docker_ce
+{{ else }}
+ensure_remi_module remi-7.4
+{{ end }}
+
+{{ if eq .chezmoi.hostname "ThinkPad-X280" }}
+ensure_vscode
 {{ end }}

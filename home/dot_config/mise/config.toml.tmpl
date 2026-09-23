@@ -12,19 +12,10 @@ run = [
 [bootstrap.packages]
 "dnf:mise"                  = "latest"
 "dnf:neovim"                = "latest"
-"dnf:zed-preview"           = "latest"
 "flatpak:cc.arduino.IDE2"   = "latest"
 "flatpak:com.dbxio.dbx"     = "latest"
 
-{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-# Docker
-"dnf:containerd.io"         = "latest"
-"dnf:docker-buildx-plugin"  = "latest"
-"dnf:docker-ce"             = "latest"
-"dnf:docker-ce-cli"         = "latest"
-"dnf:docker-compose-plugin" = "latest"
-
-# PHP stack
+# PHP stack (Remi; stream per host: L15G2a=remi-8.3, else remi-7.4)
 "dnf:composer"              = "latest"
 "dnf:php"                   = "latest"
 "dnf:php-cli"               = "latest"
@@ -38,6 +29,17 @@ run = [
 "dnf:php-pecl-zip"          = "latest"
 "dnf:php-opcache"           = "latest"
 "dnf:php-sodium"            = "latest"
+
+{{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
+# Editors
+"dnf:zed-preview"           = "latest"
+
+# Docker
+"dnf:containerd.io"         = "latest"
+"dnf:docker-buildx-plugin"  = "latest"
+"dnf:docker-ce"             = "latest"
+"dnf:docker-ce-cli"         = "latest"
+"dnf:docker-compose-plugin" = "latest"
 
 # Web/DB
 "dnf:nginx"                 = "latest"
@@ -54,10 +56,16 @@ run = [
 ]
 {{ end }}
 
+{{ if eq .chezmoi.hostname "ThinkPad-X280" }}
+# Editor: VS Code (MS repo)
+"dnf:code"                  = "latest"
+{{ end }}
+
 [tools]
 # Core tools
 go          = "latest"
 lazygit     = "latest"
+php         = "system"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 claude-code = "latest"
 flutter     = "latest"
