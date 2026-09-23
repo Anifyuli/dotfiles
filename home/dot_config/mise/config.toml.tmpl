@@ -15,6 +15,7 @@ run = [
 "dnf:zed-preview" = "latest"
 "flatpak:cc.arduino.IDE2" = "latest"
 "flatpak:com.dbxio.dbx"   = "latest"
+
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 "dnf:composer" = "latest"
 "dnf:containerd.io" = "latest"
@@ -47,19 +48,20 @@ run = [
 {{ end }}
 
 [tools]
-flutter = "latest"
-go      = "latest"
-lazygit = "latest"
+flutter     = "latest"
+go          = "latest"
+lazygit     = "latest"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-gradle = "latest"
-java   = "openjdk-21"
+claude-code = "latest"
+gradle      = "latest"
+java        = "openjdk-21"
 {{ end }}
-node   = "latest"
-opencode = "latest"
-pnpm   = "latest"
-yarn   = "latest"
-usage  = "latest"
-uv     = "latest"
+node        = "latest"
+opencode    = "latest"
+pnpm        = "latest"
+yarn        = "latest"
+usage       = "latest"
+uv          = "latest"
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 # Github backend
