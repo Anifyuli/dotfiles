@@ -26,6 +26,11 @@ ensure_terra() {
       --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" terra-release
 }
 
+ensure_onlyoffice() {
+  rpm -q onlyoffice-repo >/dev/null 2>&1 || \
+    sudo dnf install -y "https://download.onlyoffice.com/repo/centos/main/noarch/onlyoffice-repo.noarch.rpm"
+}
+
 ensure_docker_ce() {
   if ! grep -q 'download.docker.com' /etc/yum.repos.d/docker-ce.repo 2>/dev/null; then
     curl -fsSLo /tmp/docker-ce.repo https://download.docker.com/linux/fedora/docker-ce.repo
@@ -91,6 +96,7 @@ ensure_copr() {
 
 ensure_remi
 ensure_terra
+ensure_onlyoffice
 {{ range .packages.copr_common -}}
 ensure_copr {{ . | quote }}
 {{ end -}}

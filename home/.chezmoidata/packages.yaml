@@ -19,6 +19,7 @@ packages:
     - tmux
     - ibm-plex-fonts-all
     - ibmplexmono-nerd-fonts
+    - msttcore-fonts-installer
     - nerdfontssymbolsonly-nerd-fonts
   # A "repo:package" entry installs `package` only once the installed
   # package's release matches a tag derived from `repo` (strip a leading
