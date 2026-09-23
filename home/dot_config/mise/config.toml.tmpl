@@ -12,6 +12,7 @@ run = [
 [bootstrap.packages]
 "dnf:mise"                  = "latest"
 "dnf:neovim"                = "latest"
+"dnf:zed-preview"           = "latest"
 "flatpak:cc.arduino.IDE2"   = "latest"
 "flatpak:com.dbxio.dbx"     = "latest"
 
@@ -31,9 +32,6 @@ run = [
 "dnf:php-sodium"            = "latest"
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
-# Editors
-"dnf:zed-preview"           = "latest"
-
 # Docker
 "dnf:containerd.io"         = "latest"
 "dnf:docker-buildx-plugin"  = "latest"
