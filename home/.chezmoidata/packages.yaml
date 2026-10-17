@@ -1,16 +1,23 @@
 packages:
+  # Copr repos needed on every host.
   copr_common:
     - anifyuliansyah/ab-download-manager
     - birkch/QDiskInfo
     - jdxcode/mise
+    - phracek/PyCharm
     - taw/joplin
   copr:
     ThinkPad-L15G2a:
+      - achno/gowall
       - anifyuliansyah/thinkpad-l15g2a-suspend-fix
       - whitehara/kernel-tkg-zen2-preempt
     ThinkPad-X280:
       - bieszczaders/kernel-cachyos
+      - bieszczaders/kernel-cachyos-addons
+      - sneexy/python-validity
       - whitehara/kernel-cachyos-preempt
+      - wojnilowicz/ungoogled-chromium
+      - ycollet/audinux
   dnf_common:
     - btop
     - fastfetch
@@ -37,3 +44,348 @@ packages:
       - kernel-cachyos-preempt:kernel
       - kernel-cachyos-preempt:kernel-devel
       - kernel-cachyos-preempt:kernel-modules-extra
+
+  # Third-party DNF repositories, declarative.
+  # Rendered by .chezmoiscripts/run_onchange_before_ensure-repos.sh.tmpl into
+  # /etc/yum.repos.d/<file>.repo. The file is rewritten only when the rendered
+  # body differs from what is on disk, so unchanged repos cost no sudo call.
+  # `file` = repo filename stem, `sections` = one or more repo blocks, and
+  # values are kept as strings so "0" (disabled section) is not dropped.
+  # `repos_common` applies to every host, `repos` adds host-only repos.
+  repos_common:
+    - file: charm
+      # Charm CLI (charmbracelet)
+      sections:
+        - id: charm
+          name: Charm
+          baseurl: "https://repo.charm.sh/yum/"
+          enabled: "1"
+          gpgcheck: "1"
+          gpgkey: "https://repo.charm.sh/yum/gpg.key"
+
+    - file: cloudflare-warp
+      # Cloudflare WARP client
+      sections:
+        - id: cloudflare-warp-stable
+          name: cloudflare-warp-stable
+          baseurl: "https://pkg.cloudflareclient.com/rpm/$releasever"
+          enabled: "1"
+          type: rpm
+          gpgcheck: "1"
+          gpgkey: "https://pkg.cloudflareclient.com/pubkey.gpg"
+
+    - file: fedora-rar
+      # negativo17 RAR (source/debug sections stay disabled)
+      sections:
+        - id: fedora-rar
+          name: negativo17 - RAR
+          baseurl: "https://negativo17.org/repos/rar/fedora-$releasever/$basearch/"
+          enabled: "1"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+        - id: fedora-rar-source
+          name: negativo17 - RAR - Source
+          baseurl: "https://negativo17.org/repos/rar/fedora-$releasever/SRPMS"
+          enabled: "0"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+        - id: fedora-rar-debug
+          name: negativo17 - RAR - Debug
+          baseurl: "https://negativo17.org/repos/rar/fedora-$releasever/$basearch.debug/"
+          enabled: "0"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+
+    - file: fedora-spotify
+      # negativo17 Spotify (source/debug sections stay disabled)
+      sections:
+        - id: fedora-spotify
+          name: negativo17 - Spotify
+          baseurl: "https://negativo17.org/repos/spotify/fedora-$releasever/$basearch/"
+          enabled: "1"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+        - id: fedora-spotify-source
+          name: negativo17 - Spotify - Source
+          baseurl: "https://negativo17.org/repos/spotify/fedora-$releasever/SRPMS"
+          enabled: "0"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+        - id: fedora-spotify-debug
+          name: negativo17 - Spotify - Debug
+          baseurl: "https://negativo17.org/repos/spotify/fedora-$releasever/$basearch.debug/"
+          enabled: "0"
+          type: rpm-md
+          repo_gpgcheck: "0"
+          gpgcheck: "1"
+          enabled_metadata: "1"
+          metadata_expire: 6h
+          skip_if_unavailable: "1"
+          gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+
+    - file: google-chrome
+      # Google Chrome stable
+      sections:
+        - id: google-chrome
+          name: google-chrome
+          baseurl: "https://dl.google.com/linux/chrome/rpm/stable/x86_64"
+          enabled: "1"
+          gpgcheck: "1"
+          gpgkey: "https://dl.google.com/linux/linux_signing_key.pub"
+
+    - file: google-chrome-canary
+      # Google Chrome Canary (same baseurl as stable, separate repo id)
+      sections:
+        - id: google-chrome-canary
+          name: google-chrome-canary
+          baseurl: "https://dl.google.com/linux/chrome/rpm/stable/x86_64"
+          enabled: "1"
+          gpgcheck: "1"
+          gpgkey: "https://dl.google.com/linux/linux_signing_key.pub"
+
+    - file: megasync
+      # MEGAsync desktop client
+      sections:
+        - id: MEGAsync
+          name: MEGAsync
+          baseurl: "https://mega.nz/linux/repo/Fedora_$releasever/"
+          enabled: "1"
+          gpgcheck: "1"
+          gpgkey: "https://mega.nz/linux/repo/Fedora_$releasever/repodata/repomd.xml.key"
+
+    - file: tailscale
+      # Tailscale stable
+      sections:
+        - id: tailscale-stable
+          name: Tailscale stable
+          baseurl: "https://pkgs.tailscale.com/stable/fedora/$basearch"
+          enabled: "1"
+          type: rpm
+          repo_gpgcheck: "1"
+          gpgcheck: "1"
+          gpgkey: "https://pkgs.tailscale.com/stable/fedora/repo.gpg"
+
+  repos:
+    ThinkPad-L15G2a:
+      - file: google-cloud-sdk
+        # Google Cloud CLI (matches cloud-sdk-el10 repo)
+        sections:
+          - id: google-cloud-cli
+            name: Google Cloud CLI
+            baseurl: "https://packages.cloud.google.com/yum/repos/cloud-sdk-el10-x86_64"
+            enabled: "1"
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            gpgkey: "https://packages.cloud.google.com/yum/doc/rpm-package-key-v10.gpg"
+
+      - file: k6-io
+        # Grafana k6 load testing. Uses the key URL instead of the
+        # file:///etc/pki/rpm-gpg path the release rpm installs, so dnf can
+        # import the key itself (no release rpm needed).
+        sections:
+          - id: k6
+            name: k6
+            baseurl: "https://dl.k6.io/rpm/$basearch"
+            enabled: "1"
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            metadata_expire: 1d
+            gpgkey: "https://dl.k6.io/key.gpg"
+
+    # ThinkPad-X280 host-only repos.
+    # NOTE: compatibility risk inherited from the machine — `virtio-win`
+    # sections ship gpgcheck=0 (upstream fedorapeople repo is unsigned) and
+    # `mocktail` trusts a third-party key. Kept as-is to match current behaviour.
+    ThinkPad-X280:
+      - file: cloudflared
+        # Cloudflare Tunnel daemon (distinct from cloudflare-warp)
+        sections:
+          - id: cloudflared-stable
+            name: cloudflared-stable
+            baseurl: "https://pkg.cloudflare.com/cloudflared/rpm"
+            enabled: "1"
+            type: rpm
+            gpgcheck: "1"
+            gpgkey: "https://pkg.cloudflare.com/cloudflare-ascii-pubkey.gpg"
+
+      - file: fedora-multimedia
+        # negativo17 Multimedia (source/debug sections stay disabled).
+        # Its excludepkgs=akmod-v4l2loopback lives in repo_overrides below, so
+        # it survives a repackage of this repo file.
+        sections:
+          - id: fedora-multimedia
+            name: negativo17 - Multimedia
+            baseurl: "https://negativo17.org/repos/multimedia/fedora-$releasever/$basearch/"
+            enabled: "1"
+            type: rpm-md
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            enabled_metadata: "1"
+            metadata_expire: 6h
+            skip_if_unavailable: "1"
+            gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+          - id: fedora-multimedia-source
+            name: negativo17 - Multimedia - Source
+            baseurl: "https://negativo17.org/repos/multimedia/fedora-$releasever/SRPMS"
+            enabled: "0"
+            type: rpm-md
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            enabled_metadata: "1"
+            metadata_expire: 6h
+            skip_if_unavailable: "1"
+            gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+          - id: fedora-multimedia-debug
+            name: negativo17 - Multimedia - Debug
+            baseurl: "https://negativo17.org/repos/multimedia/fedora-$releasever/$basearch.debug/"
+            enabled: "0"
+            type: rpm-md
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            enabled_metadata: "1"
+            metadata_expire: 6h
+            skip_if_unavailable: "1"
+            gpgkey: "https://negativo17.org/repos/RPM-GPG-KEY-slaanesh"
+
+      - file: mocktail
+        # Mocktail (third-party key)
+        sections:
+          - id: mocktail
+            name: Mocktail
+            baseurl: "https://mocktail.bigrat.space/rpm/$basearch/"
+            enabled: "1"
+            repo_gpgcheck: "1"
+            gpgcheck: "1"
+            gpgkey: "https://mocktail.bigrat.space/mocktail-packages.gpg"
+
+      - file: protonvpn-stable
+        # ProtonVPN stable release
+        sections:
+          - id: protonvpn-fedora-stable
+            name: ProtonVPN Fedora Stable repository
+            baseurl: "https://repo.protonvpn.com/fedora-$releasever-stable"
+            enabled: "1"
+            repo_gpgcheck: "0"
+            gpgcheck: "1"
+            skip_if_unavailable: true
+            gpgkey: "https://repo.protonvpn.com/fedora-$releasever-stable/public_key.asc"
+
+      - file: virtio-win
+        # virtio-win drivers for Windows guests.
+        # https://fedoraproject.org/wiki/Windows_Virtio_Drivers
+        # Only the stable section is enabled; gpgcheck=0 is upstream's choice.
+        sections:
+          - id: virtio-win-stable
+            name: virtio-win builds roughly matching what was shipped in latest RHEL
+            baseurl: "https://fedorapeople.org/groups/virt/virtio-win/repo/stable"
+            enabled: "1"
+            gpgcheck: "0"
+            skip_if_unavailable: "1"
+          - id: virtio-win-latest
+            name: Latest virtio-win builds
+            baseurl: "https://fedorapeople.org/groups/virt/virtio-win/repo/latest"
+            enabled: "0"
+            gpgcheck: "0"
+            skip_if_unavailable: "1"
+          - id: virtio-win-source
+            name: virtio-win source RPMs
+            baseurl: "https://fedorapeople.org/groups/virt/virtio-win/repo/srpms"
+            enabled: "0"
+            gpgcheck: "0"
+            skip_if_unavailable: "1"
+
+      - file: "home:justkidding"
+        # openSUSE OBS home:justkidding. Upstream file ships enabled; we keep it
+        # disabled through repo_overrides below (dnf expands $releasever here,
+        # so this survives Fedora release bumps).
+        sections:
+          - id: home_justkidding
+            name: "home:justkidding (Fedora_$releasever)"
+            baseurl: "https://download.opensuse.org/repositories/home:/justkidding/Fedora_$releasever/"
+            enabled: "1"
+            type: rpm-md
+            gpgcheck: "1"
+            gpgkey: "https://download.opensuse.org/repositories/home:/justkidding/Fedora_$releasever/repodata/repomd.xml.key"
+
+  # Repository option overrides, written to /etc/dnf/repos.override.d/<file>.repo.
+  # This is dnf5's official drop-in location: it is separate from the packaged
+  # repo files, so a `dnf upgrade` of e.g. terra-release cannot clobber it
+  # (unlike editing /etc/yum.repos.d/terra.repo, which once already cost us the
+  # Terra excludepkgs list). Every option declared here is also purged from the
+  # dnf5-config-manager-generated 99-config_manager.repo, so chezmoi stays the
+  # single source of truth and the option is not applied twice.
+  # `repo_overrides_common` applies to every host, `repo_overrides` adds
+  # host-only overrides. excludepkgs/includepkgs are space-joined glob lists,
+  # order preserved.
+  repo_overrides_common:
+    - file: terra
+      # Block Terra from serving packages we take from their real sources,
+      # avoiding file conflicts (Fedora/Copr/upstream rpm).
+      section: terra
+      excludepkgs:
+        - akmod-*
+        - ab-download-manager
+        - chezmoi
+        - discord
+        - discord-*
+        - dkms-v4l2loopback
+        - mise
+        - kmod-*
+        - proton-vpn-*
+        - python3-proton-*
+        - scx-*
+        - v4l2loopback
+
+    - file: cisco-openh264
+      # Fedora's Cisco openh264 repo ships disabled; keep it enabled.
+      section: fedora-cisco-openh264
+      enabled: "1"
+
+  # Host-only overrides go here (same schema as repo_overrides_common).
+  # Keep the key present even when a host is missing: the template uses dot
+  # access and chezmoi runs templates with missingkey=error.
+  repo_overrides:
+    ThinkPad-X280:
+      - file: MEGAsync
+        # Kept from the machine's config-manager state: prefer MEGAsync
+        # packages over same-named ones from other repos.
+        section: MEGAsync
+        priority: "10"
+
+      - file: fedora-multimedia-excludepkgs
+        # The machine had excludepkgs=akmod-v4l2loopback inside the repo file;
+        # kept as a drop-in so a repo file refresh cannot lose it.
+        section: fedora-multimedia
+        excludepkgs:
+          - akmod-v4l2loopback
+
+      - file: home-justkidding
+        # Upstream repo ships enabled; keep it disabled (was set via
+        # dnf5 config-manager before, now owned by chezmoi).
+        section: home_justkidding
+        enabled: "0"

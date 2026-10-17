@@ -94,6 +94,51 @@ ensure_copr() {
   dnf copr list 2>/dev/null | grep -q "$name" || sudo dnf copr enable -y "$name"
 }
 
+# Write a raw .repo file from a heredoc body, only when the rendered body
+# differs from what is already on disk (no sudo call when unchanged).
+ensure_repo_file() {
+  local file="$1" body target
+  body="$(cat)"
+  target="/etc/yum.repos.d/${file}.repo"
+  if [ -f "$target" ] && [ "$(cat "$target")" = "$body" ]; then
+    return 0
+  fi
+  echo "Writing $target..."
+  printf '%s\n' "$body" | sudo tee "$target" >/dev/null
+}
+
+# Same idea for /etc/dnf/repos.override.d (dnf5 drop-in, survives package
+# updates of the owning repo package).
+ensure_repo_override() {
+  local file="$1" body target
+  body="$(cat)"
+  target="/etc/dnf/repos.override.d/${file}.repo"
+  if [ -f "$target" ] && [ "$(cat "$target")" = "$body" ]; then
+    return 0
+  fi
+  echo "Writing $target..."
+  sudo install -d -m 0755 /etc/dnf/repos.override.d
+  printf '%s\n' "$body" | sudo tee "$target" >/dev/null
+}
+
+# Drop an option that `dnf5 config-manager` previously generated into
+# 99-config_manager.repo, so the chezmoi drop-in is the only place it lives.
+# No-op when the option is not present there.
+purge_config_manager_opt() {
+  local section="$1" option="$2"
+  local gen="/etc/dnf/repos.override.d/99-config_manager.repo"
+  [ -f "$gen" ] || return 0
+  if awk -v s="$section" -v k="$option" '
+      /^\[/ { insec = ($0 == "[" s "]"); next }
+      insec && index($0, k "=") == 1 { found = 1 }
+      END { exit !found }
+    ' "$gen"; then
+    return 0
+  fi
+  echo "Removing config-manager override ${section}.${option} (now owned by chezmoi)..."
+  sudo dnf5 config-manager unsetopt "${section}.${option}" || true
+}
+
 ensure_remi
 ensure_terra
 ensure_onlyoffice
@@ -104,10 +149,10 @@ ensure_copr {{ . | quote }}
 ensure_copr {{ . | quote }}
 {{ end -}}
 ensure_gh_rpm alexandrehtrb/Pororoca
+ensure_docker_ce
 
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 ensure_remi_module remi-8.3
-ensure_docker_ce
 {{ else }}
 ensure_remi_module remi-7.4
 {{ end }}
@@ -115,3 +160,38 @@ ensure_remi_module remi-7.4
 {{ if eq .chezmoi.hostname "ThinkPad-X280" }}
 ensure_vscode
 {{ end }}
+
+# --- declarative third-party repos (see .chezmoidata/packages.yaml) ---
+{{ $host_repos := default list (index .packages.repos .chezmoi.hostname) -}}
+{{ range (concat .packages.repos_common $host_repos) }}
+ensure_repo_file {{ .file | quote }} <<'REPO'
+{{- range $s := .sections }}
+[{{ $s.id }}]
+name={{ $s.name }}
+baseurl={{ $s.baseurl }}
+{{ if hasKey $s "enabled" }}enabled={{ $s.enabled }}
+{{ end }}{{ if hasKey $s "type" }}type={{ $s.type }}
+{{ end }}{{ if hasKey $s "repo_gpgcheck" }}repo_gpgcheck={{ $s.repo_gpgcheck }}
+{{ end }}{{ if hasKey $s "gpgcheck" }}gpgcheck={{ $s.gpgcheck }}
+{{ end }}{{ if hasKey $s "enabled_metadata" }}enabled_metadata={{ $s.enabled_metadata }}
+{{ end }}{{ if hasKey $s "metadata_expire" }}metadata_expire={{ $s.metadata_expire }}
+{{ end }}{{ if hasKey $s "skip_if_unavailable" }}skip_if_unavailable={{ $s.skip_if_unavailable }}
+{{ end }}{{ if hasKey $s "gpgkey" }}gpgkey={{ $s.gpgkey }}
+{{ end }}{{ end }}
+REPO
+{{ end }}
+# --- declarative repo option overrides (dnf5 repos.override.d) ---
+{{ $host_overrides := default list (index .packages.repo_overrides .chezmoi.hostname) -}}
+{{ range $ov := (concat .packages.repo_overrides_common $host_overrides) }}
+ensure_repo_override {{ $ov.file | quote }} <<'REPO'
+[{{ $ov.section }}]
+{{ if hasKey $ov "enabled" }}enabled={{ $ov.enabled }}
+{{ end }}{{ if hasKey $ov "priority" }}priority={{ $ov.priority }}
+{{ end }}{{ if hasKey $ov "excludepkgs" }}excludepkgs={{ join " " $ov.excludepkgs }}
+{{ end }}{{ if hasKey $ov "includepkgs" }}includepkgs={{ join " " $ov.includepkgs }}
+{{ end }}REPO
+{{ if hasKey $ov "enabled" }}purge_config_manager_opt {{ $ov.section | quote }} "enabled"
+{{ end }}{{ if hasKey $ov "priority" }}purge_config_manager_opt {{ $ov.section | quote }} "priority"
+{{ end }}{{ if hasKey $ov "excludepkgs" }}purge_config_manager_opt {{ $ov.section | quote }} "excludepkgs"
+{{ end }}{{ if hasKey $ov "includepkgs" }}purge_config_manager_opt {{ $ov.section | quote }} "includepkgs"
+{{ end }}{{ end }}
