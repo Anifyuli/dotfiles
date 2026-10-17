@@ -20,6 +20,7 @@ packages:
       - ycollet/audinux
   dnf_common:
     - btop
+    - cloudflared
     - fastfetch
     - glow
     - kitty
@@ -73,6 +74,17 @@ packages:
           type: rpm
           gpgcheck: "1"
           gpgkey: "https://pkg.cloudflareclient.com/pubkey.gpg"
+
+    - file: cloudflared
+      # Cloudflare Tunnel daemon (distinct from cloudflare-warp, the WARP client)
+      sections:
+        - id: cloudflared-stable
+          name: cloudflared-stable
+          baseurl: "https://pkg.cloudflare.com/cloudflared/rpm"
+          enabled: "1"
+          type: rpm
+          gpgcheck: "1"
+          gpgkey: "https://pkg.cloudflare.com/cloudflare-ascii-pubkey.gpg"
 
     - file: fedora-rar
       # negativo17 RAR (source/debug sections stay disabled)
@@ -222,17 +234,6 @@ packages:
     # sections ship gpgcheck=0 (upstream fedorapeople repo is unsigned) and
     # `mocktail` trusts a third-party key. Kept as-is to match current behaviour.
     ThinkPad-X280:
-      - file: cloudflared
-        # Cloudflare Tunnel daemon (distinct from cloudflare-warp)
-        sections:
-          - id: cloudflared-stable
-            name: cloudflared-stable
-            baseurl: "https://pkg.cloudflare.com/cloudflared/rpm"
-            enabled: "1"
-            type: rpm
-            gpgcheck: "1"
-            gpgkey: "https://pkg.cloudflare.com/cloudflare-ascii-pubkey.gpg"
-
       - file: fedora-multimedia
         # negativo17 Multimedia (source/debug sections stay disabled).
         # Its excludepkgs=akmod-v4l2loopback lives in repo_overrides below, so
