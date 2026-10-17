@@ -47,6 +47,9 @@ run = [
 # Android
 "dnf:android-studio"        = "latest"
 
+# Load testing (repo k6-io dikelola chezmoi: repos.ThinkPad-L15G2a)
+"dnf:k6"                    = "latest"
+
 [bootstrap.hooks.post-packages]
 run = [
   "sudo systemctl daemon-reload",
@@ -65,6 +68,7 @@ go          = "latest"
 lazygit     = "latest"
 {{ if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
 claude-code = "latest"
+firebase    = "latest"
 flutter     = "latest"
 gradle      = "latest"
 java        = "openjdk-21"
@@ -93,6 +97,9 @@ uv          = "latest"
 "go:github.com/projectdiscovery/nuclei/v3/cmd/nuclei"             = "latest"
 "go:github.com/projectdiscovery/subfinder/v2/cmd/subfinder"       = "latest"
 "go:github.com/zricethezav/gitleaks/v8"                           = "latest"
+
+# Lint
+golangci-lint                                                     = "latest"
 
 # Python testing tools
 "pypi:locust"       = "latest"
