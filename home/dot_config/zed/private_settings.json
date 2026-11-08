@@ -106,6 +106,9 @@
   "language_models": {},
   "agent_servers": {
     "claude-acp": {
+      "default_config_options": {
+        "mode": "auto"
+      },
       "type": "registry"
     },
     "kilo": { "type": "registry" },

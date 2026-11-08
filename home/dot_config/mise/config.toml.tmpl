@@ -97,6 +97,7 @@ uv          = "latest"
 "go:github.com/projectdiscovery/nuclei/v3/cmd/nuclei"             = "latest"
 "go:github.com/projectdiscovery/subfinder/v2/cmd/subfinder"       = "latest"
 "go:github.com/zricethezav/gitleaks/v8"                           = "latest"
+"go:golang.org/x/vuln/cmd/govulncheck"                            = "latest"
 
 # Lint
 golangci-lint                                                     = "latest"
@@ -109,6 +110,9 @@ golangci-lint                                                     = "latest"
 
 # Complementary testing tools
 trivy = "latest"
+
+# HTTP backend (vendor download, no GitHub release)
+"http:ngrok" = { version = "3", url = "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" }
 {{ end }}
 
 # npm packages
