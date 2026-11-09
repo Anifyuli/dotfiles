@@ -2,7 +2,7 @@ packages:
   # Copr repos needed on every host.
   copr_common:
     - anifyuliansyah/ab-download-manager
-    - anifyuliansyah/system-tweaks
+    - anifyuliansyah/my-tweaks
     - bieszczaders/kernel-cachyos-addons
     - birkch/QDiskInfo
     - jdxcode/mise
