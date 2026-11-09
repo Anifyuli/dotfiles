@@ -2,6 +2,7 @@ packages:
   # Copr repos needed on every host.
   copr_common:
     - anifyuliansyah/ab-download-manager
+    - anifyuliansyah/system-tweaks
     - bieszczaders/kernel-cachyos-addons
     - birkch/QDiskInfo
     - jdxcode/mise
@@ -35,6 +36,7 @@ packages:
     - neovim
     - nerdfontssymbolsonly-nerd-fonts
     - scx-scheds
+    - scx-sync-powerprofiles
   # A "repo:package" entry installs `package` only once the installed
   # package's release matches a tag derived from `repo` (strip a leading
   # "kernel-" and turn "-" into "_"), instead of the plain rpm -q guard —
@@ -71,11 +73,12 @@ packages:
           gpgkey: "https://repo.charm.sh/yum/gpg.key"
 
     - file: cloudflare-warp
-      # Cloudflare WARP client
+      # Cloudflare WARP client. Note: Repo pinned to F44 for waiting supporting latest release
       sections:
         - id: cloudflare-warp-stable
           name: cloudflare-warp-stable
-          baseurl: "https://pkg.cloudflareclient.com/rpm/$releasever"
+          #baseurl: "https://pkg.cloudflareclient.com/rpm/$releasever"
+          baseurl: "https://pkg.cloudflareclient.com/rpm/44"
           enabled: "1"
           type: rpm
           gpgcheck: "1"
