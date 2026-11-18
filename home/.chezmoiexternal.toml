@@ -1,9 +1,0 @@
-# Plasma Groovbx (Gruvbox KDE Global Theme). Clone only, never auto-installed:
-# applying the theme is per-machine. Run ~/.local/share/plasma-groovbx/install.sh.
-# Kept separate from any dev checkout under ~/Projects.
-[".local/share/plasma-groovbx"]
-    type = "git-repo"
-    url = "git@github.com:Anifyuli/plasma-groovbx.git"
-    refreshPeriod = "168h"
-    [".local/share/plasma-groovbx".pull]
-        args = ["--ff-only"]
