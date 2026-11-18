@@ -18,14 +18,10 @@ set -gx ANDROID_HOME $HOME/.android/sdk
 set -gx ANDROID_AVD_HOME $HOME/.android/avd
 set -gx ANDROID_SDK_ROOT $ANDROID_HOME
 
-for dir in \
+fish_add_path --global --move --path \
     $ANDROID_HOME/cmdline-tools/latest/bin \
     $ANDROID_HOME/emulator \
     $ANDROID_HOME/platform-tools
-    if not contains -- $dir $PATH
-        set -gx PATH $PATH $dir
-    end
-end
 {{- end }}
 
 # Abbrs
