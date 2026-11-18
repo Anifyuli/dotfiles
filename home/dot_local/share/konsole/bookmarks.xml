@@ -9,4 +9,12 @@
    </metadata>
   </info>
  </bookmark>
+ <bookmark href="file:///home/anifyuli/.local/share/chezmoi">
+  <title>chezmoi</title>
+  <info>
+   <metadata owner="http://freedesktop.org">
+    <bookmark:icon name=""/>
+   </metadata>
+  </info>
+ </bookmark>
 </xbel>
