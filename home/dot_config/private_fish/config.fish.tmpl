@@ -2,15 +2,11 @@ if status is-interactive
   set -x SSH_AUTH_SOCK /run/user/(id -u)/ssh-agent.socket
 end
 
-# Ensure $HOME/.local/bin is in PATH
-if not contains -- $HOME/.local/bin $PATH
-    set -gx PATH $HOME/.local/bin $HOME/bin $PATH
-end
+# User binaries first in PATH
+fish_add_path --global --move --path $HOME/.local/bin $HOME/bin
 
-# Soar package binaries
-if not contains -- $HOME/.local/share/soar/bin $PATH
-    set -gx PATH $PATH $HOME/.local/share/soar/bin
-end
+# Soar package binaries (lowest priority)
+fish_add_path --global --move --path --append $HOME/.local/share/soar/bin
 
 # Android SDK configuration (only on hosts with Android SDK installed)
 {{- if eq .chezmoi.hostname "ThinkPad-L15G2a" }}
